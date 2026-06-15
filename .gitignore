@@ -1,0 +1,5 @@
+# Generated C++ headers (rosidl)
+rosidl_generator_cpp/
+
+# Build artifacts
+compile_commands.json
