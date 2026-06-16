@@ -2,40 +2,118 @@
 
 ## 1. 运行时资源
 
-### 1.1 单节点资源剖面
+### 1.1 CPU 负载等级定义
 
-| 节点 | 频率 | 消息大小 | CPU 负载 | 说明 |
-|------|------|---------|---------|------|
-| lidar_node | 10Hz | ~1.5 KB (360 floats) | 低 | 每帧 360 次 sin/cos 计算 |
-| imu_node | 100Hz | ~100 B | 低 | 简单的三角运算 |
-| camera_node | 5Hz | ~900 KB (640x480x3) | 中 | 每帧填充 900KB 随机数据 |
-| fusion_node | 5Hz | ~100 B | 低 | 下采样 + 路径点循环 |
-| decision_node | 事件驱动 | <1 KB | 极低 | 仅在收到感知数据时触发 |
-| motor_ctrl_node | 10Hz feedback | ~100 B | 极低 | 直线插值，100ms 步长 |
-| Fast-DDS | — | — | 中 | RTPS 发现、QoS 匹配、CDR 序列化 |
+| 等级 | 单核占用 | 典型场景 |
+|------|---------|---------|
+| 极低 | <1% | 纯定时器等待、少量内存拷贝、标记读写 |
+| 低 | 1-5% | 简单浮点运算（sin/cos）、小消息序列化（<10KB） |
+| 中 | 5-15% | 大消息序列化（>100KB）、频繁内存分配 |
+| 高 | >15% | 计算密集型（图像处理、矩阵运算、大量数值迭代） |
 
-### 1.2 汇总
+### 1.2 消息大小精确计算
 
-| 资源 | 最低配置 | 推荐配置 | 说明 |
-|------|---------|---------|------|
-| CPU | 2 核 | 4 核 | 6 节点都是定时器驱动，大部分时间 idle。2 核足够，但 camera_node 每 200ms 有一次 900KB 序列化，4 核更从容 |
-| 内存 | 1 GB | 2 GB | 每个 rclcpp 进程 baseline ~80MB，6 个 ~480MB。Fast-DDS 内部缓冲区 ~200MB。Docker daemon 自身 ~300MB |
-| 磁盘 | 5 GB | 10 GB | ROS2 Jazzy base image ~1.5GB，colcon build 产物 ~500MB，Docker layers |
-| 网络 | localhost | localhost | 所有节点跑在同一 Docker host，不走物理网卡 |
+基于 CDR 序列化规则（little-endian，4 字节对齐，Header 约 28 B）：
 
-### 1.3 Docker Compose 资源分配
+**LidarScan @ 10Hz**
+
+| 字段 | 计算 | 大小 |
+|------|------|------|
+| Header (stamp + frame_id) | 固定 | 28 B |
+| ranges[360] | 360 × 4 B (float32) | 1,440 B |
+| intensities[360] | 360 × 4 B (float32) | 1,440 B |
+| time_increment | 1 × 4 B | 4 B |
+| angle_min + max + increment | 3 × 4 B | 12 B |
+| **合计** | | **2,924 B/帧 = 29.2 KB/s** |
+
+**ImuData @ 100Hz**
+
+| 字段 | 计算 | 大小 |
+|------|------|------|
+| Header | 固定 | 28 B |
+| angular_velocity[3] | 3 × 8 B (float64) | 24 B |
+| linear_acceleration[3] | 3 × 8 B (float64) | 24 B |
+| **合计** | | **76 B/帧 = 7.6 KB/s** |
+
+**CameraImage @ 5Hz**
+
+| 字段 | 计算 | 大小 |
+|------|------|------|
+| Header | 固定 | 28 B |
+| height + width + step | 3 × 4 B | 12 B |
+| encoding | ~8 B | 8 B |
+| is_bigendian | 1 B (+3 B padding) | 4 B |
+| data[640 × 480 × 3] | 921,600 × 1 B (uint8) | 921,600 B |
+| **合计** | | **921,652 B/帧 = 4.61 MB/s** |
+
+**PerceptionObjects @ 5Hz**
+
+| 字段 | 计算 | 大小 |
+|------|------|------|
+| Header | 固定 | 28 B |
+| objects[] (≤5 个) | 5 × (8+12) B | ~100 B |
+| **合计** | | **~128 B/帧 = 640 B/s** |
+
+**MoveToPose Action (Goal + Feedback)**
+
+| 消息 | 大小 |
+|------|------|
+| Goal (4 × float32) | 16 B |
+| Feedback (4 × float32) | 16 B |
+| Result (4 × float32 + bool) | 20 B |
+
+### 1.3 单节点资源剖面
+
+| 节点 | 频率 | 每帧大小 | 带宽 | CPU | 瓶颈分析 |
+|------|------|---------|------|-----|---------|
+| lidar | 10Hz | 2.9 KB | 29 KB/s | 低 (3%) | 360 次 sin/cos + 2.9KB CDR 序列化 |
+| imu | 100Hz | 76 B | 8 KB/s | 极低 (<1%) | 3 次 sin/cos + 76B 序列化 |
+| camera | 5Hz | 900 KB | 4.6 MB/s | 中 (10%) | 921,600 次随机数生成 + 900KB CDR 序列化 |
+| fusion | 5Hz | 128 B | 0.6 KB/s | 低 (2%) | 数组下采样 + 浮点比较 + 路径点循环 |
+| decision | 事件驱动 | 16 B | — | 极低 (<1%) | 仅在收到 perception 时解析 |
+| motor_ctrl | 10Hz | 16 B | 160 B/s | 极低 (<1%) | 直线插值 + feedback 发布 |
+| Fast-DDS | — | — | 4.64 MB/s | 中 (5%) | RTPS 发现 + QoS 匹配 + CDR 序列化/反序列化 |
+
+注：Fast-DDS 带宽为全部 Topic 流量之和（29.2K + 7.6K + 4.61M + 0.64K ≈ 4.64 MB/s），都是 localhost 通信。
+
+### 1.4 汇总
+
+| 资源 | 最低 | 推荐 | 约束分析 |
+|------|------|------|---------|
+| CPU | 2 核 | 4 核 | 6 节点峰值叠加约 21% 单核，2 核有 10× 余量。但 camera 每 200ms 的 900KB 序列化 + CDR 拷贝是单线程 burst，4 核更平滑 |
+| 内存 | 800 MB | 1.5 GB | rclcpp 进程 baseline ~60MB/个 (6×60=360MB)；Fast-DDS 预分配 socket buffer ~128MB；Docker daemon ~300MB。camera 的 900KB 帧缓存每 200ms 复用，不额外占驻留内存 |
+| 磁盘 | 3 GB | 5 GB | ROS2 Jazzy base image ~1.2GB；colcon build 产物 ~300MB；Docker image layers ~500MB |
+| 网络 | — | — | 全 localhost loopback，不走物理网卡，无带宽成本 |
+
+### 1.5 Docker Compose 资源分配
 
 ```yaml
-# 6 个容器的资源限制建议
-lidar_container:     cpus: 0.3, mem_limit: 150M
-imu_container:       cpus: 0.3, mem_limit: 150M
-camera_container:    cpus: 0.5, mem_limit: 250M   # 900KB 每帧
-fusion_container:    cpus: 0.4, mem_limit: 200M   # 缓存 3 个传感器消息
-decision_container:  cpus: 0.2, mem_limit: 150M
-motor_ctrl_container:cpus: 0.3, mem_limit: 150M
-────────────────────────────────────────────────
-合计                  cpus: 2.0, mem: 1.05 GB
+# cpus = CPU 核心数上限, mem_limit = 物理内存上限 (含 swap 禁用)
+# camera 内存上限含 900KB × 3 帧缓冲 (publisher queue + subscriber queue + CDR buffer)
+
+lidar_container:
+  cpus: 0.3, mem_limit: 120M     # 2.9KB 帧 + 360 元素数组
+
+imu_container:
+  cpus: 0.2, mem_limit: 100M     # 76B 帧，极轻量
+
+camera_container:
+  cpus: 0.8, mem_limit: 256M     # 900KB 帧 × 3 缓冲 ≈ 2.7MB + 随机数状态
+
+fusion_container:
+  cpus: 0.4, mem_limit: 160M     # 缓存 3 路传感器最新帧 (900KB + 2.9KB + 76B)
+
+decision_container:
+  cpus: 0.2, mem_limit: 100M     # 事件驱动，无定时器
+
+motor_ctrl_container:
+  cpus: 0.3, mem_limit: 100M     # 浮点插值 + Action Server 状态
+─────────────────────────────────────────
+合计 (hard limit):  cpus: 2.2,  mem: 836 MB
+合计 (soft usage):  cpus: ~0.5, mem: ~400 MB  (实际常态负载)
 ```
+
+`cpus` 设置上限而非预留 — 6 个容器共享宿主机 CPU，软限制下实际常态总负载 <0.5 核。burst 时 camera 可短暂用满 0.8 核，其余容器不受影响。
 
 ---
 
