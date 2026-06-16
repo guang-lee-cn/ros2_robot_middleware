@@ -180,3 +180,131 @@ flowchart TB
 **面试时的一句话解释：**
 
 > "best_effort 延迟低（0.8ms）但丢 0.65%；reliable 零丢包但延迟翻倍（1.5ms）。选择哪个取决于传感器：IMU 不能丢所以用 reliable，LiDAR 可以忍受偶尔丢帧所以用 best_effort。这个 trade-off 不是在 rclcpp 层背下来的，是我实际测出来的。"
+
+## 5. 逐节点业务逻辑
+
+### 5.1 lidar_node — 激光雷达传感器模拟
+
+**职责：** 模拟 SICK TiM781 2D LiDAR，10Hz 发布距离+反射率数据。
+
+**输入：** 无（自主定时器驱动）
+
+**输出：** `Topic: /sensor/lidar` → `LidarScan`，QoS = `best_effort(10)`
+
+**模拟算法：**
+```
+每 100ms:
+  header.stamp = now(), frame_id = "lidar_frame"
+  angle_min = -π, angle_max = π, angle_increment = 2π/360
+  for i in 0..359:
+    ranges[i]     = 5.0 + 1.5 * sin(angle*3) * cos(angle*2)  // 模拟非对称房间墙壁轮廓
+    intensities[i] = 1.0 - ranges[i]/10.0                       // 反射强度与距离成反比
+  publish
+```
+
+### 5.2 imu_node — 惯性测量单元传感器模拟
+
+**职责：** 模拟 Bosch BMI088 IMU，100Hz 发布角速度+加速度。
+
+**输入：** 无（自主定时器驱动）
+
+**输出：** `Topic: /sensor/imu` → `ImuData`，QoS = `reliable(10)`
+
+**模拟算法：**
+```
+每 10ms:
+  header.stamp = now(), frame_id = "imu_link"
+  angular_velocity[3]     = ±0.02 rad/s 随机噪声  // 静止机器人陀螺仪漂移
+  linear_acceleration[3]  = ±0.1 m/s² 随机噪声   // 加速度计本底噪声
+  publish
+```
+
+### 5.3 camera_node — RGB 相机传感器模拟
+
+**职责：** 模拟 Intel RealSense D435，5Hz 发布 640×480 RGB 图像。
+
+**输入：** 无（自主定时器驱动）
+
+**输出：** `Topic: /sensor/camera` → `CameraImage`，QoS = `best_effort(10)`
+
+**模拟算法：**
+```
+每 200ms:
+  header.stamp = now(), frame_id = "camera_link"
+  height = 480, width = 640, encoding = "rgb8"
+  step   = 640 * 3 = 1920          // 每行字节数，无 padding
+  data.resize(480 * 640 * 3)       // 921,600 字节
+  for byte in data: byte = rand() % 256
+  publish
+```
+
+### 5.4 fusion_node — 多传感器融合
+
+**职责：** 订阅 3 路传感器数据，缓存最新帧，5Hz 从 lidar 数据提取物体。
+
+**输入：** `/sensor/lidar` (best_effort), `/sensor/imu` (reliable), `/sensor/camera` (best_effort)
+
+**输出：** `Topic: /perception/objects` → `PerceptionObjects`，QoS = `reliable(10)`
+
+**融合策略：**
+```
+订阅回调 (每个传感器):
+  *_cache_ = 最新消息  // 覆盖式更新，只保留最新一帧
+
+定时器回调 (5Hz):
+  if lidar_cache_ 为空 or imu_cache_ 为空 or camera_cache_ 为空:
+    return  // 任意传感器未就绪则跳过
+
+  objects = []
+  扫描 360 个 lidar ranges:
+    if range ∈ (0.1, 3.0)  // 距离 < 3m 视为"命中"
+      连续命中 > 5 个角度 bin → 聚类为一个物体
+      取聚类中点角度 + 距离 → 极坐标转笛卡尔坐标 (x, y)
+      objects.append(Object{id="obj_N", x, y, z=0})
+      if len(objects) >= 5: break  // 至多 5 个
+
+  header.frame_id = "base_link"
+  publish PerceptionObjects{header, objects}
+```
+
+### 5.5 decision_node — 决策层 Action Client
+
+**职责：** 订阅感知结果，取最近物体坐标作为目标，通过 Action Client 发给 motor_ctrl。
+
+**输入：** `Topic: /perception/objects` → `PerceptionObjects`
+
+**输出：** `Action Goal: /cmd/move_to_pose` → `MoveToPose.Goal{x, y, theta}`
+
+**决策逻辑：**
+```
+订阅回调:
+  if objects 非空:
+    取 objects[0] 坐标作为目标  // 取最近物体
+    goal = MoveToPose.Goal{x = obj.x, y = obj.y, theta = 0}
+    action_client->async_send_goal(goal)
+
+结果回调:
+  收到 action result → RCLCPP_INFO 输出到达确认
+```
+
+### 5.6 motor_ctrl_node — 执行层 Action Server
+
+**职责：** 接收 MoveToPose 目标，直线插值模拟运动，10Hz 发布 feedback；暴露 SetParam Service。
+
+**输入：** `Action Goal: /cmd/move_to_pose`（接收），`Service: /cmd/set_param`（接收）
+
+**输出：** `Action Feedback/Result: /cmd/move_to_pose`（回复）
+
+**运动控制算法：**
+```
+收到 Goal(x_target, y_target):
+  当前坐标 = (0, 0)
+  while 距离(当前, 目标) > 阈值:
+    当前 += 步长 * (目标 - 当前) / 距离  // 直线插值，每 100ms 推进
+    publish Feedback{current_x, current_y}
+  publish Result{reached = true}
+
+收到 SetParam Service:
+  更新内部参数（如速度、加速度限制）
+  返回 success = true
+```
