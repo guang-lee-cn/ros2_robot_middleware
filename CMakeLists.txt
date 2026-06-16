@@ -17,6 +17,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/LidarScan.msg"
   "msg/ImuData.msg"
   "msg/CameraImage.msg"
+  "msg/Object.msg"
   "msg/PerceptionObjects.msg"
   "srv/SetParam.srv"
   "action/MoveToPose.action"
