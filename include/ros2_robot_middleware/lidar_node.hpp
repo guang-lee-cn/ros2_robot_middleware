@@ -1,11 +1,19 @@
-#ifndef DE1A4315_7241_4C81_A1A1_0C18C85E993A
-#define DE1A4315_7241_4C81_A1A1_0C18C85E993A
+#ifndef ROS2_ROBOT_MIDDLEWARE_LIDAR_NODE_HPP_
+#define ROS2_ROBOT_MIDDLEWARE_LIDAR_NODE_HPP_
 
 #include <rclcpp/rclcpp.hpp>
 
+#include "ros2_robot_middleware/msg/lidar_scan.hpp"
+
 class LidarNode : public rclcpp::Node {
 public:
-    LidarNode() : Node("lidar") {
-    }
+    LidarNode();
+
+private:
+    void timer_callback();
+
+    rclcpp::Publisher<ros2_robot_middleware::msg::LidarScan>::SharedPtr publisher_;
+    rclcpp::TimerBase::SharedPtr timer_;
 };
-#endif /* DE1A4315_7241_4C81_A1A1_0C18C85E993A */
+
+#endif // ROS2_ROBOT_MIDDLEWARE_LIDAR_NODE_HPP_
