@@ -52,7 +52,7 @@ bool spin_until(rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_iface
 
 // ── LidarNode ──────────────────────────────────────────────────────
 
-TEST_F(RobotMiddlewareTest, LidarProducesValidRanges) {
+TEST_F(RobotMiddlewareTest, LidarNode_TimerFires_RangesInPhysicalBounds) {
   // Given: LidarNode publishes simulated SICK TiM781 data at 10Hz
   auto node = std::make_shared<LidarNode>();
 
@@ -84,7 +84,7 @@ TEST_F(RobotMiddlewareTest, LidarProducesValidRanges) {
 
 // ── ImuNode ────────────────────────────────────────────────────────
 
-TEST_F(RobotMiddlewareTest, ImuProducesValidData) {
+TEST_F(RobotMiddlewareTest, ImuNode_TimerFires_DataWithinSensorSpec) {
   // Given: ImuNode publishes simulated Bosch BMI088 data at 100Hz
   auto node = std::make_shared<ImuNode>();
 
@@ -110,7 +110,7 @@ TEST_F(RobotMiddlewareTest, ImuProducesValidData) {
 
 // ── CameraNode ─────────────────────────────────────────────────────
 
-TEST_F(RobotMiddlewareTest, CameraProducesValidImage) {
+TEST_F(RobotMiddlewareTest, CameraNode_TimerFires_640x480Rgb8Image) {
   // Given: CameraNode publishes simulated Intel RealSense D435 frames at 5Hz
   auto node = std::make_shared<CameraNode>();
 
@@ -136,7 +136,7 @@ TEST_F(RobotMiddlewareTest, CameraProducesValidImage) {
 // Motor control layer tests
 // ===================================================================
 
-TEST_F(RobotMiddlewareTest, MotorCtrlReachesCloseGoalInOneStep) {
+TEST_F(RobotMiddlewareTest, MotorCtrl_CloseTarget_ReachesImmediately) {
   // Given: MotorCtrlNode with step_size = 0.05, action client ready
   auto motor = std::make_shared<MotorCtrlNode>();
   auto client = rclcpp_action::create_client<ros2_robot_middleware::action::MoveToPose>(
@@ -170,7 +170,7 @@ TEST_F(RobotMiddlewareTest, MotorCtrlReachesCloseGoalInOneStep) {
   EXPECT_TRUE(reached);
 }
 
-TEST_F(RobotMiddlewareTest, MotorCtrlStepsToFarGoal) {
+TEST_F(RobotMiddlewareTest, MotorCtrl_FarTarget_StepsUntilReached) {
   // Given: MotorCtrlNode with step_size = 0.05, target at distance 0.15 (4 steps)
   auto motor = std::make_shared<MotorCtrlNode>();
   auto client = rclcpp_action::create_client<ros2_robot_middleware::action::MoveToPose>(
@@ -204,7 +204,7 @@ TEST_F(RobotMiddlewareTest, MotorCtrlStepsToFarGoal) {
   EXPECT_TRUE(reached);
 }
 
-TEST_F(RobotMiddlewareTest, MotorCtrlSetParamUpdatesStepSize) {
+TEST_F(RobotMiddlewareTest, MotorCtrl_SetParamKnown_UpdatesAndAcks) {
   // Given: MotorCtrlNode with SetParam service
   auto motor = std::make_shared<MotorCtrlNode>();
   auto client = motor->create_client<ros2_robot_middleware::srv::SetParam>("/cmd/set_param");
@@ -229,7 +229,7 @@ TEST_F(RobotMiddlewareTest, MotorCtrlSetParamUpdatesStepSize) {
   EXPECT_EQ(response->message, "Parameter updated");
 }
 
-TEST_F(RobotMiddlewareTest, MotorCtrlSetParamUnknownParameter) {
+TEST_F(RobotMiddlewareTest, MotorCtrl_SetParamUnknown_ReturnsMessage) {
   // Given: MotorCtrlNode with SetParam service
   auto motor = std::make_shared<MotorCtrlNode>();
   auto client = motor->create_client<ros2_robot_middleware::srv::SetParam>("/cmd/set_param");
@@ -258,7 +258,7 @@ TEST_F(RobotMiddlewareTest, MotorCtrlSetParamUnknownParameter) {
 // Decision layer tests
 // ===================================================================
 
-TEST_F(RobotMiddlewareTest, DecisionSendsGoalWhenPerceptionArrives) {
+TEST_F(RobotMiddlewareTest, DecisionNode_PerceptionArrives_SendsGoalToTargetPose) {
   // Given: DecisionNode + a mock action server recording incoming goals
   auto decision = std::make_shared<DecisionNode>();
 
@@ -357,7 +357,7 @@ static ros2_robot_middleware::msg::CameraImage make_camera() {
   return msg;
 }
 
-TEST_F(RobotMiddlewareTest, FusionDetectsNearbyObject) {
+TEST_F(RobotMiddlewareTest, FusionNode_AllSensorsReady_DetectsNearbyCluster) {
   // Given: FusionNode with all 3 sensor caches populated,
   //        lidar has a cluster at 1.5m (within the 3m detection threshold)
   auto fusion = std::make_shared<FusionNode>();
