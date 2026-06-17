@@ -1,0 +1,97 @@
+version: "3.10"
+
+# ── Shared configuration ──────────────────────────────────────────────
+x-node: &node
+  build:
+    context: ..
+    dockerfile: toolkit/Dockerfile
+    target: runtime
+  network_mode: host
+  ipc: host
+  environment:
+    - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+  mem_limit: 256m
+  cpus: 0.5
+  stop_grace_period: 5s
+
+# ── Services — one container per node ─────────────────────────────────
+services:
+
+  lidar:
+    <<: *node
+    container_name: middleware_lidar
+    command: [lidar]
+    healthcheck:
+      test: ["CMD", "/health-check.sh", "lidar"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  imu:
+    <<: *node
+    container_name: middleware_imu
+    command: [imu]
+    healthcheck:
+      test: ["CMD", "/health-check.sh", "imu"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  camera:
+    <<: *node
+    container_name: middleware_camera
+    command: [camera]
+    healthcheck:
+      test: ["CMD", "/health-check.sh", "camera"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  fusion:
+    <<: *node
+    container_name: middleware_fusion
+    command: [fusion]
+    depends_on:
+      lidar:
+        condition: service_healthy
+      imu:
+        condition: service_healthy
+      camera:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/health-check.sh", "fusion"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  decision:
+    <<: *node
+    container_name: middleware_decision
+    command: [decision]
+    depends_on:
+      fusion:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/health-check.sh", "decision"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  motor_ctrl:
+    <<: *node
+    container_name: middleware_motor_ctrl
+    command: [motor_ctrl]
+    depends_on:
+      decision:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/health-check.sh", "motor_ctrl"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
