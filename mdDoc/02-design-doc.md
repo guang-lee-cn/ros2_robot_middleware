@@ -22,6 +22,10 @@ graph TB
         MotorNode["motor_ctrl_node<br/>Action Server + Service Server"]
     end
 
+    subgraph Observability["Observability Layer"]
+        HealthMon["health_monitor_node<br/>Heartbeat Monitor + Prometheus"]
+    end
+
     Lidar -->|"Topic: /sensor/lidar (best_effort)"| FusionNode
     IMU -->|"Topic: /sensor/imu (reliable)"| FusionNode
     Camera -->|"Topic: /sensor/camera (best_effort)"| FusionNode
@@ -29,7 +33,15 @@ graph TB
     DecisionNode -->|"Action Goal: /cmd/move_to_pose"| MotorNode
     MotorNode -->|"Action Feedback / Result"| DecisionNode
 
+    Lidar -..->|"HB: /sensor/lidar/heartbeat (1Hz)"| HealthMon
+    IMU -..->|"HB: /sensor/imu/heartbeat (1Hz)"| HealthMon
+    Camera -..->|"HB: /sensor/camera/heartbeat (1Hz)"| HealthMon
+    FusionNode -..->|"HB: /sensor/fusion/heartbeat (1Hz)"| HealthMon
+    DecisionNode -..->|"HB: /decision/heartbeat (1Hz)"| HealthMon
+    MotorNode -..->|"HB: /cmd/status (1Hz)"| HealthMon
+
     External["External Client"] -->|"Service: /cmd/set_param"| MotorNode
+    Monitor["Monitoring (Prometheus)"] -.->|"HTTP GET :9090/metrics"| HealthMon
 ```
 
 **通信模式选型理由：**
@@ -40,6 +52,8 @@ graph TB
 | Fusion → Decision | Topic (单向) | 感知结果是持续数据流（5Hz），Action 的 Goal-Feedback-Result 三阶段握手对持续流太重 |
 | Decision → Motor | Action (双向) | 移动到目标点是长耗时操作（秒级），需要实时反馈进度、支持取消、确认到达 |
 | External → Motor | Service (请求-响应) | 设一个参数是一次性的、毫秒级完成，不需要状态跟踪 |
+| All Nodes → HealthMonitor | Topic (心跳, 单向) | 每个节点 1Hz 发布 `std_msgs/String` 到专用 topic，health_monitor 订阅全部 6 路，按超时判定 OK/WARN/ERROR/STALE |
+| Prometheus → HealthMonitor | HTTP (拉模式) | health_monitor 内嵌 TCP 服务器监听 `:9090`，解析 `GET /metrics` 返回 Prometheus text 格式的 gauge 指标 |
 
 ## 2. 分层架构
 
@@ -51,6 +65,8 @@ flowchart TB
         M2["ImuData.msg"]
         M3["CameraImage.msg"]
         M4["PerceptionObjects.msg"]
+        M5["HealthStatus.msg"]
+        M6["HealthReport.msg"]
         S1["SetParam.srv"]
         A1["MoveToPose.action"]
     end
@@ -63,6 +79,7 @@ flowchart TB
         N4["fusion_node"]
         N5["decision_node"]
         N6["motor_ctrl_node"]
+        N7["health_monitor_node"]
     end
 
     subgraph Logic["Business Logic"]
@@ -308,3 +325,44 @@ flowchart TB
   更新内部参数（如速度、加速度限制）
   返回 success = true
 ```
+
+### 5.7 health_monitor_node — 健康监控 + Prometheus 指标
+
+**职责：** 通过心跳机制监控全部 6 个业务节点存活状态，周期性发布健康报告，提供 Prometheus 指标拉取端点。
+
+**输入：** 6 路心跳 topic（`std_msgs::msg::String`），`Service: /health/check`（接收）
+
+**输出：** `Topic: /health/report` → `HealthReport`，`HTTP :9090/metrics`（Prometheus pull）
+
+**健康判定逻辑：**
+```
+每 check_interval_s_ (默认 1s):
+  for each registered node (lidar, imu, camera, fusion, decision, motor_ctrl):
+    elapsed = now - last_seen[node]
+    if last_seen 不存在:
+      status = STALE
+    elif elapsed > timeout_s:
+      status = ERROR
+    elif elapsed > timeout_s * 0.8:
+      status = WARN
+    else:
+      status = OK
+  publish HealthReport{header, nodes[]}  // 6 个 HealthStatus 打包
+```
+
+**Prometheus 指标：**
+- 原始 TCP socket 实现，零外部 HTTP 库依赖
+- `ros2_node_health_seconds{node="..."}` — gauge，当前距离上次心跳的秒数
+- `ros2_node_timeout_seconds{node="..."}` — gauge，配置的 timeout 阈值
+- 独立 `std::thread` 运行 accept 循环，不阻塞 ROS2 spinning
+
+**心跳超时配置（可通过 ros2 param set 调整）：**
+
+| 节点 | 心跳 topic | 默认超时 | 理由 |
+|------|-----------|---------|------|
+| lidar | `/sensor/lidar/heartbeat` | 1.5s | 10Hz 传感器，允许丢失 14 个心跳窗口 |
+| imu | `/sensor/imu/heartbeat` | 0.5s | 100Hz 传感器，快速故障检测 |
+| camera | `/sensor/camera/heartbeat` | 3.0s | 5Hz 传感器，图像处理可能阻塞 |
+| fusion | `/sensor/fusion/heartbeat` | 1.0s | 核心融合节点，快速感知异常 |
+| decision | `/decision/heartbeat` | 2.0s | 决策节点按事件驱动，允许较长间隔 |
+| motor_ctrl | `/cmd/status` | 2.0s | 复用已有 status 发布，不新增 topic |

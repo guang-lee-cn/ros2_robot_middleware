@@ -33,6 +33,22 @@
 ### Docs
 - PRD (8 sections), Design Doc (topology + interfaces), Cost Estimation, ROS2 Guide, DDS Customization
 
+## [0.2.0] — 2026-06-17
+
+### Added — Phase 13: Health Monitoring + Prometheus
+- `health_monitor_node`: heartbeat-based monitoring of 6 robot nodes
+- New messages: `HealthStatus` (node_name/status/last_seen/timeout), `HealthReport` (Header + HealthStatus[])
+- 1Hz heartbeat publishers on all 6 nodes (dedicated topics, std_msgs/String)
+- Health check service at `/health/check` (SetParam request/response)
+- Embedded Prometheus HTTP server on `:9090/metrics` (raw TCP socket, zero library deps)
+- Prometheus gauge metrics: `ros2_node_health_seconds`, `ros2_node_timeout_seconds`
+- Status classification: OK / WARN (80% timeout) / ERROR / STALE
+- Per-node configurable timeout via ROS2 parameters
+- Launch file and docker-compose updated to 7 services
+
+### Fixed
+- C++ name hiding bug: `HealthMonitorNode::create_publisher()` shadowed `rclcpp::Node::create_publisher<T>()` — fixed with qualified `rclcpp::Node::create_publisher<T>(...)` call
+
 ## [Unreleased]
 - TODO: Fast-DDS XML profile field testing
 - TODO: Multi-threaded executor for cancel-action test coverage

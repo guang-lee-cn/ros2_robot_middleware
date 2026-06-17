@@ -5,7 +5,7 @@
 | 属性 | 值 |
 |------|-----|
 | 项目名 | ros2_robot_middleware |
-| 版本 | 0.1.0 |
+| 版本 | 0.2.0 |
 | 负责人 | guang |
 | 电梯演讲 | 面向仓储 AMR 场景的 ROS2 中间件，覆盖感知-融合-决策-执行全链路。支持一键部署，内置 CI/CD、限流日志、结构化日志，开箱可验证 |
 
@@ -56,12 +56,21 @@ graph TB
     subgraph Actuation["Actuation Layer"]
         MotorNode["motor_ctrl_node (Action Server)"]
     end
+    subgraph Observability["Observability Layer"]
+        HealthMon["health_monitor_node (Heartbeat + Prometheus)"]
+    end
     Lidar --> FusionNode
     IMU --> FusionNode
     Camera --> FusionNode
     FusionNode --> DecisionNode
     DecisionNode --> MotorNode
     MotorNode --> DecisionNode
+    Lidar -.-> HealthMon
+    IMU -.-> HealthMon
+    Camera -.-> HealthMon
+    FusionNode -.-> HealthMon
+    DecisionNode -.-> HealthMon
+    MotorNode -.-> HealthMon
 ```
 
 **节点与硬件对标：**
@@ -98,7 +107,7 @@ flowchart LR
 | 编号 | 需求 | 验收标准 |
 |------|------|----------|
 | R0 | DDS 深度定制 | ① Fast-DDS XML Profile 文件自定义 DDS 底层行为；② 测试输出含 best_effort vs reliable 延迟/丢包量化对比数据 |
-| R1 | 6 节点感知-决策-执行流水线 | launch 一键启动，各节点独立运行 |
+| R1 | 7 节点感知-决策-执行-监控流水线 | launch 一键启动，各节点独立运行 |
 | R2 | 混合 QoS，有量化对比 | 测试用例对比 best_effort vs reliable 的延迟/丢包 |
 | R3 | 自定义消息/服务/动作 | 类型安全，非 String 透传 |
 | R4 | 一键环境搭建 | `./scripts/setup_deps.sh` 幂等安装所有依赖 |
@@ -108,6 +117,7 @@ flowchart LR
 | R8 | CI 自动触发 | 每次 push 绿钩 |
 | R9 | Docker 部署 | `docker-compose up` 启动全部节点 |
 | R10 | Design Doc | 架构图、trade-off 记录、开源对比分析 |
+| R11 | 健康监控 + Prometheus 指标 | heartbeat 心跳监控 6 节点 OK/WARN/ERROR/STALE 状态，`:9090/metrics` 提供 Prometheus gauge 指标 |
 
 ## 6. 非功能需求 (Won't Have)
 

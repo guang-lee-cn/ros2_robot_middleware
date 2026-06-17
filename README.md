@@ -7,25 +7,25 @@ A production-style AMR perception-to-actuation middleware pipeline built on ROS 
 ## Architecture
 
 ```
-Sensor Layer              Fusion Layer         Decision Layer       Actuation Layer
+Sensor Layer              Fusion Layer         Decision Layer       Actuation Layer    Observability Layer
 ┌──────────┐
 │  Lidar   │──┐
-│  10Hz    │  │         ┌──────────┐         ┌──────────┐         ┌──────────┐
-└──────────┘  │   ┌────►│  Fusion  │──Perception─►│ Decision │──Goal──►│MotorCtrl │
-              ├───┤     │  5Hz     │   Objects    │  (Action │         │(Action   │
-┌──────────┐  │   │     └──────────┘              │  Client) │         │ Server)  │
-│   IMU    │──┤   │                               └──────────┘         └──────────┘
-│  100Hz   │  │   │                                                    SetParam
-└──────────┘  │   │                                                    Service
-              │   │
-┌──────────┐  │   │
+│  10Hz    │  │         ┌──────────┐         ┌──────────┐         ┌──────────┐      ┌──────────────┐
+└──────────┘  │   ┌────►│  Fusion  │──Perception─►│ Decision │──Goal──►│MotorCtrl │      │HealthMonitor │
+              ├───┤     │  5Hz     │   Objects    │  (Action │         │(Action   │      │ Heartbeat    │
+┌──────────┐  │   │     └──────────┘              │  Client) │         │ Server)  │      │ + Prometheus │
+│   IMU    │──┤   │                               └──────────┘         └──────────┘      │ :9090/metrics │
+│  100Hz   │  │   │                                                    SetParam          └──────────────┘
+└──────────┘  │   │                                                    Service                 ▲
+              │   │                                                                           │
+┌──────────┐  │   │                                                    heartbeat (1Hz, 6ch) ──┘
 │  Camera  │──┘   │
 │  5Hz     │      │
 └──────────┘      │
   (simulated)     └── DDS domain 0, best-effort for lidar/camera, reliable for IMU/perception
 ```
 
-**6 nodes, 3 layers, 7 custom ROS2 interfaces** (5 msgs, 1 srv, 1 action).
+**7 nodes, 4 layers, 9 custom ROS2 interfaces** (7 msgs, 1 srv, 1 action).
 
 All sensors are simulated: lidar uses 360° SICK TiM781 pattern, IMU emulates Bosch BMI088 noise specs, camera outputs 640×480 rgb8 frames. Fusion extracts object clusters within 3m via lidar range thresholding. Decision maps first perceived object to a MoveToPose action goal. MotorCtrl interpolates toward targets in configurable steps.
 
@@ -39,7 +39,7 @@ cd ros2_ws
 colcon build --packages-select ros2_robot_middleware
 source install/setup.bash
 
-# Launch all 6 nodes
+# Launch all 7 nodes
 ros2 launch ros2_robot_middleware system.launch.py
 
 # Run integration tests with coverage
@@ -67,21 +67,22 @@ Three image targets:
 
 ```
 ros2_robot_middleware/
-├── include/ros2_robot_middleware/  # 7 headers (1 per node + type aliases)
-├── src/                            # 6 node .cpp + 6 main.cpp = 12 files
+├── include/ros2_robot_middleware/  # 7 headers (1 per node)
+├── src/                            # 7 node .cpp + 7 main.cpp = 14 files
 ├── test/
 │   ├── test_robot_middleware.cpp   # 9 GWT-pattern integration tests (GoogleTest)
 │   ├── CMakeLists.txt              # standalone CMake project, links production .a
 │   └── test.sh                     # build → test → lcov coverage report
-├── msg/                            # 5 custom messages (LidarScan, ImuData, ...)
+├── msg/                            # 7 custom messages (LidarScan, ImuData, HealthStatus, HealthReport, ...)
 ├── srv/SetParam.srv
 ├── action/MoveToPose.action
 ├── config/params.yaml
 ├── launch/system.launch.py         # launches all 6 nodes
 ├── toolkit/
 │   ├── Dockerfile                  # multi-stage: builder → runtime, dev
-│   ├── docker-compose.yml          # 6 services, health checks, resource limits
+│   ├── docker-compose.yml          # 7 services, health checks, resource limits
 │   └── scripts/                    # entrypoint.sh, health-check.sh
+├── launch/system.launch.py         # launches all 7 nodes
 └── mdDoc/                          # PRD, design doc, cost estimation, guides
 ```
 
@@ -94,6 +95,8 @@ ros2_robot_middleware/
 | `CameraImage` | msg | data[uint8], width, height, step, encoding |
 | `Object` | msg | id, x, y, z |
 | `PerceptionObjects` | msg | Object[] objects |
+| `HealthStatus` | msg | node_name, status (OK/WARN/ERROR/STALE), last_seen_s, timeout_s |
+| `HealthReport` | msg | std_msgs/Header header, HealthStatus[] nodes |
 | `SetParam` | srv | param_name → success, message |
 | `MoveToPose` | action | target_x/y/theta, max_speed → feedback(current_x/y, distance_remaining) → result(reached, final_x/y) |
 
