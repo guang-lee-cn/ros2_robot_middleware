@@ -37,7 +37,7 @@ void LidarNode::timer_callback()
     float angle = kAngleMin + i * kAngleIncrement;
 
     // Simulated range: base distance + sinusoidal variation
-    msg.ranges[i] = 5.0F + 1.5F * std::sin(angle * 3.0F) * std::cos(angle * 2.0F);
+    msg.ranges[i] = 2.0F + 1.5F * std::sin(angle * 3.0F) * std::cos(angle * 2.0F);
 
     // Simulated intensity: inversely proportional to range
     msg.intensities[i] = 1.0F - msg.ranges[i] / 10.0F;
