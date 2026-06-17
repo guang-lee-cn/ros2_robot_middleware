@@ -7,37 +7,41 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
 
-class MotorCtrlNode : public rclcpp::Node {
+class MotorCtrlNode : public rclcpp_lifecycle::LifecycleNode {
 public:
-    MotorCtrlNode();
+  MotorCtrlNode();
+
+  using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
+
+  CallbackReturn on_configure(const rclcpp_lifecycle::State &);
+  CallbackReturn on_activate(const rclcpp_lifecycle::State &);
+  CallbackReturn on_deactivate(const rclcpp_lifecycle::State &);
+  CallbackReturn on_cleanup(const rclcpp_lifecycle::State &);
+  CallbackReturn on_shutdown(const rclcpp_lifecycle::State &);
 
 private:
-    // ── Action Server ──
-    rclcpp_action::Server<ros2_robot_middleware::action::MoveToPose>::SharedPtr action_server_;
+  rclcpp_action::GoalResponse
+  handle_goal(const rclcpp_action::GoalUUID &uuid,
+              std::shared_ptr<const ros2_robot_middleware::action::MoveToPose::Goal> goal);
 
-    rclcpp_action::GoalResponse
-    handle_goal(const rclcpp_action::GoalUUID &uuid,
-                std::shared_ptr<const ros2_robot_middleware::action::MoveToPose::Goal> goal);
+  rclcpp_action::CancelResponse handle_cancel(
+    const std::shared_ptr<rclcpp_action::ServerGoalHandle<ros2_robot_middleware::action::MoveToPose>> goal_handle);
 
-    rclcpp_action::CancelResponse handle_cancel(
-        const std::shared_ptr<rclcpp_action::ServerGoalHandle<ros2_robot_middleware::action::MoveToPose>> goal_handle);
+  void execute(
+    const std::shared_ptr<rclcpp_action::ServerGoalHandle<ros2_robot_middleware::action::MoveToPose>> goal_handle);
 
-    void execute(
-        const std::shared_ptr<rclcpp_action::ServerGoalHandle<ros2_robot_middleware::action::MoveToPose>> goal_handle);
+  void handle_set_param(const std::shared_ptr<ros2_robot_middleware::srv::SetParam::Request> request,
+                        std::shared_ptr<ros2_robot_middleware::srv::SetParam::Response> response);
 
-    // ── Service Server ──
-    rclcpp::Service<ros2_robot_middleware::srv::SetParam>::SharedPtr service_server_;
+  rclcpp_action::Server<ros2_robot_middleware::action::MoveToPose>::SharedPtr action_server_;
+  rclcpp::Service<ros2_robot_middleware::srv::SetParam>::SharedPtr service_server_;
 
-    void handle_set_param(const std::shared_ptr<ros2_robot_middleware::srv::SetParam::Request> request,
-                          std::shared_ptr<ros2_robot_middleware::srv::SetParam::Response> response);
+  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>::SharedPtr status_pub_;
+  rclcpp::TimerBase::SharedPtr status_timer_;
 
-    // ── Heartbeat ──
-    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
-    rclcpp::TimerBase::SharedPtr status_timer_;
-
-    // ── Speed config ──
-    float step_size_ = 0.05F;
+  float step_size_ = 0.05F;
 };
 
-#endif
+#endif  // ROS2_ROBOT_MIDDLEWARE_MOTOR_CTRL_NODE_HPP_

@@ -1,13 +1,11 @@
 #include "ros2_robot_middleware/imu_node.hpp"
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 int main(int argc, char *argv[]) {
     rclcpp::init(argc, argv);
-    cout << "imu node started" << endl;
-    rclcpp::spin(std::make_shared<ImuNode>());
+    auto node = std::make_shared<ImuNode>();
+    node->configure();
+    node->activate();
+    rclcpp::spin(node->get_node_base_interface());
     rclcpp::shutdown();
     return 0;
 }

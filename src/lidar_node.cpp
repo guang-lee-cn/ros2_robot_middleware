@@ -3,21 +3,70 @@
 #include <cmath>
 
 LidarNode::LidarNode()
-    : Node("lidar")
+  : rclcpp_lifecycle::LifecycleNode("lidar")
+{
+}
+
+LidarNode::CallbackReturn
+LidarNode::on_configure(const rclcpp_lifecycle::State &)
 {
   publisher_ = this->create_publisher<ros2_robot_middleware::msg::LidarScan>(
-      "/sensor/lidar", rclcpp::QoS(10).best_effort());
+    "/sensor/lidar", rclcpp::QoS(10).best_effort());
 
+  heartbeat_pub_ = this->create_publisher<std_msgs::msg::String>(
+    "/sensor/lidar/heartbeat", rclcpp::QoS(10).reliable());
+
+  return CallbackReturn::SUCCESS;
+}
+
+LidarNode::CallbackReturn
+LidarNode::on_activate(const rclcpp_lifecycle::State &)
+{
   using namespace std::chrono_literals;
   timer_ = this->create_wall_timer(100ms, [this]() { timer_callback(); });
 
-  heartbeat_pub_ = this->create_publisher<std_msgs::msg::String>(
-      "/sensor/lidar/heartbeat", rclcpp::QoS(10).reliable());
   heartbeat_timer_ = this->create_wall_timer(1s, [this]() {
     auto msg = std_msgs::msg::String{};
     msg.data = "alive";
     heartbeat_pub_->publish(msg);
   });
+
+  publisher_->on_activate();
+  heartbeat_pub_->on_activate();
+
+  return CallbackReturn::SUCCESS;
+}
+
+LidarNode::CallbackReturn
+LidarNode::on_deactivate(const rclcpp_lifecycle::State &)
+{
+  timer_.reset();
+  heartbeat_timer_.reset();
+
+  publisher_->on_deactivate();
+  heartbeat_pub_->on_deactivate();
+
+  return CallbackReturn::SUCCESS;
+}
+
+LidarNode::CallbackReturn
+LidarNode::on_cleanup(const rclcpp_lifecycle::State &)
+{
+  publisher_.reset();
+  heartbeat_pub_.reset();
+
+  return CallbackReturn::SUCCESS;
+}
+
+LidarNode::CallbackReturn
+LidarNode::on_shutdown(const rclcpp_lifecycle::State &)
+{
+  timer_.reset();
+  heartbeat_timer_.reset();
+  publisher_.reset();
+  heartbeat_pub_.reset();
+
+  return CallbackReturn::SUCCESS;
 }
 
 void LidarNode::timer_callback()
@@ -31,7 +80,7 @@ void LidarNode::timer_callback()
   constexpr float  kAngleMin       = -M_PI;
   constexpr float  kAngleMax       = M_PI;
   constexpr float  kAngleIncrement = (kAngleMax - kAngleMin) / kNumPoints;
-  constexpr float  kTimeIncrement  = 0.0001F;  // 0.1 ms per point (SICK TiM781)
+  constexpr float  kTimeIncrement  = 0.0001F;
 
   msg.angle_min       = kAngleMin;
   msg.angle_max       = kAngleMax;
@@ -43,11 +92,7 @@ void LidarNode::timer_callback()
 
   for (int i = 0; i < kNumPoints; ++i) {
     float angle = kAngleMin + i * kAngleIncrement;
-
-    // Simulated range: base distance + sinusoidal variation
     msg.ranges[i] = 2.0F + 1.5F * std::sin(angle * 3.0F) * std::cos(angle * 2.0F);
-
-    // Simulated intensity: inversely proportional to range
     msg.intensities[i] = 1.0F - msg.ranges[i] / 10.0F;
   }
 

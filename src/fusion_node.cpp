@@ -3,67 +3,117 @@
 #include <cmath>
 
 FusionNode::FusionNode()
-    : Node("fusion")
+  : rclcpp_lifecycle::LifecycleNode("fusion")
+{
+}
+
+FusionNode::CallbackReturn
+FusionNode::on_configure(const rclcpp_lifecycle::State &)
 {
   auto qos_best_effort = rclcpp::QoS(10).best_effort();
   auto qos_reliable    = rclcpp::QoS(10).reliable();
 
-  sub_lidar_  = this->create_subscription<ros2_robot_middleware::msg::LidarScan>(
-      "/sensor/lidar", qos_best_effort,
-      [this](ros2_robot_middleware::msg::LidarScan::SharedPtr msg) { lidar_callback(msg); });
+  sub_lidar_ = this->create_subscription<ros2_robot_middleware::msg::LidarScan>(
+    "/sensor/lidar", qos_best_effort,
+    [this](ros2_robot_middleware::msg::LidarScan::SharedPtr msg) { lidar_callback(msg); });
 
-  sub_imu_    = this->create_subscription<ros2_robot_middleware::msg::ImuData>(
-      "/sensor/imu", qos_reliable,
-      [this](ros2_robot_middleware::msg::ImuData::SharedPtr msg) { imu_callback(msg); });
+  sub_imu_ = this->create_subscription<ros2_robot_middleware::msg::ImuData>(
+    "/sensor/imu", qos_reliable,
+    [this](ros2_robot_middleware::msg::ImuData::SharedPtr msg) { imu_callback(msg); });
 
   sub_camera_ = this->create_subscription<ros2_robot_middleware::msg::CameraImage>(
-      "/sensor/camera", qos_best_effort,
-      [this](ros2_robot_middleware::msg::CameraImage::SharedPtr msg) { camera_callback(msg); });
+    "/sensor/camera", qos_best_effort,
+    [this](ros2_robot_middleware::msg::CameraImage::SharedPtr msg) { camera_callback(msg); });
 
   fusion_pub_ = this->create_publisher<ros2_robot_middleware::msg::PerceptionObjects>(
-      "/perception/objects", rclcpp::QoS(10).reliable());
+    "/perception/objects", rclcpp::QoS(10).reliable());
 
+  heartbeat_pub_ = this->create_publisher<std_msgs::msg::String>(
+    "/sensor/fusion/heartbeat", rclcpp::QoS(10).reliable());
+
+  return CallbackReturn::SUCCESS;
+}
+
+FusionNode::CallbackReturn
+FusionNode::on_activate(const rclcpp_lifecycle::State &)
+{
   using namespace std::chrono_literals;
   timer_ = this->create_wall_timer(200ms, [this]() { timer_callback(); });
 
-  heartbeat_pub_ = this->create_publisher<std_msgs::msg::String>(
-      "/sensor/fusion/heartbeat", rclcpp::QoS(10).reliable());
   heartbeat_timer_ = this->create_wall_timer(1s, [this]() {
     auto msg = std_msgs::msg::String{};
     msg.data = "alive";
     heartbeat_pub_->publish(msg);
   });
+
+  fusion_pub_->on_activate();
+  heartbeat_pub_->on_activate();
+
+  return CallbackReturn::SUCCESS;
 }
 
-// ---------------------------------------------------------------------------
-// Subscriber callbacks — update cache
-// ---------------------------------------------------------------------------
+FusionNode::CallbackReturn
+FusionNode::on_deactivate(const rclcpp_lifecycle::State &)
+{
+  timer_.reset();
+  heartbeat_timer_.reset();
+
+  fusion_pub_->on_deactivate();
+  heartbeat_pub_->on_deactivate();
+
+  return CallbackReturn::SUCCESS;
+}
+
+FusionNode::CallbackReturn
+FusionNode::on_cleanup(const rclcpp_lifecycle::State &)
+{
+  sub_lidar_.reset();
+  sub_imu_.reset();
+  sub_camera_.reset();
+  fusion_pub_.reset();
+  heartbeat_pub_.reset();
+
+  lidar_cache_.reset();
+  imu_cache_.reset();
+  camera_cache_.reset();
+
+  return CallbackReturn::SUCCESS;
+}
+
+FusionNode::CallbackReturn
+FusionNode::on_shutdown(const rclcpp_lifecycle::State &)
+{
+  timer_.reset();
+  heartbeat_timer_.reset();
+  sub_lidar_.reset();
+  sub_imu_.reset();
+  sub_camera_.reset();
+  fusion_pub_.reset();
+  heartbeat_pub_.reset();
+
+  return CallbackReturn::SUCCESS;
+}
 
 void FusionNode::lidar_callback(
-    const ros2_robot_middleware::msg::LidarScan::SharedPtr& msg)
+  const ros2_robot_middleware::msg::LidarScan::SharedPtr& msg)
 {
   lidar_cache_ = msg;
 }
 
 void FusionNode::imu_callback(
-    const ros2_robot_middleware::msg::ImuData::SharedPtr& msg)
+  const ros2_robot_middleware::msg::ImuData::SharedPtr& msg)
 {
   imu_cache_ = msg;
 }
 
 void FusionNode::camera_callback(
-    const ros2_robot_middleware::msg::CameraImage::SharedPtr& msg)
+  const ros2_robot_middleware::msg::CameraImage::SharedPtr& msg)
 {
   camera_cache_ = msg;
 }
 
-// ---------------------------------------------------------------------------
-// Timer callback — fuse sensor data into perception output
-// ---------------------------------------------------------------------------
-
 void FusionNode::timer_callback()
 {
-  // Wait until all three sensors have delivered at least one frame
   if (!lidar_cache_ || !imu_cache_ || !camera_cache_) {
     return;
   }
@@ -72,27 +122,24 @@ void FusionNode::timer_callback()
   msg.header.stamp    = this->now();
   msg.header.frame_id = "base_link";
 
-  // Simplified object extraction: scan lidar ranges for consecutive "hits"
-  // below a distance threshold and cluster them into objects
   constexpr int    kNumPoints     = 360;
   constexpr int    kMaxObjects    = 5;
-  constexpr float  kRangeThreshold = 3.0F;  // objects within 3 m
-  constexpr float  kClusterGap     = 5;      // max angular gap (in bins) within a cluster
+  constexpr float  kRangeThreshold = 3.0F;
+  constexpr float  kClusterGap     = 5;
 
   int start = -1;
   for (int i = 0; i < kNumPoints && static_cast<int>(msg.objects.size()) < kMaxObjects; ++i) {
     bool hit = (lidar_cache_->ranges[i] > 0.1F && lidar_cache_->ranges[i] < kRangeThreshold);
 
     if (hit && start < 0) {
-      start = i;  // cluster begin
+      start = i;
     } else if (!hit && start >= 0) {
       if (i - start > kClusterGap) {
-        // close cluster, emit an object at the midpoint angle
-        int    mid     = (start + i) / 2;
-        float  angle   = lidar_cache_->angle_min + mid * lidar_cache_->angle_increment;
-        float  range   = lidar_cache_->ranges[mid];
-        float  x       = range * std::cos(angle);
-        float  y       = range * std::sin(angle);
+        int    mid   = (start + i) / 2;
+        float  angle = lidar_cache_->angle_min + mid * lidar_cache_->angle_increment;
+        float  range = lidar_cache_->ranges[mid];
+        float  x     = range * std::cos(angle);
+        float  y     = range * std::sin(angle);
 
         auto obj = ros2_robot_middleware::msg::Object{};
         obj.id = "obj_" + std::to_string(msg.objects.size());

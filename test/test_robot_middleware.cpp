@@ -55,6 +55,8 @@ bool spin_until(rclcpp::node_interfaces::NodeBaseInterface::SharedPtr node_iface
 TEST_F(RobotMiddlewareTest, LidarNode_TimerFires_RangesInPhysicalBounds) {
   // Given: LidarNode publishes simulated SICK TiM781 data at 10Hz
   auto node = std::make_shared<LidarNode>();
+  node->configure();
+  node->activate();
 
   ros2_robot_middleware::msg::LidarScan::SharedPtr last_msg;
   auto sub = node->create_subscription<ros2_robot_middleware::msg::LidarScan>(
@@ -87,6 +89,8 @@ TEST_F(RobotMiddlewareTest, LidarNode_TimerFires_RangesInPhysicalBounds) {
 TEST_F(RobotMiddlewareTest, ImuNode_TimerFires_DataWithinSensorSpec) {
   // Given: ImuNode publishes simulated Bosch BMI088 data at 100Hz
   auto node = std::make_shared<ImuNode>();
+  node->configure();
+  node->activate();
 
   ros2_robot_middleware::msg::ImuData::SharedPtr last_msg;
   auto sub = node->create_subscription<ros2_robot_middleware::msg::ImuData>(
@@ -113,6 +117,8 @@ TEST_F(RobotMiddlewareTest, ImuNode_TimerFires_DataWithinSensorSpec) {
 TEST_F(RobotMiddlewareTest, CameraNode_TimerFires_640x480Rgb8Image) {
   // Given: CameraNode publishes simulated Intel RealSense D435 frames at 5Hz
   auto node = std::make_shared<CameraNode>();
+  node->configure();
+  node->activate();
 
   ros2_robot_middleware::msg::CameraImage::SharedPtr last_msg;
   auto sub = node->create_subscription<ros2_robot_middleware::msg::CameraImage>(
@@ -139,6 +145,8 @@ TEST_F(RobotMiddlewareTest, CameraNode_TimerFires_640x480Rgb8Image) {
 TEST_F(RobotMiddlewareTest, MotorCtrl_CloseTarget_ReachesImmediately) {
   // Given: MotorCtrlNode with step_size = 0.05, action client ready
   auto motor = std::make_shared<MotorCtrlNode>();
+  motor->configure();
+  motor->activate();
   auto client = rclcpp_action::create_client<ros2_robot_middleware::action::MoveToPose>(
       motor, "/cmd/move_to_pose");
   ASSERT_TRUE(client->wait_for_action_server(std::chrono::seconds(2)));
@@ -173,6 +181,8 @@ TEST_F(RobotMiddlewareTest, MotorCtrl_CloseTarget_ReachesImmediately) {
 TEST_F(RobotMiddlewareTest, MotorCtrl_FarTarget_StepsUntilReached) {
   // Given: MotorCtrlNode with step_size = 0.05, target at distance 0.15 (4 steps)
   auto motor = std::make_shared<MotorCtrlNode>();
+  motor->configure();
+  motor->activate();
   auto client = rclcpp_action::create_client<ros2_robot_middleware::action::MoveToPose>(
       motor, "/cmd/move_to_pose");
   ASSERT_TRUE(client->wait_for_action_server(std::chrono::seconds(2)));
@@ -207,6 +217,8 @@ TEST_F(RobotMiddlewareTest, MotorCtrl_FarTarget_StepsUntilReached) {
 TEST_F(RobotMiddlewareTest, MotorCtrl_SetParamKnown_UpdatesAndAcks) {
   // Given: MotorCtrlNode with SetParam service
   auto motor = std::make_shared<MotorCtrlNode>();
+  motor->configure();
+  motor->activate();
   auto client = motor->create_client<ros2_robot_middleware::srv::SetParam>("/cmd/set_param");
   ASSERT_TRUE(client->wait_for_service(std::chrono::seconds(2)));
 
@@ -232,6 +244,8 @@ TEST_F(RobotMiddlewareTest, MotorCtrl_SetParamKnown_UpdatesAndAcks) {
 TEST_F(RobotMiddlewareTest, MotorCtrl_SetParamUnknown_ReturnsMessage) {
   // Given: MotorCtrlNode with SetParam service
   auto motor = std::make_shared<MotorCtrlNode>();
+  motor->configure();
+  motor->activate();
   auto client = motor->create_client<ros2_robot_middleware::srv::SetParam>("/cmd/set_param");
   ASSERT_TRUE(client->wait_for_service(std::chrono::seconds(2)));
 
@@ -261,6 +275,8 @@ TEST_F(RobotMiddlewareTest, MotorCtrl_SetParamUnknown_ReturnsMessage) {
 TEST_F(RobotMiddlewareTest, DecisionNode_PerceptionArrives_SendsGoalToTargetPose) {
   // Given: DecisionNode + a mock action server recording incoming goals
   auto decision = std::make_shared<DecisionNode>();
+  decision->configure();
+  decision->activate();
 
   // Mock action server: accept all goals, store the received coordinates
   float received_x = -1.0F;
@@ -300,6 +316,7 @@ TEST_F(RobotMiddlewareTest, DecisionNode_PerceptionArrives_SendsGoalToTargetPose
 
   auto pub = decision->create_publisher<ros2_robot_middleware::msg::PerceptionObjects>(
       "/perception/objects", rclcpp::QoS(10).reliable());
+  pub->on_activate();
   pub->publish(perception);
 
   ASSERT_TRUE(spin_until(decision->get_node_base_interface(),
@@ -361,6 +378,8 @@ TEST_F(RobotMiddlewareTest, FusionNode_AllSensorsReady_DetectsNearbyCluster) {
   // Given: FusionNode with all 3 sensor caches populated,
   //        lidar has a cluster at 1.5m (within the 3m detection threshold)
   auto fusion = std::make_shared<FusionNode>();
+  fusion->configure();
+  fusion->activate();
 
   ros2_robot_middleware::msg::PerceptionObjects::SharedPtr last_output;
   auto out_sub = fusion->create_subscription<ros2_robot_middleware::msg::PerceptionObjects>(
@@ -373,6 +392,9 @@ TEST_F(RobotMiddlewareTest, FusionNode_AllSensorsReady_DetectsNearbyCluster) {
       "/sensor/imu", rclcpp::QoS(10).reliable());
   auto cam_pub = fusion->create_publisher<ros2_robot_middleware::msg::CameraImage>(
       "/sensor/camera", rclcpp::QoS(10).best_effort());
+  lidar_pub->on_activate();
+  imu_pub->on_activate();
+  cam_pub->on_activate();
 
   // When: all three sensors are published
   lidar_pub->publish(make_lidar(1.5F, 10.0F, 180, 10));

@@ -1,53 +1,62 @@
-"""Launch all 6 nodes of the perception-to-actuation pipeline."""
+"""Launch all 7 nodes of the perception-to-actuation pipeline with lifecycle management.
+
+Each node is a rclcpp_lifecycle::LifecycleNode that self-transitions through
+configure() → activate() in its main() entrypoint. For external lifecycle
+control (e.g. managed by a lifecycle manager), comment out the self-activation
+in main() and use:
+
+    ros2 lifecycle set /lidar configure
+    ros2 lifecycle set /lidar activate
+"""
 
 from launch import LaunchDescription
-from launch_ros.actions import Node
+from launch_ros.actions import LifecycleNode
 
 
 def generate_launch_description():
     return LaunchDescription([
         # ── Sensor Layer ──
-        Node(
+        LifecycleNode(
             package='ros2_robot_middleware',
             executable='lidar_node',
             name='lidar',
             output='screen',
         ),
-        Node(
+        LifecycleNode(
             package='ros2_robot_middleware',
             executable='imu_node',
             name='imu',
             output='screen',
         ),
-        Node(
+        LifecycleNode(
             package='ros2_robot_middleware',
             executable='camera_node',
             name='camera',
             output='screen',
         ),
         # ── Fusion Layer ──
-        Node(
+        LifecycleNode(
             package='ros2_robot_middleware',
             executable='fusion_node',
             name='fusion',
             output='screen',
         ),
         # ── Decision Layer ──
-        Node(
+        LifecycleNode(
             package='ros2_robot_middleware',
             executable='decision_node',
             name='decision',
             output='screen',
         ),
         # ── Actuation Layer ──
-        Node(
+        LifecycleNode(
             package='ros2_robot_middleware',
             executable='motor_ctrl_node',
             name='motor_ctrl',
             output='screen',
         ),
         # ── Infrastructure Layer ──
-        Node(
+        LifecycleNode(
             package='ros2_robot_middleware',
             executable='health_monitor_node',
             name='health_monitor',

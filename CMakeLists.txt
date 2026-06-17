@@ -8,6 +8,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(action_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
@@ -43,7 +44,7 @@ target_include_directories(robot_middleware_lib PUBLIC
 )
 
 ament_target_dependencies(robot_middleware_lib
-  rclcpp rclcpp_action std_msgs
+  rclcpp rclcpp_action rclcpp_lifecycle std_msgs
 )
 
 rosidl_get_typesupport_target(cpp_typesupport_target
@@ -60,5 +61,20 @@ endforeach()
 
 install(DIRECTORY config launch
   DESTINATION share/${PROJECT_NAME})
+
+if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(test_robot_middleware
+    test/test_robot_middleware.cpp
+  )
+  target_link_libraries(test_robot_middleware robot_middleware_lib)
+  target_include_directories(test_robot_middleware PRIVATE include)
+  ament_target_dependencies(test_robot_middleware
+    rclcpp rclcpp_action rclcpp_lifecycle std_msgs
+  )
+  rosidl_get_typesupport_target(cpp_typesupport_target
+    ${PROJECT_NAME} "rosidl_typesupport_cpp")
+  target_link_libraries(test_robot_middleware "${cpp_typesupport_target}")
+endif()
 
 ament_package()

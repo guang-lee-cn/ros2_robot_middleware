@@ -12,19 +12,32 @@
 #include "ros2_robot_middleware/msg/health_status.hpp"
 #include "ros2_robot_middleware/srv/set_param.hpp"
 
-class HealthMonitorNode : public rclcpp::Node {
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
+
+class HealthMonitorNode : public rclcpp_lifecycle::LifecycleNode {
 public:
   HealthMonitorNode();
+
+  using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
+
+  CallbackReturn on_configure(const rclcpp_lifecycle::State &);
+  CallbackReturn on_activate(const rclcpp_lifecycle::State &);
+  CallbackReturn on_deactivate(const rclcpp_lifecycle::State &);
+  CallbackReturn on_cleanup(const rclcpp_lifecycle::State &);
+  CallbackReturn on_shutdown(const rclcpp_lifecycle::State &);
 
 private:
   void declare_parameters();
   void load_parameters();
   void create_subscriptions();
+  void create_report_publisher();
   void create_health_timer();
   void create_service_server();
-  void create_publisher();
-  void setup_prometheus();
   void check_health();
+
+  void setup_prometheus();
+  void prometheus_accept();
+  std::string prometheus_metrics() const;
 
   static constexpr int kNumNodes = 6;
   static constexpr int kPrometheusPort = 9090;
@@ -45,7 +58,7 @@ private:
 
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subs_[kNumNodes];
   rclcpp::TimerBase::SharedPtr timer_;
-  rclcpp::Publisher<ros2_robot_middleware::msg::HealthReport>::SharedPtr pub_;
+  rclcpp_lifecycle::LifecyclePublisher<ros2_robot_middleware::msg::HealthReport>::SharedPtr pub_;
   rclcpp::Service<ros2_robot_middleware::srv::SetParam>::SharedPtr health_srv_;
 
   std::unordered_map<std::string, rclcpp::Time> last_seen_;
@@ -53,8 +66,7 @@ private:
   double check_interval_s_ = 1.0;
 
   int prom_socket_ = -1;
-  void prometheus_accept();
-  std::string prometheus_metrics() const;
+  std::thread prom_thread_;
 };
 
 #endif  // ROS2_ROBOT_MIDDLEWARE_HEALTH_MONITOR_NODE_HPP_

@@ -1,9 +1,5 @@
 #include "ros2_robot_middleware/health_monitor_node.hpp"
 
-#include "ros2_robot_middleware/msg/health_report.hpp"
-#include "ros2_robot_middleware/msg/health_status.hpp"
-#include "ros2_robot_middleware/srv/set_param.hpp"
-
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -16,28 +12,99 @@
 
 static constexpr double kWarnRatio = 0.8;
 
-// ---------------------------------------------------------------------------
-// Constructor
-// ---------------------------------------------------------------------------
 HealthMonitorNode::HealthMonitorNode()
-  : Node("health_monitor")
+  : rclcpp_lifecycle::LifecycleNode("health_monitor")
+{
+}
+
+HealthMonitorNode::CallbackReturn
+HealthMonitorNode::on_configure(const rclcpp_lifecycle::State &)
 {
   declare_parameters();
   load_parameters();
   create_subscriptions();
-  create_health_timer();
+  create_report_publisher();
   create_service_server();
-  create_publisher();
-  setup_prometheus();
 
   RCLCPP_INFO(this->get_logger(),
-              "HealthMonitor started: %d nodes, %.1fs interval, Prometheus :%d",
-              kNumNodes, check_interval_s_, kPrometheusPort);
+              "HealthMonitor configured: %d nodes, %.1fs interval",
+              kNumNodes, check_interval_s_);
+
+  return CallbackReturn::SUCCESS;
 }
 
-// ---------------------------------------------------------------------------
-// Parameters
-// ---------------------------------------------------------------------------
+HealthMonitorNode::CallbackReturn
+HealthMonitorNode::on_activate(const rclcpp_lifecycle::State &)
+{
+  create_health_timer();
+  setup_prometheus();
+
+  pub_->on_activate();
+
+  RCLCPP_INFO(this->get_logger(),
+              "HealthMonitor activated: Prometheus on :%d/metrics",
+              kPrometheusPort);
+
+  return CallbackReturn::SUCCESS;
+}
+
+HealthMonitorNode::CallbackReturn
+HealthMonitorNode::on_deactivate(const rclcpp_lifecycle::State &)
+{
+  timer_.reset();
+
+  pub_->on_deactivate();
+
+  if (prom_socket_ >= 0) {
+    ::shutdown(prom_socket_, SHUT_RDWR);
+    close(prom_socket_);
+    prom_socket_ = -1;
+  }
+  if (prom_thread_.joinable()) {
+    prom_thread_.join();
+  }
+
+  return CallbackReturn::SUCCESS;
+}
+
+HealthMonitorNode::CallbackReturn
+HealthMonitorNode::on_cleanup(const rclcpp_lifecycle::State &)
+{
+  for (int i = 0; i < kNumNodes; ++i) {
+    subs_[i].reset();
+  }
+  pub_.reset();
+  health_srv_.reset();
+
+  last_seen_.clear();
+  timeouts_.clear();
+
+  return CallbackReturn::SUCCESS;
+}
+
+HealthMonitorNode::CallbackReturn
+HealthMonitorNode::on_shutdown(const rclcpp_lifecycle::State &)
+{
+  timer_.reset();
+
+  if (prom_socket_ >= 0) {
+    ::shutdown(prom_socket_, SHUT_RDWR);
+    close(prom_socket_);
+    prom_socket_ = -1;
+  }
+  if (prom_thread_.joinable()) {
+    prom_thread_.join();
+  }
+
+  for (int i = 0; i < kNumNodes; ++i) {
+    subs_[i].reset();
+  }
+  pub_.reset();
+  health_srv_.reset();
+
+  return CallbackReturn::SUCCESS;
+}
+
 void HealthMonitorNode::declare_parameters()
 {
   this->declare_parameter<double>("check_interval_s", 1.0);
@@ -56,9 +123,6 @@ void HealthMonitorNode::load_parameters()
   }
 }
 
-// ---------------------------------------------------------------------------
-// Subscriptions — all nodes publish std_msgs/String heartbeat
-// ---------------------------------------------------------------------------
 void HealthMonitorNode::create_subscriptions()
 {
   for (int i = 0; i < kNumNodes; ++i) {
@@ -70,14 +134,11 @@ void HealthMonitorNode::create_subscriptions()
   }
 }
 
-// ---------------------------------------------------------------------------
-// Periodic health check
-// ---------------------------------------------------------------------------
 void HealthMonitorNode::create_health_timer()
 {
   using namespace std::chrono_literals;
   auto period = std::chrono::milliseconds(
-      static_cast<int>(check_interval_s_ * 1000));
+    static_cast<int>(check_interval_s_ * 1000));
   timer_ = this->create_wall_timer(period, [this]() { check_health(); });
 }
 
@@ -124,12 +185,9 @@ void HealthMonitorNode::check_health()
   pub_->publish(report);
 }
 
-// ---------------------------------------------------------------------------
-// Health query service
-// ---------------------------------------------------------------------------
 void HealthMonitorNode::create_service_server()
 {
-  auto srv = this->create_service<ros2_robot_middleware::srv::SetParam>(
+  health_srv_ = this->create_service<ros2_robot_middleware::srv::SetParam>(
     "/health/check",
     [this](const std::shared_ptr<ros2_robot_middleware::srv::SetParam::Request> req,
            std::shared_ptr<ros2_robot_middleware::srv::SetParam::Response> resp) {
@@ -152,22 +210,14 @@ void HealthMonitorNode::create_service_server()
         resp->message = "OK: " + std::to_string(elapsed) + "s";
       }
     });
-  health_srv_ = srv;
 }
 
-// ---------------------------------------------------------------------------
-// Publisher
-// ---------------------------------------------------------------------------
-void HealthMonitorNode::create_publisher()
+void HealthMonitorNode::create_report_publisher()
 {
-  using MsgT = ros2_robot_middleware::msg::HealthReport;
-  pub_ = rclcpp::Node::create_publisher<MsgT>(
+  pub_ = this->create_publisher<ros2_robot_middleware::msg::HealthReport>(
     "/health/report", rclcpp::QoS(10).reliable());
 }
 
-// ---------------------------------------------------------------------------
-// Prometheus metrics endpoint
-// ---------------------------------------------------------------------------
 void HealthMonitorNode::setup_prometheus()
 {
   int fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -197,13 +247,12 @@ void HealthMonitorNode::setup_prometheus()
   }
 
   prom_socket_ = fd;
-  RCLCPP_INFO(this->get_logger(), "Prometheus metrics on :%d/metrics", kPrometheusPort);
 
-  std::thread([this]() {
-    while (rclcpp::ok() && prom_socket_ >= 0) {
+  prom_thread_ = std::thread([this]() {
+    while (prom_socket_ >= 0) {
       prometheus_accept();
     }
-  }).detach();
+  });
 }
 
 void HealthMonitorNode::prometheus_accept()
