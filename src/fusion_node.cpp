@@ -101,4 +101,8 @@ void FusionNode::timer_callback()
   }
 
   fusion_pub_->publish(msg);
+
+  RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                       "PerceptionObjects published: %zu object(s)",
+                       msg.objects.size());
 }

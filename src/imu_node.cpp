@@ -25,4 +25,9 @@ void ImuNode::timer_callback() {
     msg.linear_acceleration[Z] = (rand() % 2003 - 1000) / 10000.0F;
 
     publisher_->publish(msg);
+
+    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                         "ImuData published: ω=(%.3f,%.3f,%.3f) rad/s  a=(%.3f,%.3f,%.3f) m/s²",
+                         msg.angular_velocity[X], msg.angular_velocity[Y], msg.angular_velocity[Z],
+                         msg.linear_acceleration[X], msg.linear_acceleration[Y], msg.linear_acceleration[Z]);
 }

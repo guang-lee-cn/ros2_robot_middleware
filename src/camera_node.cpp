@@ -26,4 +26,9 @@ void CameraNode::timer_callback() {
     }
 
     publisher_->publish(msg);
+
+    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 10000,
+                         "CameraImage published: %dx%d %s %.1fKB",
+                         msg.width, msg.height, msg.encoding.c_str(),
+                         msg.data.size() / 1024.0);
 }

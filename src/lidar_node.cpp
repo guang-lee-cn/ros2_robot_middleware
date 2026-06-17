@@ -44,4 +44,8 @@ void LidarNode::timer_callback()
   }
 
   publisher_->publish(msg);
+
+  RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                       "LidarScan published: ranges[0..359] avg=%.2fm",
+                       msg.ranges[0]);
 }
