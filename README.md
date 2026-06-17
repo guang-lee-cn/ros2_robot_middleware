@@ -1,0 +1,148 @@
+# ROS2 Robot Middleware
+
+A production-style AMR perception-to-actuation middleware pipeline built on ROS 2 Jazzy, demonstrating sensor simulation, multi-modal fusion, decision making, and motion control with full containerization.
+
+**Target roles:** DJI Robotics, Geek+, Amazon Robotics — AMR/warehouse robotics C++ engineer.
+
+## Architecture
+
+```
+Sensor Layer              Fusion Layer         Decision Layer       Actuation Layer
+┌──────────┐
+│  Lidar   │──┐
+│  10Hz    │  │         ┌──────────┐         ┌──────────┐         ┌──────────┐
+└──────────┘  │   ┌────►│  Fusion  │──Perception─►│ Decision │──Goal──►│MotorCtrl │
+              ├───┤     │  5Hz     │   Objects    │  (Action │         │(Action   │
+┌──────────┐  │   │     └──────────┘              │  Client) │         │ Server)  │
+│   IMU    │──┤   │                               └──────────┘         └──────────┘
+│  100Hz   │  │   │                                                    SetParam
+└──────────┘  │   │                                                    Service
+              │   │
+┌──────────┐  │   │
+│  Camera  │──┘   │
+│  5Hz     │      │
+└──────────┘      │
+  (simulated)     └── DDS domain 0, best-effort for lidar/camera, reliable for IMU/perception
+```
+
+**6 nodes, 3 layers, 7 custom ROS2 interfaces** (5 msgs, 1 srv, 1 action).
+
+All sensors are simulated: lidar uses 360° SICK TiM781 pattern, IMU emulates Bosch BMI088 noise specs, camera outputs 640×480 rgb8 frames. Fusion extracts object clusters within 3m via lidar range thresholding. Decision maps first perceived object to a MoveToPose action goal. MotorCtrl interpolates toward targets in configurable steps.
+
+## Quick Start
+
+### Host build
+
+```bash
+# ROS 2 Jazzy required
+cd ros2_ws
+colcon build --packages-select ros2_robot_middleware
+source install/setup.bash
+
+# Launch all 6 nodes
+ros2 launch ros2_robot_middleware system.launch.py
+
+# Run integration tests with coverage
+COVERAGE=1 test/test.sh
+```
+
+### Docker (recommended — zero host dependencies beyond Docker)
+
+```bash
+cd toolkit
+DOCKER_HOST="unix:///run/user/1000/podman/podman.sock" docker-compose up -d
+
+# Verify
+docker exec middleware_lidar bash -c "source /opt/ros/jazzy/setup.bash && source /ws/install/setup.bash && ros2 node list"
+```
+
+Three image targets:
+| Target | Size | Contents |
+|---|---|---|
+| `builder` | ~2GB | gcc, cmake, colcon, lcov — compiles + runs tests |
+| `runtime` | ~400MB | ros-core + built artifacts + ros2cli |
+| `dev` | ~2.5GB | builder + rqt_graph, rqt_console |
+
+## Project Structure
+
+```
+ros2_robot_middleware/
+├── include/ros2_robot_middleware/  # 7 headers (1 per node + type aliases)
+├── src/                            # 6 node .cpp + 6 main.cpp = 12 files
+├── test/
+│   ├── test_robot_middleware.cpp   # 9 GWT-pattern integration tests (GoogleTest)
+│   ├── CMakeLists.txt              # standalone CMake project, links production .a
+│   └── test.sh                     # build → test → lcov coverage report
+├── msg/                            # 5 custom messages (LidarScan, ImuData, ...)
+├── srv/SetParam.srv
+├── action/MoveToPose.action
+├── config/params.yaml
+├── launch/system.launch.py         # launches all 6 nodes
+├── toolkit/
+│   ├── Dockerfile                  # multi-stage: builder → runtime, dev
+│   ├── docker-compose.yml          # 6 services, health checks, resource limits
+│   └── scripts/                    # entrypoint.sh, health-check.sh
+└── mdDoc/                          # PRD, design doc, cost estimation, guides
+```
+
+## Interfaces
+
+| Interface | Type | Fields |
+|---|---|---|
+| `LidarScan` | msg | ranges[360], intensities[360], angle_min/max, angle_increment, time_increment |
+| `ImuData` | msg | angular_velocity[3], linear_acceleration[3] |
+| `CameraImage` | msg | data[uint8], width, height, step, encoding |
+| `Object` | msg | id, x, y, z |
+| `PerceptionObjects` | msg | Object[] objects |
+| `SetParam` | srv | param_name → success, message |
+| `MoveToPose` | action | target_x/y/theta, max_speed → feedback(current_x/y, distance_remaining) → result(reached, final_x/y) |
+
+## Tests & Coverage
+
+9 GWT-pattern integration tests covering all 6 nodes:
+
+```
+LidarNode_TimerFires_RangesInPhysicalBounds
+ImuNode_TimerFires_DataWithinSensorSpec
+CameraNode_TimerFires_640x480Rgb8Image
+MotorCtrl_CloseTarget_ReachesImmediately
+MotorCtrl_FarTarget_StepsUntilReached
+MotorCtrl_SetParamKnown_UpdatesAndAcks
+MotorCtrl_SetParamUnknown_ReturnsMessage
+DecisionNode_PerceptionArrives_SendsGoalToTargetPose
+FusionNode_AllSensorsReady_DetectsNearbyCluster
+```
+
+Coverage report: `mdDoc/coverage/html/index.html` (auto-generated by `test/test.sh`).
+
+## Key Decisions
+
+- **Static library + thin executables** — all business logic in `robot_middleware_lib.a`, linked by node executables and tests
+- **Multi-stage Docker** — compile/toolchain isolated from runtime; dev target for interactive debugging
+- **GWT test naming** — `NodeName_Given_Then` convention throughout
+- **Once-per-suite rclcpp::init** — DDS cross-test pollution makes per-test init unreliable
+- **RMW: Fast-DDS** — default for Jazzy, good SHM transport, unicast XML profile available in mdDoc/
+
+## Tech Stack
+
+| Component | Choice |
+|---|---|
+| ROS 2 | Jazzy Jalisco (LTS, EOL 2029) |
+| RMW | Fast-DDS (eProsima) |
+| Build | colcon + ament_cmake |
+| Test | GoogleTest + lcov (branch coverage enabled) |
+| Container | Docker/Podman, multi-stage build |
+| Language | C++17 |
+
+## Docs
+
+- [PRD](mdDoc/01-prd.md) — product requirements and use cases
+- [Design Doc](mdDoc/02-design-doc.md) — topology, layering, interface contracts
+- [Cost Estimation](mdDoc/04-cost-estimation.md) — runtime resources, timeline
+- [ROS2 Guide](mdDoc/05-ros2-guide.md) — architecture patterns, API reference
+- [DDS Customization](mdDoc/06-dds-customization.md) — XML profiles, RMW tuning
+- [Workflow Log](mdDoc/workflow-2025-06-15.md) — development diary
+
+## License
+
+Apache 2.0
