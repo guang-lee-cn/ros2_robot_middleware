@@ -22,18 +22,20 @@ source "${WS_DIR}/install/setup.bash" 2>/dev/null || true
 HAS_LCov=false
 command -v lcov > /dev/null 2>&1 && HAS_LCov=true
 COVERAGE="${COVERAGE:-$HAS_LCov}"  # env override, else auto-detect
+COV_CMAKE="-DCMAKE_CXX_FLAGS=--coverage -DCMAKE_EXE_LINKER_FLAGS=--coverage"
 if [ "${COVERAGE}" = "1" ] || [ "${COVERAGE}" = "true" ]; then
-  COVERAGE_FLAGS="--cmake-args -DCMAKE_CXX_FLAGS=--coverage -DCMAKE_EXE_LINKER_FLAGS=--coverage"
+  COV_COLCON="--cmake-args ${COV_CMAKE}"  # colcon wraps cmake with --cmake-args
   echo "[coverage] Instrumentation enabled"
 else
-  COVERAGE_FLAGS=""
+  COV_COLCON=""
+  COV_CMAKE=""
 fi
 
 # ── Step 1: Build production ─────────────────────────────────────────
 echo "=== Building production ==="
 cd "${WS_DIR}"
 # shellcheck disable=SC2086
-colcon build --packages-select ros2_robot_middleware ${COVERAGE_FLAGS}
+colcon build --packages-select ros2_robot_middleware ${COV_COLCON}
 
 # ── Step 2: Build test as standalone CMake project ───────────────────
 echo "=== Building tests ==="
@@ -42,7 +44,7 @@ TEST_BUILD_DIR="${WS_DIR}/build/ros2_robot_middleware_test"
 cmake -S "${PKG_DIR}/test" -B "${TEST_BUILD_DIR}" \
   -DPROD_BUILD_DIR="${WS_DIR}/build/ros2_robot_middleware" \
   -DCMAKE_PREFIX_PATH="/opt/ros/jazzy;${WS_DIR}/install" \
-  ${COVERAGE_FLAGS}
+  ${COV_CMAKE}
 cmake --build "${TEST_BUILD_DIR}"
 
 # ── Step 3: Run ──────────────────────────────────────────────────────
@@ -56,32 +58,34 @@ if [ "${COVERAGE}" = "1" ] || [ "${COVERAGE}" = "true" ]; then
     COVERAGE_DIR="${PKG_DIR}/mdDoc/coverage"
     mkdir -p "${COVERAGE_DIR}"
 
-    # Capture from both test build and production build
+    # Capture from production build (where the business logic lives)
     lcov --capture \
-      --directory "${TEST_BUILD_DIR}" \
       --directory "${WS_DIR}/build/ros2_robot_middleware" \
+      --directory "${TEST_BUILD_DIR}" \
       --output-file "${COVERAGE_DIR}/coverage.info" \
-      --rc lcov_branch_coverage=1 \
-      --no-external 2>&1 || true
+      --rc branch_coverage=1 \
+      --ignore-errors mismatch,mismatch 2>&1 | tail -3
 
-    # Filter to project source only
+    # Keep only project source files
     lcov --remove "${COVERAGE_DIR}/coverage.info" \
-      '/usr/*' '*/gtest*' '*/rosidl*' '*/CMakeCXXCompilerId*' \
+      '/usr/*' '/opt/*' '*/rosidl*' '*/CMakeCXXCompilerId*' '*/test/*' \
       --output-file "${COVERAGE_DIR}/coverage_filtered.info" \
-      --rc lcov_branch_coverage=1 2>&1 || true
+      --rc branch_coverage=1 \
+      --ignore-errors mismatch,unused 2>&1 | tail -3
 
     # Text summary
     echo ""
-    lcov --list "${COVERAGE_DIR}/coverage_filtered.info" --rc lcov_branch_coverage=1 2>&1 || true
+    lcov --list "${COVERAGE_DIR}/coverage_filtered.info" --rc branch_coverage=1 2>&1 | tail -20
 
-    # HTML report
-    genhtml "${COVERAGE_DIR}/coverage_filtered.info" \
-      --output-directory "${COVERAGE_DIR}/html" \
-      --rc lcov_branch_coverage=1 \
-      --title "ros2_robot_middleware" 2>&1 || true
-
-    echo ""
-    echo "Coverage report: ${COVERAGE_DIR}/html/index.html"
+    # HTML report (skip if filtered file empty)
+    if [ -s "${COVERAGE_DIR}/coverage_filtered.info" ]; then
+      genhtml "${COVERAGE_DIR}/coverage_filtered.info" \
+        --output-directory "${COVERAGE_DIR}/html" \
+        --rc branch_coverage=1 \
+        --title "ros2_robot_middleware" 2>&1 | tail -3
+      echo ""
+      echo "Coverage report: ${COVERAGE_DIR}/html/index.html"
+    fi
   else
     echo "[coverage] lcov not found — install with: sudo apt install lcov -y"
   fi
