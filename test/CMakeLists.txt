@@ -9,6 +9,8 @@ endif()
 # CMAKE_PREFIX_PATH must include the ROS2 install prefix (set by test.sh)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(action_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
 # Production headers

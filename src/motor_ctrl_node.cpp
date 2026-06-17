@@ -92,6 +92,9 @@ void MotorCtrlNode::handle_set_param(const std::shared_ptr<SetParam::Request> re
                 "SetParam: %s = %.4f", request->param_name.c_str(), request->value);
     if (request->param_name == "step_size") {
         step_size_ = static_cast<float>(request->value);
+        response->message = "Parameter updated";
+    } else {
+        response->message = "Unknown parameter";
     }
     response->success = true;
 }
