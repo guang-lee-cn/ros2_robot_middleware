@@ -19,6 +19,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/CameraImage.msg"
   "msg/Object.msg"
   "msg/PerceptionObjects.msg"
+  "msg/HealthStatus.msg"
+  "msg/HealthReport.msg"
   "srv/SetParam.srv"
   "action/MoveToPose.action"
   DEPENDENCIES std_msgs action_msgs
@@ -32,6 +34,7 @@ add_library(robot_middleware_lib STATIC
   src/fusion_node.cpp
   src/decision_node.cpp
   src/motor_ctrl_node.cpp
+  src/health_monitor_node.cpp
 )
 
 target_include_directories(robot_middleware_lib PUBLIC
@@ -48,7 +51,7 @@ rosidl_get_typesupport_target(cpp_typesupport_target
 target_link_libraries(robot_middleware_lib "${cpp_typesupport_target}")
 
 # Thin executables — one per node
-set(NODE_NAMES lidar imu camera fusion decision motor_ctrl)
+set(NODE_NAMES lidar imu camera fusion decision motor_ctrl health_monitor)
 foreach(node ${NODE_NAMES})
   add_executable(${node}_node src/${node}_main.cpp)
   target_link_libraries(${node}_node robot_middleware_lib)

@@ -9,6 +9,15 @@ DecisionNode::DecisionNode()
       [this](PerceptionObjects::SharedPtr msg) { on_perception(msg); });
 
   client_ = rclcpp_action::create_client<MoveToPose>(this, "/cmd/move_to_pose");
+
+  heartbeat_pub_ = this->create_publisher<std_msgs::msg::String>(
+      "/decision/heartbeat", rclcpp::QoS(10).reliable());
+  using namespace std::chrono_literals;
+  heartbeat_timer_ = this->create_wall_timer(1s, [this]() {
+    auto msg = std_msgs::msg::String{};
+    msg.data = "alive";
+    heartbeat_pub_->publish(msg);
+  });
 }
 
 // ---------------------------------------------------------------------------

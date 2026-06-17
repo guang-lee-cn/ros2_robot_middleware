@@ -95,3 +95,18 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
+  health_monitor:
+    <<: *node
+    container_name: middleware_health_monitor
+    command: [health_monitor]
+    depends_on:
+      motor_ctrl:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/health-check.sh", "health_monitor"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    mem_limit: 128m

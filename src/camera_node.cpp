@@ -7,6 +7,14 @@ CameraNode::CameraNode() : Node("camera") {
 
     using namespace std::chrono_literals;
     timer_ = this->create_wall_timer(200ms, [this]() { timer_callback(); });
+
+    heartbeat_pub_ = this->create_publisher<std_msgs::msg::String>(
+        "/sensor/camera/heartbeat", rclcpp::QoS(10).reliable());
+    heartbeat_timer_ = this->create_wall_timer(1s, [this]() {
+      auto msg = std_msgs::msg::String{};
+      msg.data = "alive";
+      heartbeat_pub_->publish(msg);
+    });
 }
 
 void CameraNode::timer_callback() {

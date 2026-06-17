@@ -46,4 +46,11 @@ def generate_launch_description():
             name='motor_ctrl',
             output='screen',
         ),
+        # ── Infrastructure Layer ──
+        Node(
+            package='ros2_robot_middleware',
+            executable='health_monitor_node',
+            name='health_monitor',
+            output='screen',
+        ),
     ])

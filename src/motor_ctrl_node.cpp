@@ -15,6 +15,16 @@ MotorCtrlNode::MotorCtrlNode() : Node("motor_ctrl") {
     service_server_ = this->create_service<SetParam>(
         "/cmd/set_param", [this](const std::shared_ptr<SetParam::Request> req,
                                  std::shared_ptr<SetParam::Response> resp) { handle_set_param(req, resp); });
+
+    // ── Status heartbeat ──
+    status_pub_ = this->create_publisher<std_msgs::msg::String>(
+        "/cmd/status", rclcpp::QoS(10).reliable());
+    using namespace std::chrono_literals;
+    status_timer_ = this->create_wall_timer(1s, [this]() {
+      auto msg = std_msgs::msg::String{};
+      msg.data = "idle";
+      status_pub_->publish(msg);
+    });
 }
 
 rclcpp_action::GoalResponse MotorCtrlNode::handle_goal(const rclcpp_action::GoalUUID &/*uuid*/,

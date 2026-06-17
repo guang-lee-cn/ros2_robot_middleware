@@ -3,6 +3,7 @@
 
 #include "ros2_robot_middleware/action/move_to_pose.hpp"
 #include "ros2_robot_middleware/srv/set_param.hpp"
+#include "std_msgs/msg/string.hpp"
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>
@@ -30,6 +31,10 @@ private:
 
     void handle_set_param(const std::shared_ptr<ros2_robot_middleware::srv::SetParam::Request> request,
                           std::shared_ptr<ros2_robot_middleware::srv::SetParam::Response> response);
+
+    // ── Heartbeat ──
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr status_pub_;
+    rclcpp::TimerBase::SharedPtr status_timer_;
 
     // ── Speed config ──
     float step_size_ = 0.05F;

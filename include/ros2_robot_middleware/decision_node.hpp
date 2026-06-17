@@ -3,6 +3,7 @@
 
 #include "ros2_robot_middleware/action/move_to_pose.hpp"
 #include "ros2_robot_middleware/msg/perception_objects.hpp"
+#include "std_msgs/msg/string.hpp"
 
 #include <rclcpp_action/rclcpp_action.hpp>
 
@@ -20,6 +21,8 @@ private:
     on_result(const rclcpp_action::ClientGoalHandle<ros2_robot_middleware::action::MoveToPose>::WrappedResult &result);
 
     rclcpp::Subscription<ros2_robot_middleware::msg::PerceptionObjects>::SharedPtr decision_sub_;
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr heartbeat_pub_;
+    rclcpp::TimerBase::SharedPtr heartbeat_timer_;
 
     rclcpp_action::Client<ros2_robot_middleware::action::MoveToPose>::SharedPtr client_;
 };

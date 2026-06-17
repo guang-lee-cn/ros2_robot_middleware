@@ -5,6 +5,7 @@
 #include "ros2_robot_middleware/msg/imu_data.hpp"
 #include "ros2_robot_middleware/msg/lidar_scan.hpp"
 #include "ros2_robot_middleware/msg/perception_objects.hpp"
+#include "std_msgs/msg/string.hpp"
 
 #include <rclcpp/rclcpp.hpp>
 
@@ -30,6 +31,9 @@ private:
     ros2_robot_middleware::msg::CameraImage::SharedPtr camera_cache_;
 
     rclcpp::TimerBase::SharedPtr timer_;
+
+    rclcpp::Publisher<std_msgs::msg::String>::SharedPtr heartbeat_pub_;
+    rclcpp::TimerBase::SharedPtr heartbeat_timer_;
 };
 
 #endif // ROS2_ROBOT_MIDDLEWARE_FUSION_NODE_HPP_
