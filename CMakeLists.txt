@@ -9,6 +9,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
+find_package(lifecycle_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(action_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
@@ -44,7 +45,7 @@ target_include_directories(robot_middleware_lib PUBLIC
 )
 
 ament_target_dependencies(robot_middleware_lib
-  rclcpp rclcpp_action rclcpp_lifecycle std_msgs
+  rclcpp rclcpp_action rclcpp_lifecycle lifecycle_msgs std_msgs
 )
 
 rosidl_get_typesupport_target(cpp_typesupport_target

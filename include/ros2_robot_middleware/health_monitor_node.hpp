@@ -1,10 +1,12 @@
 #ifndef ROS2_ROBOT_MIDDLEWARE_HEALTH_MONITOR_NODE_HPP_
 #define ROS2_ROBOT_MIDDLEWARE_HEALTH_MONITOR_NODE_HPP_
 
+#include <array>
 #include <memory>
 #include <string>
 #include <unordered_map>
 
+#include "lifecycle_msgs/srv/change_state.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
@@ -35,12 +37,20 @@ private:
   void create_service_server();
   void check_health();
 
+  void create_restart_clients();
+  bool try_restart_sequence(const std::string &node_name);
+
   void setup_prometheus();
   void prometheus_accept();
   std::string prometheus_metrics() const;
 
-  static constexpr int kNumNodes = 6;
-  static constexpr int kPrometheusPort = 9090;
+  static constexpr int kNumNodes          = 6;
+  static constexpr int kPrometheusPort    = 9090;
+  static constexpr int kMaxRestartRetries = 3;
+
+  struct RecoveryState {
+    int attempts = 0;
+  };
 
   struct NodeConfig {
     const char *node;
@@ -64,6 +74,10 @@ private:
   std::unordered_map<std::string, rclcpp::Time> last_seen_;
   std::unordered_map<std::string, double> timeouts_;
   double check_interval_s_ = 1.0;
+
+  // Watchdog recovery state per node
+  std::unordered_map<std::string, RecoveryState> recovery_;
+  std::unordered_map<std::string, rclcpp::Client<lifecycle_msgs::srv::ChangeState>::SharedPtr> restart_clients_;
 
   int prom_socket_ = -1;
   std::thread prom_thread_;
