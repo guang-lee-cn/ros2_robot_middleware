@@ -78,6 +78,7 @@ private:
 
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>::SharedPtr heartbeat_pub_;
   KalmanFilter2D kf_;
+  rclcpp::Time last_kf_predict_;
 
   rclcpp::TimerBase::SharedPtr heartbeat_timer_;
 };

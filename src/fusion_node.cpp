@@ -103,12 +103,19 @@ void FusionNode::timer_callback() {
     auto old_level = degradation_;
     degradation_   = evaluate_degradation();
 
-    // KF 预测步：用 IMU 加速度推进状态（独立于传感器融合）
-    if (imu_cache_) {
-      kf_.predict(0.2,  // dt = 200ms timer period
-                  imu_cache_->linear_acceleration.x,
-                  imu_cache_->linear_acceleration.y);
+    // KF 预测步：用实际 dt 而非硬编码 200ms
+    // 面试关键：实时系统中 timer 不准是常态——系统负载/GC/IO 都会影响回调延迟。
+    // 用实际 dt 保证 KF 在 timer 抖动时也能正确预测。
+    auto now = this->now();
+    if (last_kf_predict_.nanoseconds() > 0 && imu_cache_) {
+      double dt = (now - last_kf_predict_).seconds();
+      if (dt > 0.001 && dt < 1.0) {  // 过滤异常 dt（首次调用、长时间阻塞）
+        kf_.predict(dt,
+                    imu_cache_->linear_acceleration.x,
+                    imu_cache_->linear_acceleration.y);
+      }
     }
+    last_kf_predict_ = now;
 
     auto msg            = ros2_robot_middleware::msg::PerceptionObjects{};
     msg.header.stamp    = this->now();
