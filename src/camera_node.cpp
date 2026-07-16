@@ -8,7 +8,7 @@ CameraNode::CameraNode()
 CameraNode::CallbackReturn
 CameraNode::on_configure(const rclcpp_lifecycle::State &)
 {
-  publisher_ = this->create_publisher<ros2_robot_middleware::msg::CameraImage>(
+  publisher_ = this->create_publisher<sensor_msgs::msg::Image>(
     "/sensor/camera", rclcpp::QoS(10).best_effort());
 
   heartbeat_pub_ = this->create_publisher<std_msgs::msg::String>(
@@ -69,15 +69,16 @@ CameraNode::on_shutdown(const rclcpp_lifecycle::State &)
 
 void CameraNode::timer_callback()
 {
-  auto msg = ros2_robot_middleware::msg::CameraImage{};
+  auto msg = sensor_msgs::msg::Image{};
 
   msg.header.stamp    = this->now();
   msg.header.frame_id = "camera_link";
 
-  msg.height   = 480;
-  msg.width    = 640;
-  msg.step     = 640 * 3;
-  msg.encoding = "rgb8";
+  msg.height       = 480;
+  msg.width        = 640;
+  msg.step         = 640 * 3;
+  msg.encoding     = "rgb8";
+  msg.is_bigendian = 0;
   msg.data.resize(480 * 640 * 3);
   for (auto &byte : msg.data) {
     byte = rand() % 256;
@@ -86,7 +87,7 @@ void CameraNode::timer_callback()
   publisher_->publish(msg);
 
   RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 10000,
-                       "CameraImage published: %dx%d %s %.1fKB",
+                       "Image published: %dx%d %s %.1fKB",
                        msg.width, msg.height, msg.encoding.c_str(),
                        msg.data.size() / 1024.0);
 }

@@ -3,9 +3,8 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
-#include "std_msgs/msg/string.hpp"
-
-#include "ros2_robot_middleware/msg/lidar_scan.hpp"
+#include <sensor_msgs/msg/laser_scan.hpp>
+#include <std_msgs/msg/string.hpp>
 
 class LidarNode : public rclcpp_lifecycle::LifecycleNode {
 public:
@@ -22,7 +21,7 @@ public:
 private:
   void timer_callback();
 
-  rclcpp_lifecycle::LifecyclePublisher<ros2_robot_middleware::msg::LidarScan>::SharedPtr publisher_;
+  rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::LaserScan>::SharedPtr publisher_;
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>::SharedPtr heartbeat_pub_;
   rclcpp::TimerBase::SharedPtr heartbeat_timer_;

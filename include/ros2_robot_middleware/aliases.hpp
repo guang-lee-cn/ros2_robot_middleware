@@ -17,9 +17,6 @@ namespace rra = ros2_robot_middleware::action;
 namespace rrs = ros2_robot_middleware::srv;
 
 // ── Type aliases (usable in all .cpp files) ──────────────────────
-using LidarScan         = rrm::LidarScan;
-using ImuData           = rrm::ImuData;
-using CameraImage       = rrm::CameraImage;
 using Object            = rrm::Object;
 using PerceptionObjects = rrm::PerceptionObjects;
 

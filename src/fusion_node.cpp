@@ -11,17 +11,17 @@ FusionNode::CallbackReturn FusionNode::on_configure(const rclcpp_lifecycle::Stat
     auto qos_best_effort = rclcpp::QoS(10).best_effort();
     auto qos_reliable    = rclcpp::QoS(10).reliable();
 
-    sub_lidar_ = this->create_subscription<ros2_robot_middleware::msg::LidarScan>(
+    sub_lidar_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
         "/sensor/lidar", qos_best_effort,
-        [this](ros2_robot_middleware::msg::LidarScan::SharedPtr msg) { lidar_callback(msg); });
+        [this](sensor_msgs::msg::LaserScan::SharedPtr msg) { lidar_callback(msg); });
 
-    sub_imu_ = this->create_subscription<ros2_robot_middleware::msg::ImuData>(
+    sub_imu_ = this->create_subscription<sensor_msgs::msg::Imu>(
         "/sensor/imu", qos_reliable,
-        [this](ros2_robot_middleware::msg::ImuData::SharedPtr msg) { imu_callback(msg); });
+        [this](sensor_msgs::msg::Imu::SharedPtr msg) { imu_callback(msg); });
 
-    sub_camera_ = this->create_subscription<ros2_robot_middleware::msg::CameraImage>(
+    sub_camera_ = this->create_subscription<sensor_msgs::msg::Image>(
         "/sensor/camera", qos_best_effort,
-        [this](ros2_robot_middleware::msg::CameraImage::SharedPtr msg) { camera_callback(msg); });
+        [this](sensor_msgs::msg::Image::SharedPtr msg) { camera_callback(msg); });
 
     fusion_pub_ = this->create_publisher<ros2_robot_middleware::msg::PerceptionObjects>(
         "/perception/objects", rclcpp::QoS(10).reliable());
@@ -82,17 +82,17 @@ FusionNode::CallbackReturn FusionNode::on_shutdown(const rclcpp_lifecycle::State
 
 // ── Sensor callbacks — 缓存最新数据 + 记录到达时间戳 ──────────────────────────
 
-void FusionNode::lidar_callback(const ros2_robot_middleware::msg::LidarScan::SharedPtr &msg) {
+void FusionNode::lidar_callback(sensor_msgs::msg::LaserScan::SharedPtr msg) {
     lidar_cache_ = msg;
     lidar_stamp_ = this->now();
 }
 
-void FusionNode::imu_callback(const ros2_robot_middleware::msg::ImuData::SharedPtr &msg) {
+void FusionNode::imu_callback(sensor_msgs::msg::Imu::SharedPtr msg) {
     imu_cache_ = msg;
     imu_stamp_ = this->now();
 }
 
-void FusionNode::camera_callback(const ros2_robot_middleware::msg::CameraImage::SharedPtr &msg) {
+void FusionNode::camera_callback(sensor_msgs::msg::Image::SharedPtr msg) {
     camera_cache_ = msg;
     camera_stamp_ = this->now();
 }

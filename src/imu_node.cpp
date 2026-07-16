@@ -8,7 +8,7 @@ ImuNode::ImuNode()
 ImuNode::CallbackReturn
 ImuNode::on_configure(const rclcpp_lifecycle::State &)
 {
-  publisher_ = this->create_publisher<ros2_robot_middleware::msg::ImuData>(
+  publisher_ = this->create_publisher<sensor_msgs::msg::Imu>(
     "/sensor/imu", rclcpp::QoS(10).reliable());
 
   heartbeat_pub_ = this->create_publisher<std_msgs::msg::String>(
@@ -69,22 +69,28 @@ ImuNode::on_shutdown(const rclcpp_lifecycle::State &)
 
 void ImuNode::timer_callback()
 {
-  auto msg = ros2_robot_middleware::msg::ImuData{};
+  auto msg = sensor_msgs::msg::Imu{};
 
   msg.header.stamp    = this->now();
   msg.header.frame_id = "imu_link";
 
-  msg.angular_velocity[0]    = (rand() % 2001 - 1000) / 50000.0F;
-  msg.angular_velocity[1]    = (rand() % 2002 - 1000) / 50000.0F;
-  msg.angular_velocity[2]    = (rand() % 2003 - 1000) / 50000.0F;
-  msg.linear_acceleration[0] = (rand() % 2001 - 1000) / 10000.0F;
-  msg.linear_acceleration[1] = (rand() % 2002 - 1000) / 10000.0F;
-  msg.linear_acceleration[2] = (rand() % 2003 - 1000) / 10000.0F;
+  // 方向置为单位四元数（模拟 IMU 不输出绝对方向）
+  msg.orientation.w = 1.0;
+
+  // 陀螺仪数据：BMI088 噪声密度 0.014 dps/√Hz → range ~±0.02 rad/s
+  msg.angular_velocity.x = (rand() % 2001 - 1000) / 50000.0;
+  msg.angular_velocity.y = (rand() % 2002 - 1000) / 50000.0;
+  msg.angular_velocity.z = (rand() % 2003 - 1000) / 50000.0;
+
+  // 加速度计数据：BMI088 噪声 ~±0.1 m/s²
+  msg.linear_acceleration.x = (rand() % 2001 - 1000) / 10000.0;
+  msg.linear_acceleration.y = (rand() % 2002 - 1000) / 10000.0;
+  msg.linear_acceleration.z = (rand() % 2003 - 1000) / 10000.0;
 
   publisher_->publish(msg);
 
   RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
-                       "ImuData published: ω=(%.3f,%.3f,%.3f) rad/s  a=(%.3f,%.3f,%.3f) m/s²",
-                       msg.angular_velocity[0], msg.angular_velocity[1], msg.angular_velocity[2],
-                       msg.linear_acceleration[0], msg.linear_acceleration[1], msg.linear_acceleration[2]);
+                       "IMU published: ω=(%.3f,%.3f,%.3f) rad/s  a=(%.3f,%.3f,%.3f) m/s²",
+                       msg.angular_velocity.x, msg.angular_velocity.y, msg.angular_velocity.z,
+                       msg.linear_acceleration.x, msg.linear_acceleration.y, msg.linear_acceleration.z);
 }

@@ -6,11 +6,12 @@
 #include "ros2_robot_middleware/motor_ctrl_node.hpp"
 
 #include "ros2_robot_middleware/action/move_to_pose.hpp"
-#include "ros2_robot_middleware/msg/camera_image.hpp"
-#include "ros2_robot_middleware/msg/imu_data.hpp"
-#include "ros2_robot_middleware/msg/lidar_scan.hpp"
 #include "ros2_robot_middleware/msg/perception_objects.hpp"
 #include "ros2_robot_middleware/srv/set_param.hpp"
+
+#include <sensor_msgs/msg/image.hpp>
+#include <sensor_msgs/msg/imu.hpp>
+#include <sensor_msgs/msg/laser_scan.hpp>
 
 #include <gtest/gtest.h>
 
@@ -58,10 +59,10 @@ TEST_F(RobotMiddlewareTest, LidarNode_TimerFires_RangesInPhysicalBounds) {
   node->configure();
   node->activate();
 
-  ros2_robot_middleware::msg::LidarScan::SharedPtr last_msg;
-  auto sub = node->create_subscription<ros2_robot_middleware::msg::LidarScan>(
+  sensor_msgs::msg::LaserScan::SharedPtr last_msg;
+  auto sub = node->create_subscription<sensor_msgs::msg::LaserScan>(
       "/sensor/lidar", rclcpp::QoS(10).best_effort(),
-      [&last_msg](ros2_robot_middleware::msg::LidarScan::SharedPtr msg) { last_msg = msg; });
+      [&last_msg](sensor_msgs::msg::LaserScan::SharedPtr msg) { last_msg = msg; });
 
   // When: the timer callback fires
   ASSERT_TRUE(spin_until(node->get_node_base_interface(),
@@ -92,10 +93,10 @@ TEST_F(RobotMiddlewareTest, ImuNode_TimerFires_DataWithinSensorSpec) {
   node->configure();
   node->activate();
 
-  ros2_robot_middleware::msg::ImuData::SharedPtr last_msg;
-  auto sub = node->create_subscription<ros2_robot_middleware::msg::ImuData>(
+  sensor_msgs::msg::Imu::SharedPtr last_msg;
+  auto sub = node->create_subscription<sensor_msgs::msg::Imu>(
       "/sensor/imu", rclcpp::QoS(10).reliable(),
-      [&last_msg](ros2_robot_middleware::msg::ImuData::SharedPtr msg) { last_msg = msg; });
+      [&last_msg](sensor_msgs::msg::Imu::SharedPtr msg) { last_msg = msg; });
 
   // When: the timer callback fires
   ASSERT_TRUE(spin_until(node->get_node_base_interface(),
@@ -103,12 +104,14 @@ TEST_F(RobotMiddlewareTest, ImuNode_TimerFires_DataWithinSensorSpec) {
                          std::chrono::seconds(3)));
 
   // Then: angular velocity within BMI088 noise spec, acceleration within bounds
-  for (int axis = 0; axis < 3; ++axis) {
-    EXPECT_NEAR(last_msg->angular_velocity[axis], 0.0, 0.04)
-        << "angular_velocity[" << axis << "] out of spec";
-    EXPECT_NEAR(last_msg->linear_acceleration[axis], 0.0, 0.2)
-        << "linear_acceleration[" << axis << "] out of spec";
-  }
+  // NOLINTBEGIN(cppcoreguidelines-pro-type-union-access)
+  EXPECT_NEAR(last_msg->angular_velocity.x, 0.0, 0.04);
+  EXPECT_NEAR(last_msg->angular_velocity.y, 0.0, 0.04);
+  EXPECT_NEAR(last_msg->angular_velocity.z, 0.0, 0.04);
+  EXPECT_NEAR(last_msg->linear_acceleration.x, 0.0, 0.2);
+  EXPECT_NEAR(last_msg->linear_acceleration.y, 0.0, 0.2);
+  EXPECT_NEAR(last_msg->linear_acceleration.z, 0.0, 0.2);
+  // NOLINTEND(cppcoreguidelines-pro-type-union-access)
   EXPECT_EQ(last_msg->header.frame_id, "imu_link");
 }
 
@@ -120,10 +123,10 @@ TEST_F(RobotMiddlewareTest, CameraNode_TimerFires_640x480Rgb8Image) {
   node->configure();
   node->activate();
 
-  ros2_robot_middleware::msg::CameraImage::SharedPtr last_msg;
-  auto sub = node->create_subscription<ros2_robot_middleware::msg::CameraImage>(
+  sensor_msgs::msg::Image::SharedPtr last_msg;
+  auto sub = node->create_subscription<sensor_msgs::msg::Image>(
       "/sensor/camera", rclcpp::QoS(10).best_effort(),
-      [&last_msg](ros2_robot_middleware::msg::CameraImage::SharedPtr msg) { last_msg = msg; });
+      [&last_msg](sensor_msgs::msg::Image::SharedPtr msg) { last_msg = msg; });
 
   // When: the timer callback fires
   ASSERT_TRUE(spin_until(node->get_node_base_interface(),
@@ -334,14 +337,17 @@ TEST_F(RobotMiddlewareTest, DecisionNode_PerceptionArrives_SendsGoalToTargetPose
 // ===================================================================
 
 // Helper: build a lidar frame with configurable range at given angular span
-static ros2_robot_middleware::msg::LidarScan
+static sensor_msgs::msg::LaserScan
 make_lidar(float range_near, float range_far, int center_idx, int half_width) {
-  auto msg = ros2_robot_middleware::msg::LidarScan{};
+  auto msg = sensor_msgs::msg::LaserScan{};
   msg.header.frame_id = "lidar_frame";
-  msg.angle_min = -M_PI;
-  msg.angle_max = M_PI;
+  msg.angle_min       = -M_PI;
+  msg.angle_max       = M_PI;
   msg.angle_increment = 2.0F * M_PI / 360.0F;
-  msg.time_increment = 0.0001F;
+  msg.time_increment  = 0.0001F;
+  msg.scan_time       = 0.1F;
+  msg.range_min       = 0.1F;
+  msg.range_max       = 6.5F;
   msg.ranges.resize(360);
   msg.intensities.resize(360);
   for (int i = 0; i < 360; ++i) {
@@ -357,19 +363,21 @@ make_lidar(float range_near, float range_far, int center_idx, int half_width) {
   return msg;
 }
 
-static ros2_robot_middleware::msg::ImuData make_imu() {
-  auto msg = ros2_robot_middleware::msg::ImuData{};
+static sensor_msgs::msg::Imu make_imu() {
+  auto msg = sensor_msgs::msg::Imu{};
   msg.header.frame_id = "imu_link";
+  msg.orientation.w = 1.0;
   return msg;
 }
 
-static ros2_robot_middleware::msg::CameraImage make_camera() {
-  auto msg = ros2_robot_middleware::msg::CameraImage{};
+static sensor_msgs::msg::Image make_camera() {
+  auto msg = sensor_msgs::msg::Image{};
   msg.header.frame_id = "camera_link";
-  msg.width = 640;
+  msg.width  = 640;
   msg.height = 480;
-  msg.step = 1920;
+  msg.step   = 1920;
   msg.encoding = "rgb8";
+  msg.is_bigendian = 0;
   msg.data.resize(921600);
   return msg;
 }
@@ -386,11 +394,11 @@ TEST_F(RobotMiddlewareTest, FusionNode_AllSensorsReady_DetectsNearbyCluster) {
       "/perception/objects", rclcpp::QoS(10).reliable(),
       [&last_output](ros2_robot_middleware::msg::PerceptionObjects::SharedPtr msg) { last_output = msg; });
 
-  auto lidar_pub = fusion->create_publisher<ros2_robot_middleware::msg::LidarScan>(
+  auto lidar_pub = fusion->create_publisher<sensor_msgs::msg::LaserScan>(
       "/sensor/lidar", rclcpp::QoS(10).best_effort());
-  auto imu_pub = fusion->create_publisher<ros2_robot_middleware::msg::ImuData>(
+  auto imu_pub = fusion->create_publisher<sensor_msgs::msg::Imu>(
       "/sensor/imu", rclcpp::QoS(10).reliable());
-  auto cam_pub = fusion->create_publisher<ros2_robot_middleware::msg::CameraImage>(
+  auto cam_pub = fusion->create_publisher<sensor_msgs::msg::Image>(
       "/sensor/camera", rclcpp::QoS(10).best_effort());
   lidar_pub->on_activate();
   imu_pub->on_activate();
@@ -427,11 +435,11 @@ TEST_F(RobotMiddlewareTest, FusionNode_AllSensorsPresent_DegradationFull) {
   fusion->configure();
   fusion->activate();
 
-  auto lidar_pub = fusion->create_publisher<ros2_robot_middleware::msg::LidarScan>(
+  auto lidar_pub = fusion->create_publisher<sensor_msgs::msg::LaserScan>(
       "/sensor/lidar", rclcpp::QoS(10).best_effort());
-  auto imu_pub = fusion->create_publisher<ros2_robot_middleware::msg::ImuData>(
+  auto imu_pub = fusion->create_publisher<sensor_msgs::msg::Imu>(
       "/sensor/imu", rclcpp::QoS(10).reliable());
-  auto cam_pub = fusion->create_publisher<ros2_robot_middleware::msg::CameraImage>(
+  auto cam_pub = fusion->create_publisher<sensor_msgs::msg::Image>(
       "/sensor/camera", rclcpp::QoS(10).best_effort());
   lidar_pub->on_activate();
   imu_pub->on_activate();
@@ -463,9 +471,9 @@ TEST_F(RobotMiddlewareTest, FusionNode_ImuMissing_DegradedToNoImu) {
   fusion->configure();
   fusion->activate();
 
-  auto lidar_pub = fusion->create_publisher<ros2_robot_middleware::msg::LidarScan>(
+  auto lidar_pub = fusion->create_publisher<sensor_msgs::msg::LaserScan>(
       "/sensor/lidar", rclcpp::QoS(10).best_effort());
-  auto cam_pub = fusion->create_publisher<ros2_robot_middleware::msg::CameraImage>(
+  auto cam_pub = fusion->create_publisher<sensor_msgs::msg::Image>(
       "/sensor/camera", rclcpp::QoS(10).best_effort());
   lidar_pub->on_activate();
   cam_pub->on_activate();
@@ -497,9 +505,9 @@ TEST_F(RobotMiddlewareTest, FusionNode_LidarMissing_DegradedToNoLidar) {
   fusion->configure();
   fusion->activate();
 
-  auto imu_pub = fusion->create_publisher<ros2_robot_middleware::msg::ImuData>(
+  auto imu_pub = fusion->create_publisher<sensor_msgs::msg::Imu>(
       "/sensor/imu", rclcpp::QoS(10).reliable());
-  auto cam_pub = fusion->create_publisher<ros2_robot_middleware::msg::CameraImage>(
+  auto cam_pub = fusion->create_publisher<sensor_msgs::msg::Image>(
       "/sensor/camera", rclcpp::QoS(10).best_effort());
   imu_pub->on_activate();
   cam_pub->on_activate();
@@ -536,7 +544,7 @@ TEST_F(RobotMiddlewareTest, FusionNode_ImuAndCameraMissing_DegradedToCritical) {
   fusion->configure();
   fusion->activate();
 
-  auto lidar_pub = fusion->create_publisher<ros2_robot_middleware::msg::LidarScan>(
+  auto lidar_pub = fusion->create_publisher<sensor_msgs::msg::LaserScan>(
       "/sensor/lidar", rclcpp::QoS(10).best_effort());
   lidar_pub->on_activate();
 

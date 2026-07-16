@@ -10,15 +10,14 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(action_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 # Custom interfaces
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/LidarScan.msg"
-  "msg/ImuData.msg"
-  "msg/CameraImage.msg"
   "msg/Object.msg"
   "msg/PerceptionObjects.msg"
   "msg/HealthStatus.msg"
@@ -45,7 +44,7 @@ target_include_directories(robot_middleware_lib PUBLIC
 )
 
 ament_target_dependencies(robot_middleware_lib
-  rclcpp rclcpp_action rclcpp_lifecycle lifecycle_msgs std_msgs
+  rclcpp rclcpp_action rclcpp_lifecycle lifecycle_msgs sensor_msgs geometry_msgs std_msgs
 )
 
 rosidl_get_typesupport_target(cpp_typesupport_target
@@ -71,7 +70,7 @@ if(BUILD_TESTING)
   target_link_libraries(test_robot_middleware robot_middleware_lib)
   target_include_directories(test_robot_middleware PRIVATE include)
   ament_target_dependencies(test_robot_middleware
-    rclcpp rclcpp_action rclcpp_lifecycle std_msgs
+    rclcpp rclcpp_action rclcpp_lifecycle sensor_msgs geometry_msgs std_msgs
   )
   rosidl_get_typesupport_target(cpp_typesupport_target
     ${PROJECT_NAME} "rosidl_typesupport_cpp")

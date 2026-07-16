@@ -1,13 +1,13 @@
 #ifndef ROS2_ROBOT_MIDDLEWARE_FUSION_NODE_HPP_
 #define ROS2_ROBOT_MIDDLEWARE_FUSION_NODE_HPP_
 
-#include "ros2_robot_middleware/msg/camera_image.hpp"
-#include "ros2_robot_middleware/msg/imu_data.hpp"
-#include "ros2_robot_middleware/msg/lidar_scan.hpp"
-#include "ros2_robot_middleware/msg/perception_objects.hpp"
-#include "std_msgs/msg/string.hpp"
-
 #include <cstdint>
+
+#include "ros2_robot_middleware/msg/perception_objects.hpp"
+#include <sensor_msgs/msg/image.hpp>
+#include <sensor_msgs/msg/imu.hpp>
+#include <sensor_msgs/msg/laser_scan.hpp>
+#include <std_msgs/msg/string.hpp>
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
@@ -39,9 +39,9 @@ private:
   void timer_callback();
   void update_heartbeat_status();
 
-  void lidar_callback(const ros2_robot_middleware::msg::LidarScan::SharedPtr &msg);
-  void imu_callback(const ros2_robot_middleware::msg::ImuData::SharedPtr &msg);
-  void camera_callback(const ros2_robot_middleware::msg::CameraImage::SharedPtr &msg);
+  void lidar_callback(sensor_msgs::msg::LaserScan::SharedPtr msg);
+  void imu_callback(sensor_msgs::msg::Imu::SharedPtr msg);
+  void camera_callback(sensor_msgs::msg::Image::SharedPtr msg);
 
   // 各降级路径的融合逻辑
   void fuse_full(ros2_robot_middleware::msg::PerceptionObjects &output);
@@ -65,13 +65,13 @@ private:
 
   rclcpp_lifecycle::LifecyclePublisher<ros2_robot_middleware::msg::PerceptionObjects>::SharedPtr fusion_pub_;
 
-  rclcpp::Subscription<ros2_robot_middleware::msg::LidarScan>::SharedPtr sub_lidar_;
-  rclcpp::Subscription<ros2_robot_middleware::msg::ImuData>::SharedPtr sub_imu_;
-  rclcpp::Subscription<ros2_robot_middleware::msg::CameraImage>::SharedPtr sub_camera_;
+  rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr sub_lidar_;
+  rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr sub_imu_;
+  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_camera_;
 
-  ros2_robot_middleware::msg::LidarScan::SharedPtr lidar_cache_;
-  ros2_robot_middleware::msg::ImuData::SharedPtr imu_cache_;
-  ros2_robot_middleware::msg::CameraImage::SharedPtr camera_cache_;
+  sensor_msgs::msg::LaserScan::SharedPtr lidar_cache_;
+  sensor_msgs::msg::Imu::SharedPtr imu_cache_;
+  sensor_msgs::msg::Image::SharedPtr camera_cache_;
 
   rclcpp::TimerBase::SharedPtr timer_;
 

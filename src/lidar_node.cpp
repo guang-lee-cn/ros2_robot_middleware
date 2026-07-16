@@ -10,7 +10,7 @@ LidarNode::LidarNode()
 LidarNode::CallbackReturn
 LidarNode::on_configure(const rclcpp_lifecycle::State &)
 {
-  publisher_ = this->create_publisher<ros2_robot_middleware::msg::LidarScan>(
+  publisher_ = this->create_publisher<sensor_msgs::msg::LaserScan>(
     "/sensor/lidar", rclcpp::QoS(10).best_effort());
 
   heartbeat_pub_ = this->create_publisher<std_msgs::msg::String>(
@@ -71,7 +71,7 @@ LidarNode::on_shutdown(const rclcpp_lifecycle::State &)
 
 void LidarNode::timer_callback()
 {
-  auto msg = ros2_robot_middleware::msg::LidarScan{};
+  auto msg = sensor_msgs::msg::LaserScan{};
 
   msg.header.stamp    = this->now();
   msg.header.frame_id = "lidar_frame";
@@ -86,6 +86,9 @@ void LidarNode::timer_callback()
   msg.angle_max       = kAngleMax;
   msg.angle_increment = kAngleIncrement;
   msg.time_increment  = kTimeIncrement;
+  msg.scan_time       = 0.1F;    // 10Hz scan
+  msg.range_min       = 0.1F;    // SICK TiM781 min range
+  msg.range_max       = 6.5F;    // SICK TiM781 max range
 
   msg.ranges.resize(kNumPoints);
   msg.intensities.resize(kNumPoints);
@@ -99,6 +102,6 @@ void LidarNode::timer_callback()
   publisher_->publish(msg);
 
   RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
-                       "LidarScan published: ranges[0..359] avg=%.2fm",
+                       "LaserScan published: ranges[0..359] avg=%.2fm",
                        msg.ranges[0]);
 }
