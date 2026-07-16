@@ -103,10 +103,11 @@ void FusionNode::timer_callback() {
     auto old_level = degradation_;
     degradation_   = evaluate_degradation();
 
-    // 降级级别变化时打日志（面试关注点：可观测性）
-    if (degradation_ != old_level) {
-        RCLCPP_WARN(this->get_logger(), "Degradation: %d → %d",
-                     static_cast<int>(old_level), static_cast<int>(degradation_));
+    // KF 预测步：用 IMU 加速度推进状态（独立于传感器融合）
+    if (imu_cache_) {
+      kf_.predict(0.2,  // dt = 200ms timer period
+                  imu_cache_->linear_acceleration.x,
+                  imu_cache_->linear_acceleration.y);
     }
 
     auto msg            = ros2_robot_middleware::msg::PerceptionObjects{};
@@ -123,7 +124,19 @@ void FusionNode::timer_callback() {
         break;
     }
 
+    // KF 更新步：用第一个检测物体的位置做观测修正
+    if (!msg.objects.empty()) {
+      const auto &first = msg.objects[0];
+      kf_.update(first.x, first.y);
+    }
+
     fusion_pub_->publish(msg);
+
+    // 降级级别变化时打日志
+    if (degradation_ != old_level) {
+      RCLCPP_WARN(this->get_logger(), "Degradation: %d → %d",
+                   static_cast<int>(old_level), static_cast<int>(degradation_));
+    }
 
     RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
                          "PerceptionObjects published: %zu object(s) [level=%d]",

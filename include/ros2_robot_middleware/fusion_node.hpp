@@ -3,6 +3,7 @@
 
 #include <cstdint>
 
+#include "ros2_robot_middleware/kalman_filter.hpp"
 #include "ros2_robot_middleware/msg/perception_objects.hpp"
 #include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/imu.hpp>
@@ -76,6 +77,8 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
 
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>::SharedPtr heartbeat_pub_;
+  KalmanFilter2D kf_;
+
   rclcpp::TimerBase::SharedPtr heartbeat_timer_;
 };
 
