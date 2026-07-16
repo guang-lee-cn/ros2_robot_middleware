@@ -28,11 +28,21 @@ private:
   void on_result(
     const rclcpp_action::ClientGoalHandle<ros2_robot_middleware::action::MoveToPose>::WrappedResult &result);
 
+  void send_goal(float target_x, float target_y);
+  void cancel_active_goal();
+
   rclcpp::Subscription<ros2_robot_middleware::msg::PerceptionObjects>::SharedPtr decision_sub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>::SharedPtr heartbeat_pub_;
   rclcpp::TimerBase::SharedPtr heartbeat_timer_;
 
   rclcpp_action::Client<ros2_robot_middleware::action::MoveToPose>::SharedPtr client_;
+
+  // Preemption + retry state
+  rclcpp_action::ClientGoalHandle<ros2_robot_middleware::action::MoveToPose>::SharedPtr active_goal_;
+  float last_target_x_ = 0.0F;
+  float last_target_y_ = 0.0F;
+  int retry_count_ = 0;
+  static constexpr int kMaxRetries = 3;
 };
 
 #endif  // ROS2_ROBOT_MIDDLEWARE_DECISION_NODE_HPP_

@@ -72,15 +72,29 @@ void DecisionNode::on_perception(const PerceptionObjects::SharedPtr& objs)
     return;
   }
 
-  if (!client_->wait_for_action_server(std::chrono::seconds(1))) {
+  // Preemption: 新感知数据到达 → 取消旧 goal → 发新 goal
+  // 面试关键：Action 的 preemption 模式是机器人导航的标准做法。
+  //   异步发送 cancel 后不等结果直接发新 goal（motor_ctrl 自己处理排队）。
+  cancel_active_goal();
+
+  send_goal(objs->objects[0].x, objs->objects[0].y);
+}
+
+void DecisionNode::send_goal(float target_x, float target_y)
+{
+  if (!client_->action_server_is_ready()) {
     RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
                          "Action server not available");
     return;
   }
 
-  auto goal = MoveToPose::Goal{};
-  goal.target_x     = objs->objects[0].x;
-  goal.target_y     = objs->objects[0].y;
+  // 记住目标便于重试
+  last_target_x_ = target_x;
+  last_target_y_ = target_y;
+
+  auto goal         = MoveToPose::Goal{};
+  goal.target_x     = target_x;
+  goal.target_y     = target_y;
   goal.target_theta = 0.0F;
   goal.max_speed    = 0.5F;
 
@@ -93,23 +107,46 @@ void DecisionNode::on_perception(const PerceptionObjects::SharedPtr& objs)
   client_->async_send_goal(goal, send_goal_options);
 }
 
+void DecisionNode::cancel_active_goal()
+{
+  if (!active_goal_) return;
+
+  RCLCPP_INFO(this->get_logger(), "Preempting previous goal");
+  client_->async_cancel_goal(active_goal_);
+  active_goal_.reset();
+  retry_count_ = 0;
+}
+
 void DecisionNode::on_goal_response(const ClientGoalHandle::SharedPtr& goal_handle)
 {
   if (!goal_handle) {
-    RCLCPP_ERROR(this->get_logger(), "Goal was rejected by server");
+    if (retry_count_ < kMaxRetries) {
+      retry_count_++;
+      RCLCPP_WARN(this->get_logger(), "Goal rejected, retrying %d/%d (%.2f, %.2f)",
+                   retry_count_, kMaxRetries, last_target_x_, last_target_y_);
+      send_goal(last_target_x_, last_target_y_);
+    } else {
+      RCLCPP_ERROR(this->get_logger(), "Goal rejected after %d retries, giving up",
+                   kMaxRetries);
+      retry_count_ = 0;
+    }
     return;
   }
+
+  active_goal_  = goal_handle;
+  retry_count_  = 0;
   RCLCPP_INFO(this->get_logger(), "Goal accepted by motor_ctrl");
 }
 
 void DecisionNode::on_result(const ClientGoalHandle::WrappedResult& result)
 {
+  active_goal_.reset();
+
   switch (result.code) {
     case rclcpp_action::ResultCode::SUCCEEDED:
       RCLCPP_INFO(this->get_logger(),
-                  "MoveToPose succeeded: reached (%.2f, %.2f) in %.2fs",
-                  result.result->final_x, result.result->final_y,
-                  result.result->elapsed_time);
+                  "MoveToPose succeeded: reached (%.2f, %.2f)",
+                  result.result->final_x, result.result->final_y);
       break;
     case rclcpp_action::ResultCode::CANCELED:
       RCLCPP_INFO(this->get_logger(), "MoveToPose canceled");
