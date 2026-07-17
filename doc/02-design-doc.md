@@ -194,7 +194,7 @@ flowchart TB
   sent=2000, received=2000, loss=0.00%, avg_latency=1.5ms, p99_latency=4.3ms
 ```
 
-**面试时的一句话解释：**
+**Summary:**
 
 > "best_effort 延迟低（0.8ms）但丢 0.65%；reliable 零丢包但延迟翻倍（1.5ms）。选择哪个取决于传感器：IMU 不能丢所以用 reliable，LiDAR 可以忍受偶尔丢帧所以用 best_effort。这个 trade-off 不是在 rclcpp 层背下来的，是我实际测出来的。"
 

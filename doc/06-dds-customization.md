@@ -158,7 +158,7 @@ ros2 launch ros2_robot_middleware system.launch.py
 
 ---
 
-## 6. 面试一句话总结
+## 6. Summary
 
 > "RMW 切换就一行环境变量。Fast-DDS 和 Cyclone DDS 在小消息延迟上几乎相同（~0.2ms），但 Cyclone 吞吐量高 2-4 倍、CPU 低 15%。我选 Fast-DDS 是因为它能用 XML Profile 做颗粒级调参 — initialAnnouncements、historyMemoryPolicy、socketBufferSize — 这些 Cyclone DDS 调不了。ROS2 Jazzy 默认是 Fast-DDS，也是因为定制性。"
 
