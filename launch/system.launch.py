@@ -20,18 +20,21 @@ def generate_launch_description():
             package='ros2_robot_middleware',
             executable='lidar_node',
             name='lidar',
+            namespace='',
             output='screen',
         ),
         LifecycleNode(
             package='ros2_robot_middleware',
             executable='imu_node',
             name='imu',
+            namespace='',
             output='screen',
         ),
         LifecycleNode(
             package='ros2_robot_middleware',
             executable='camera_node',
             name='camera',
+            namespace='',
             output='screen',
         ),
         # ── Fusion Layer ──
@@ -39,6 +42,7 @@ def generate_launch_description():
             package='ros2_robot_middleware',
             executable='fusion_node',
             name='fusion',
+            namespace='',
             output='screen',
         ),
         # ── Decision Layer ──
@@ -46,6 +50,7 @@ def generate_launch_description():
             package='ros2_robot_middleware',
             executable='decision_node',
             name='decision',
+            namespace='',
             output='screen',
         ),
         # ── Actuation Layer ──
@@ -53,6 +58,7 @@ def generate_launch_description():
             package='ros2_robot_middleware',
             executable='motor_ctrl_node',
             name='motor_ctrl',
+            namespace='',
             output='screen',
         ),
         # ── Infrastructure Layer ──
@@ -60,6 +66,7 @@ def generate_launch_description():
             package='ros2_robot_middleware',
             executable='health_monitor_node',
             name='health_monitor',
+            namespace='',
             output='screen',
         ),
     ])

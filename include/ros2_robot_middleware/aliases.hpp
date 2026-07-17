@@ -2,9 +2,6 @@
 #define ROS2_ROBOT_MIDDLEWARE_ALIASES_HPP_
 
 #include "ros2_robot_middleware/action/move_to_pose.hpp"
-#include "ros2_robot_middleware/msg/camera_image.hpp"
-#include "ros2_robot_middleware/msg/imu_data.hpp"
-#include "ros2_robot_middleware/msg/lidar_scan.hpp"
 #include "ros2_robot_middleware/msg/object.hpp"
 #include "ros2_robot_middleware/msg/perception_objects.hpp"
 #include "ros2_robot_middleware/srv/set_param.hpp"
