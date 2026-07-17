@@ -27,6 +27,11 @@ HealthMonitorNode::on_configure(const rclcpp_lifecycle::State &)
   create_service_server();
   create_restart_clients();
 
+  // Register monitored nodes with domain service
+  for (const auto &cfg : kNdes) {
+    monitor_.register_node(cfg.node, timeouts_[cfg.node]);
+  }
+
   RCLCPP_INFO(this->get_logger(),
               "HealthMonitor configured: %d nodes, %.1fs interval",
               kNumNodes, check_interval_s_);
@@ -77,7 +82,6 @@ HealthMonitorNode::on_cleanup(const rclcpp_lifecycle::State &)
   pub_.reset();
   health_srv_.reset();
 
-  last_seen_.clear();
   timeouts_.clear();
 
   return CallbackReturn::SUCCESS;
@@ -130,7 +134,7 @@ void HealthMonitorNode::create_subscriptions()
     subs_[i] = this->create_subscription<std_msgs::msg::String>(
       kNdes[i].topic, rclcpp::QoS(10).reliable(),
       [this, node = std::string(kNdes[i].node)](std_msgs::msg::String::SharedPtr /*msg*/) {
-        last_seen_[node] = this->now();
+        monitor_.heartbeat_received(node);
       });
   }
 }
@@ -145,55 +149,49 @@ void HealthMonitorNode::create_health_timer()
 
 void HealthMonitorNode::check_health()
 {
+  // Tick domain service — age all heartbeats
+  auto now = this->now();
+  if (last_tick_.nanoseconds() > 0) {
+    monitor_.tick((now - last_tick_).seconds());
+  }
+  last_tick_ = now;
+
   auto report = ros2_robot_middleware::msg::HealthReport{};
-  report.header.stamp = this->now();
+  report.header.stamp = now;
   report.header.frame_id = "health_monitor";
 
-  const auto now = this->now();
-
   for (const auto &cfg : kNdes) {
+    auto node_status = monitor_.escalated_status(cfg.node);
+
     auto status = ros2_robot_middleware::msg::HealthStatus{};
     status.node_name = cfg.node;
     status.timeout_s = timeouts_[cfg.node];
+    status.status = amr::domain::monitoring::to_string(node_status);
 
-    auto it = last_seen_.find(cfg.node);
-    if (it == last_seen_.end()) {
-      status.status = "STALE";
-      status.last_seen_s = -1.0;
-    } else {
-      status.last_seen_s = (now - it->second).seconds();
-      if (status.last_seen_s > status.timeout_s) {
-        status.status = "ERROR";
-      } else if (status.last_seen_s > status.timeout_s * kWarnRatio) {
-        status.status = "WARN";
+    // Get last_seen from domain heartbeat state
+    for (const auto &[name, hb] : monitor_.heartbeats()) {
+      if (name == cfg.node) status.last_seen_s = hb.last_seen_s;
+    }
+
+    // Watchdog recovery via ROS2 lifecycle service
+    if (node_status == amr::domain::monitoring::NodeStatus::ERROR) {
+      if (monitor_.should_recover(cfg.node)) {
+        RCLCPP_ERROR_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                              "[%s] ERROR: triggering restart", cfg.node);
+        try_restart_sequence(cfg.node);
       } else {
-        status.status = "OK";
+        RCLCPP_ERROR(this->get_logger(), "[%s] FATAL: restart limit exceeded",
+                     cfg.node);
+        status.status = "FATAL";
       }
+    } else if (node_status == amr::domain::monitoring::NodeStatus::OK) {
+      monitor_.on_recovered(cfg.node);
+    } else if (node_status == amr::domain::monitoring::NodeStatus::STALE) {
+      RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                           "[%s] STALE: no data received", cfg.node);
     }
 
     report.nodes.push_back(status);
-
-    if (status.status == "ERROR") {
-      // 看门狗恢复：尝试通过 lifecycle service 重启故障节点
-      auto &recovery = recovery_[cfg.node];
-      if (recovery.attempts < kMaxRestartRetries) {
-        RCLCPP_ERROR_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
-                              "[%s] ERROR (attempt %d/%d): triggering restart",
-                              cfg.node, recovery.attempts + 1, kMaxRestartRetries);
-        try_restart_sequence(cfg.node);
-        recovery.attempts++;
-      } else {
-        RCLCPP_ERROR(this->get_logger(), "[%s] FATAL: %d restart attempts failed",
-                     cfg.node, kMaxRestartRetries);
-        status.status = "FATAL";
-      }
-    } else if (status.status == "OK") {
-      // 节点恢复后重置尝试计数
-      recovery_[cfg.node].attempts = 0;
-    } else if (status.status == "STALE") {
-      RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
-                           "[%s] STALE: no data received yet", cfg.node);
-    }
   }
 
   pub_->publish(report);
@@ -205,13 +203,15 @@ void HealthMonitorNode::create_service_server()
     "/health/check",
     [this](const std::shared_ptr<ros2_robot_middleware::srv::SetParam::Request> req,
            std::shared_ptr<ros2_robot_middleware::srv::SetParam::Response> resp) {
-      auto it = last_seen_.find(req->param_name);
-      if (it == last_seen_.end()) {
+      double elapsed = -1.0;
+      for (const auto &[name, hb] : monitor_.heartbeats()) {
+        if (name == req->param_name) { elapsed = hb.last_seen_s; break; }
+      }
+      if (elapsed < 0) {
         resp->success = false;
         resp->message = "Unknown node: " + req->param_name;
         return;
       }
-      double elapsed = (this->now() - it->second).seconds();
       double timeout = timeouts_[req->param_name];
       if (elapsed > timeout) {
         resp->success = false;
@@ -363,10 +363,10 @@ std::string HealthMonitorNode::prometheus_metrics() const
   out << "# TYPE ros2_node_health_seconds gauge\n";
 
   for (const auto &cfg : kNdes) {
-    auto it = last_seen_.find(cfg.node);
-    double val = (it != last_seen_.end())
-                   ? (this->now() - it->second).seconds()
-                   : -1.0;
+    double val = -1.0;
+    for (const auto &[name, hb] : monitor_.heartbeats()) {
+      if (name == cfg.node) { val = hb.last_seen_s; break; }
+    }
     out << "ros2_node_health_seconds{node=\"" << cfg.node << "\"} " << val << "\n";
   }
 

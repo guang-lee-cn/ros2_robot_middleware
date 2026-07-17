@@ -4,18 +4,21 @@
 #include <array>
 #include <memory>
 #include <string>
+#include <thread>
 #include <unordered_map>
 
 #include "lifecycle_msgs/srv/change_state.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
+#include "ros2_robot_middleware/application/monitoring_service.hpp"
 #include "ros2_robot_middleware/msg/health_report.hpp"
 #include "ros2_robot_middleware/msg/health_status.hpp"
 #include "ros2_robot_middleware/srv/set_param.hpp"
 
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
 
+// Thin ROS2 adapter — delegates heartbeat analysis + recovery to MonitoringService.
 class HealthMonitorNode : public rclcpp_lifecycle::LifecycleNode {
 public:
   HealthMonitorNode();
@@ -44,13 +47,11 @@ private:
   void prometheus_accept();
   std::string prometheus_metrics() const;
 
-  static constexpr int kNumNodes          = 6;
-  static constexpr int kPrometheusPort    = 9090;
-  static constexpr int kMaxRestartRetries = 3;
+  // Domain layer
+  amr::application::MonitoringService monitor_;
 
-  struct RecoveryState {
-    int attempts = 0;
-  };
+  static constexpr int kNumNodes       = 6;
+  static constexpr int kPrometheusPort = 9090;
 
   struct NodeConfig {
     const char *node;
@@ -66,21 +67,21 @@ private:
     {"motor_ctrl", "/cmd/status",                 2.0},
   }};
 
+  // ROS2 infrastructure
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr subs_[kNumNodes];
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp_lifecycle::LifecyclePublisher<ros2_robot_middleware::msg::HealthReport>::SharedPtr pub_;
   rclcpp::Service<ros2_robot_middleware::srv::SetParam>::SharedPtr health_srv_;
 
-  std::unordered_map<std::string, rclcpp::Time> last_seen_;
   std::unordered_map<std::string, double> timeouts_;
   double check_interval_s_ = 1.0;
 
-  // Watchdog recovery state per node
-  std::unordered_map<std::string, RecoveryState> recovery_;
+  // Watchdog infrastructure (ROS2 lifecycle service clients)
   std::unordered_map<std::string, rclcpp::Client<lifecycle_msgs::srv::ChangeState>::SharedPtr> restart_clients_;
 
   int prom_socket_ = -1;
   std::thread prom_thread_;
+  rclcpp::Time last_tick_;
 };
 
-#endif  // ROS2_ROBOT_MIDDLEWARE_HEALTH_MONITOR_NODE_HPP_
+#endif
