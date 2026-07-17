@@ -320,15 +320,14 @@ HealthMonitor 需要对外暴露节点健康数据，供运维系统消费。
 | 数值稳定性 | ✅ | ✅ Joseph 形式 | ✅ | ✅ Joseph 形式 |
 | bias 在线估计 | ❌ 不支持 | ✅ gyro/accel/encoder | ❌ | N/A (无 bias 状态) |
 | 零外部依赖 | ❌ | ❌ (需要 Eigen) | ❌ | ✅ |
-| 可安装性 | ❌ 需 sudo | ⚠️ vendor Eigen | ❌ 需 sudo | ✅ 项目内 |
+| 调试复杂度 | 15 维 P 矩阵 | 23 维 + 46 sigma points | Ceres 求解器 | ✅ 4 维, 16 个元素 |
 | 2D AMR 适配度 | ⚠️ two_d_mode | ⚠️ 四元数过度 | ⚠️ | ✅ 专为 2D 设计 |
 
 ### 为什么不用 FusionCore（当前阶段）
 
-1. **模型过度**：23 维 UKF 包含四元数姿态、gyro bias、accel bias、encoder bias——这些是为室外 GPS 导航设计的。仓库 AMR 在平面上行驶，不需要姿态估计和 bias 在线标定。
-2. **依赖引入**：FusionCore 依赖 Eigen3（头文件库，约 2MB header-only）。当前项目刻意保持零外部数学库依赖，Eigen 的引入增加了构建复杂度。
-3. **调试成本**：23 维 UKF 发散时的调试难度远大于 4 维 KF——需要在 23×23 协方差矩阵中定位发散源。
-4. **网络不可用**：GitHub clone 超时，vendor 成本高。
+1. **模型过度**：23 维 UKF 包含四元数姿态、gyro bias、accel bias、encoder bias——这些是为室外 GPS 导航设计的。仓库 AMR 在平面上行驶，不需要姿态估计和 bias 在线标定。用 23 维模型追踪 2D 平面运动是典型的过度工程——状态空间越大，UKF 的 sigma point 采样越多，计算开销和调试难度呈超线性增长。
+2. **依赖成本与回报不成比例**：FusionCore 依赖 Eigen3（约 2MB header-only）。引入一个 2MB 的线性代数库来做 4×4 矩阵运算（64 次浮点乘加），违反了 KISS 原则。当状态维度 > 6 或需要 Cholesky/SVD 分解时，Eigen 的价值才会体现——那个时候也正好应该切换到 FusionCore。
+3. **调试复杂度**：23 维 UKF 发散时需要在 23×23 协方差矩阵 + 46 个 sigma point 中定位根因。4 维 KF 的 P 矩阵只有 16 个元素，手动验算 5 分钟完成。在开发阶段，可调试性是比理论精度更重要的工程考量。
 
 ### 自研 KF 的商用级改进（v1.1.0）
 
