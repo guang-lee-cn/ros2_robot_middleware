@@ -282,3 +282,76 @@ HealthMonitor 需要对外暴露节点健康数据，供运维系统消费。
 | ADR-8 | 按 topic 差异化 QoS（待量化） | Draft |
 
 **Accepted = 已决策，可以讲清楚为什么。Draft = 当前实现够用，但 M3 会重新评估。**
+
+---
+
+## ADR-9: 状态估计库选型 — 自研 KF vs 开源方案
+
+**Date:** 2026-07-17
+**Status:** Accepted
+**Decision maker:** guang
+
+### 上下文
+
+当前项目使用自研的 4 状态（x, y, vx, vy）恒加速度线性卡尔曼滤波器。需要评估是否应切换到商用级开源方案。
+
+### 备选方案
+
+| 方案 | 描述 | 状态维度 | 依赖 | 安装方式 |
+|------|------|---------|------|---------|
+| A: robot_localization | ROS2 生态标准，nav2 集成，15 维 EKF/UKF | 15 | Eigen + tf2 + ROS2 | sudo apt |
+| B: FusionCore | 2025.05 新发布，23 维 UKF + bias 估计，Apache 2.0 | 23 | Eigen (header-only) | vendor 或 apt |
+| C: Fuse | 因子图优化，Google Ceres 后端 | 可变 | Ceres + ROS2 插件 | sudo apt |
+| D: 自研 KF (保留) | 4 维线性 KF，零外部依赖 | 4 | 无 | 项目内 |
+
+### 决策
+
+**选 D: 保留自研 4 状态 KF，修复数值稳定性/野值剔除后达到商用级标准。**
+
+生产环境如需升级，推荐方案 B (FusionCore)。
+
+### 评估矩阵
+
+| 评估维度 | A: robot_localization | B: FusionCore | C: Fuse | D: 自研 (改进后) |
+|---------|----------------------|---------------|---------|-----------------|
+| 生产验证 | ✅ nav2 集成 | ⚠️ 2025.05 新发布 | ✅ | ✅ 13 测试通过 |
+| 状态模型匹配度 | ❌ 15 维过度 | ❌ 23 维过度 | ⚠️ 可配 | ✅ 4 维刚好 |
+| 野值剔除 | ⚠️ 手动标量阈值 | ✅ Mahalanobis chi-squared | ✅ | ✅ Mahalanobis 3σ |
+| 数值稳定性 | ✅ | ✅ Joseph 形式 | ✅ | ✅ Joseph 形式 |
+| bias 在线估计 | ❌ 不支持 | ✅ gyro/accel/encoder | ❌ | N/A (无 bias 状态) |
+| 零外部依赖 | ❌ | ❌ (需要 Eigen) | ❌ | ✅ |
+| 可安装性 | ❌ 需 sudo | ⚠️ vendor Eigen | ❌ 需 sudo | ✅ 项目内 |
+| 2D AMR 适配度 | ⚠️ two_d_mode | ⚠️ 四元数过度 | ⚠️ | ✅ 专为 2D 设计 |
+
+### 为什么不用 FusionCore（当前阶段）
+
+1. **模型过度**：23 维 UKF 包含四元数姿态、gyro bias、accel bias、encoder bias——这些是为室外 GPS 导航设计的。仓库 AMR 在平面上行驶，不需要姿态估计和 bias 在线标定。
+2. **依赖引入**：FusionCore 依赖 Eigen3（头文件库，约 2MB header-only）。当前项目刻意保持零外部数学库依赖，Eigen 的引入增加了构建复杂度。
+3. **调试成本**：23 维 UKF 发散时的调试难度远大于 4 维 KF——需要在 23×23 协方差矩阵中定位发散源。
+4. **网络不可用**：GitHub clone 超时，vendor 成本高。
+
+### 自研 KF 的商用级改进（v1.1.0）
+
+针对初版三个缺陷做了定向修复：
+
+| 缺陷 | 初版 | 改进后 |
+|------|------|--------|
+| 数值稳定性 | `P = (I-KH)P` 标准形式，浮点累积误差可能导致 P 非对称正定 | **Joseph 形式**: `P = (I-KH)P(I-KH)^T + KRK^T`，始终对称正定 |
+| 野值剔除 | 无，镜面反射/噪点产生的异常聚类中心直接纳入更新 | **Mahalanobis 距离 3σ 门限**: `|z-Hx| > 3√(P_ii+R)` 时拒绝更新 |
+| 多目标跟踪 | 全局单例，只跟踪一个物体 | 当前阶段接受——DecisionNode 只取 objects[0] |
+
+### 生产环境升级路径
+
+当以下条件任一满足时，切换到 FusionCore：
+1. 引入 GPS/RTK 做室外定位，需要在线估计 IMU bias
+2. 引入轮式编码器，需要 encoder WZ bias 估计
+3. 多传感器异步到达，需要 UKF 的非线性测量模型（替代线性 H 矩阵）
+4. 构建环境有 apt 包管理器
+
+切换时只需替换 `kalman_filter.hpp` 的内部实现，FusionNode 的调用代码（`predict(dt, ax, ay)` + `update(zx, zy)`）保持不变。
+
+### 参考文献
+
+- robot_localization: [https://github.com/cra-ros-pkg/robot_localization](https://github.com/cra-ros-pkg/robot_localization)
+- FusionCore: [https://github.com/manankharwar/fusioncore](https://github.com/manankharwar/fusioncore)
+- Moore & Stouch (2014): "A Generalized Extended Kalman Filter Implementation for the Robot Operating System"
