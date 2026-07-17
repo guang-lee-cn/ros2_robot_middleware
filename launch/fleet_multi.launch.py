@@ -1,34 +1,28 @@
-"""多 AMR 集群启动 — 1 组完整 AMR 管线 + Fleet Manager
+"""Multi-AMR cluster launch with Fleet Manager — production process layout.
 
-生产环境多 AMR 部署方式：
-  Docker Compose 启动多个容器实例，每台 AMR 独立进程 + 独立 ROS_DOMAIN_ID。
-  Fleet Manager 通过 Fast-DDS Partitions 或 Domain Bridge 跨域通信。
-  本 launch 演示单进程内 Fleet Manager 的集成架构。
+Per-AMR: 5 processes (3 sensor drivers + compute_container + health_monitor)
+Fleet Manager: 1 process (cross-AMR control plane)
 
-面试话术：
-  "多 AMR 集群的核心是每台机器人独立运行自己的感知-决策-执行管线，
-   通过 DDS domain 做网络级隔离。Fleet Manager 是跨 domain 的
-   控制面节点——它订阅所有 AMR 的健康报告做全局集群状态决策。"
+Production deployment:
+  Each AMR runs its own Docker container with independent ROS_DOMAIN_ID.
+  Fleet Manager uses Fast-DDS Partitions or Domain Bridge for cross-domain comms.
 """
 
 from launch import LaunchDescription
-from launch_ros.actions import LifecycleNode
+from launch_ros.actions import Node, LifecycleNode
 
-BUSINESS_NODES = [
-    ("lidar_node",          "lidar"),
-    ("imu_node",            "imu"),
-    ("camera_node",         "camera"),
-    ("fusion_node",         "fusion"),
-    ("decision_node",       "decision"),
-    ("motor_ctrl_node",     "motor_ctrl"),
+SENSOR_NODES = [
+    ("lidar_node",  "lidar"),
+    ("imu_node",    "imu"),
+    ("camera_node", "camera"),
 ]
 
 
 def generate_launch_description():
     desc = []
 
-    # ── AMR-1 业务管线（全局 topic，通过 remapping 命名空间化） ────────
-    for exec_name, node_name in BUSINESS_NODES:
+    # ── AMR-1 Sensor Layer (independent processes) ─────────────────────
+    for exec_name, node_name in SENSOR_NODES:
         desc.append(
             LifecycleNode(
                 package="ros2_robot_middleware",
@@ -39,7 +33,18 @@ def generate_launch_description():
             )
         )
 
-    # ── AMR-1 health_monitor（remap 输出到 /amr1/health/report）─────────
+    # ── AMR-1 Compute Container (fusion + decision + motor_ctrl) ──────
+    desc.append(
+        Node(
+            package="ros2_robot_middleware",
+            executable="compute_container",
+            name="amr1_compute",
+            namespace="",
+            output="screen",
+        )
+    )
+
+    # ── AMR-1 Health Monitor (remap output to /amr1/health/report) ────
     desc.append(
         LifecycleNode(
             package="ros2_robot_middleware",
@@ -54,7 +59,7 @@ def generate_launch_description():
         )
     )
 
-    # ── Fleet Manager ───────────────────────────────────────────────────
+    # ── Fleet Manager (global control plane) ──────────────────────────
     desc.append(
         LifecycleNode(
             package="ros2_robot_middleware",
