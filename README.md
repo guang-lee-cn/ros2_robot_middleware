@@ -1,6 +1,6 @@
-# ROS2 AMR Middleware
+# ROS2 AMR Framework
 
-A production-grade perception-to-actuation middleware for autonomous mobile robots, built from scratch on ROS 2 Jazzy. Covers lifecycle management, fault tolerance, QoS tuning, multi-robot coordination, security encryption, and Gazebo simulation.
+A production-grade autonomous mobile robot application framework built on ROS 2 Jazzy. Covers lifecycle management, fault tolerance, QoS tuning, multi-robot coordination, security encryption, and Gazebo simulation.
 
 ## Architecture
 
