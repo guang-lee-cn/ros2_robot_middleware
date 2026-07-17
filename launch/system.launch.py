@@ -1,21 +1,23 @@
-"""Launch all 7 nodes of the perception-to-actuation pipeline with lifecycle management.
+"""Launch the full AMR pipeline — production process layout.
 
-Each node is a rclcpp_lifecycle::LifecycleNode that self-transitions through
-configure() → activate() in its main() entrypoint. For external lifecycle
-control (e.g. managed by a lifecycle manager), comment out the self-activation
-in main() and use:
+Process model:
+  Process 1: lidar_node       — independent (driver isolation)
+  Process 2: imu_node         — independent (driver isolation)
+  Process 3: camera_node      — independent (driver isolation)
+  Process 4: compute_container — fusion + decision + motor_ctrl (zero-copy)
+  Process 5: health_monitor   — independent (monitoring isolation)
 
-    ros2 lifecycle set /lidar configure
-    ros2 lifecycle set /lidar activate
+8 nodes → 5 processes. Compute nodes share memory via shared_ptr;
+sensor drivers and health monitor remain isolated for fault containment.
 """
 
 from launch import LaunchDescription
-from launch_ros.actions import LifecycleNode
+from launch_ros.actions import Node, LifecycleNode
 
 
 def generate_launch_description():
     return LaunchDescription([
-        # ── Sensor Layer ──
+        # ── Sensor Layer — independent processes for driver fault isolation ──
         LifecycleNode(
             package='ros2_robot_middleware',
             executable='lidar_node',
@@ -37,31 +39,19 @@ def generate_launch_description():
             namespace='',
             output='screen',
         ),
-        # ── Fusion Layer ──
-        LifecycleNode(
+
+        # ── Compute Layer — fusion + decision + motor_ctrl in single process ──
+        # Zero-copy via shared_ptr between nodes (no DDS serialization overhead).
+        # MultiThreadedExecutor for parallel callback processing.
+        Node(
             package='ros2_robot_middleware',
-            executable='fusion_node',
-            name='fusion',
+            executable='compute_container',
+            name='compute',
             namespace='',
             output='screen',
         ),
-        # ── Decision Layer ──
-        LifecycleNode(
-            package='ros2_robot_middleware',
-            executable='decision_node',
-            name='decision',
-            namespace='',
-            output='screen',
-        ),
-        # ── Actuation Layer ──
-        LifecycleNode(
-            package='ros2_robot_middleware',
-            executable='motor_ctrl_node',
-            name='motor_ctrl',
-            namespace='',
-            output='screen',
-        ),
-        # ── Infrastructure Layer ──
+
+        # ── Infrastructure — independent, must not share fate with monitored ──
         LifecycleNode(
             package='ros2_robot_middleware',
             executable='health_monitor_node',
