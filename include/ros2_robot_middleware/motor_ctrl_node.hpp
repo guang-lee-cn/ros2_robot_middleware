@@ -21,6 +21,8 @@ public:
   CallbackReturn on_cleanup(const rclcpp_lifecycle::State &);
   CallbackReturn on_shutdown(const rclcpp_lifecycle::State &);
 
+  explicit MotorCtrlNode(const rclcpp::NodeOptions &options);
+
 private:
   rclcpp_action::GoalResponse
   handle_goal(const rclcpp_action::GoalUUID &uuid,

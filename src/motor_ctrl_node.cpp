@@ -1,3 +1,4 @@
+#include <rclcpp_components/register_node_macro.hpp>
 #include "ros2_robot_middleware/motor_ctrl_node.hpp"
 #include "ros2_robot_middleware/aliases.hpp"
 
@@ -6,6 +7,10 @@
 MotorCtrlNode::MotorCtrlNode()
   : rclcpp_lifecycle::LifecycleNode("motor_ctrl")
 {
+}
+
+MotorCtrlNode::MotorCtrlNode(const rclcpp::NodeOptions &options)
+  : rclcpp_lifecycle::LifecycleNode("motor_ctrl", options) {
 }
 
 MotorCtrlNode::CallbackReturn
@@ -166,3 +171,5 @@ void MotorCtrlNode::handle_set_param(
   }
   response->success = true;
 }
+
+RCLCPP_COMPONENTS_REGISTER_NODE(MotorCtrlNode)

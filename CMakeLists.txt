@@ -9,6 +9,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(lifecycle_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
@@ -45,16 +46,38 @@ target_include_directories(robot_middleware_lib PUBLIC
 )
 
 ament_target_dependencies(robot_middleware_lib
-  rclcpp rclcpp_action rclcpp_lifecycle lifecycle_msgs sensor_msgs geometry_msgs std_msgs
+  rclcpp rclcpp_action rclcpp_lifecycle rclcpp_components lifecycle_msgs sensor_msgs geometry_msgs std_msgs
 )
 
 rosidl_get_typesupport_target(cpp_typesupport_target
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 target_link_libraries(robot_middleware_lib "${cpp_typesupport_target}")
 
-# Thin executables — one per node
-set(NODE_NAMES lidar imu camera fusion decision motor_ctrl health_monitor fleet_manager)
-foreach(node ${NODE_NAMES})
+# Composable compute nodes — shared library loaded into a container process
+# fusion, decision, motor_ctrl share a process (zero-copy, low latency)
+# sensor drivers (lidar/imu/camera) remain independent processes (fault isolation)
+add_library(compute_component SHARED
+  src/fusion_node.cpp
+  src/decision_node.cpp
+  src/motor_ctrl_node.cpp
+)
+target_include_directories(compute_component PUBLIC include ${CMAKE_CURRENT_BINARY_DIR}/rosidl_generator_cpp)
+ament_target_dependencies(compute_component
+  rclcpp rclcpp_action rclcpp_lifecycle rclcpp_components lifecycle_msgs sensor_msgs geometry_msgs std_msgs
+)
+target_link_libraries(compute_component "${cpp_typesupport_target}")
+
+# Component container — loads compute nodes (fusion + decision + motor_ctrl)
+# into a single process. Sensor drivers remain independent processes.
+add_executable(compute_container src/compute_container.cpp)
+target_link_libraries(compute_container compute_component)
+ament_target_dependencies(compute_container rclcpp rclcpp_components)
+install(TARGETS compute_component DESTINATION lib)
+install(TARGETS compute_container DESTINATION lib/${PROJECT_NAME})
+
+# Thin executables — independent processes for sensor drivers + monitoring
+set(INDEPENDENT_NODES lidar imu camera health_monitor fleet_manager)
+foreach(node ${INDEPENDENT_NODES})
   add_executable(${node}_node src/${node}_main.cpp)
   target_link_libraries(${node}_node robot_middleware_lib)
   install(TARGETS ${node}_node DESTINATION lib/${PROJECT_NAME})

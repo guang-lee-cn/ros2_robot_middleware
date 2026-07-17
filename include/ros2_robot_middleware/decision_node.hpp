@@ -21,6 +21,8 @@ public:
   CallbackReturn on_cleanup(const rclcpp_lifecycle::State &);
   CallbackReturn on_shutdown(const rclcpp_lifecycle::State &);
 
+  explicit DecisionNode(const rclcpp::NodeOptions &options);
+
 private:
   void on_perception(const ros2_robot_middleware::msg::PerceptionObjects::SharedPtr &objs);
   void on_goal_response(

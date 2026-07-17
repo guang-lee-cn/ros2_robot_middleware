@@ -1,8 +1,14 @@
 #include "ros2_robot_middleware/fusion_node.hpp"
 
+#include <rclcpp_components/register_node_macro.hpp>
+
 #include <cmath>
 
 FusionNode::FusionNode() : rclcpp_lifecycle::LifecycleNode("fusion") {
+}
+
+FusionNode::FusionNode(const rclcpp::NodeOptions &options)
+  : rclcpp_lifecycle::LifecycleNode("fusion", options) {
 }
 
 // ── Lifecycle callbacks ──────────────────────────────────────────────────────
@@ -327,3 +333,5 @@ void FusionNode::fuse_no_imu(ros2_robot_middleware::msg::PerceptionObjects &outp
         obj.y += 0.05F;
     }
 }
+
+RCLCPP_COMPONENTS_REGISTER_NODE(FusionNode)

@@ -1,9 +1,15 @@
 #include "ros2_robot_middleware/aliases.hpp"
 #include "ros2_robot_middleware/decision_node.hpp"
 
+#include <rclcpp_components/register_node_macro.hpp>
+
 DecisionNode::DecisionNode()
   : rclcpp_lifecycle::LifecycleNode("decision")
 {
+}
+
+DecisionNode::DecisionNode(const rclcpp::NodeOptions &options)
+  : rclcpp_lifecycle::LifecycleNode("decision", options) {
 }
 
 DecisionNode::CallbackReturn
@@ -156,3 +162,5 @@ void DecisionNode::on_result(const ClientGoalHandle::WrappedResult& result)
       break;
   }
 }
+
+RCLCPP_COMPONENTS_REGISTER_NODE(DecisionNode)

@@ -36,6 +36,8 @@ public:
 
   DegradationLevel degradation_level() const { return degradation_; }
 
+  explicit FusionNode(const rclcpp::NodeOptions &options);
+
 private:
   void timer_callback();
   void update_heartbeat_status();
