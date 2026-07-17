@@ -9,18 +9,9 @@
 | 负责人 | guang |
 | 电梯演讲 | 面向仓储 AMR 场景的 ROS2 中间件，覆盖感知-融合-决策-执行全链路。支持一键部署，内置 CI/CD、限流日志、结构化日志，开箱可验证 |
 
-## 2. 目标用户
+## 2. Learning Objectives
 
-**用户画像：** 头部机器人公司面试官（3 年以上 ROS2 开发经验的用人标准）
-
-| 公司 | 面试官关注点 |
-|------|------------|
-| 大疆 | 无人机与云台的稳定通信、机群实时通信调度 |
-| 极智嘉 / 海康 | AMR 多传感器数据融合的可靠性 |
-| 元戎启行 | 自动驾驶中 DDS 确定性通信 |
-| Amazon Robotics | 规模化多机器人协同的中间件架构 |
-
-**用户看完项目的结论：** "这是一个具备 3 年 ROS2/Fast-DDS 开发定制经验的工程师，能从协议层到应用层独立设计和交付。"
+**Goal:** Build production-grade ROS2 middleware expertise through hands-on implementation, covering lifecycle management, fault tolerance, QoS tuning, multi-robot coordination, and security.
 
 ## 3. 产品定位
 
