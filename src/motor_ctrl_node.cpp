@@ -106,8 +106,8 @@ rclcpp_action::CancelResponse MotorCtrlNode::handle_cancel(
 void MotorCtrlNode::execute(const std::shared_ptr<ServerGoalHandle> goal_handle)
 {
   const auto goal = goal_handle->get_goal();
-  float current_x = 0.0F;
-  float current_y = 0.0F;
+  amr::domain::execution::Interpolator::State current{0.0F, 0.0F};
+  amr::domain::execution::Interpolator::State target{goal->target_x, goal->target_y};
 
   rclcpp::Rate rate(10);
 
@@ -115,42 +115,33 @@ void MotorCtrlNode::execute(const std::shared_ptr<ServerGoalHandle> goal_handle)
     if (goal_handle->is_canceling()) {
       auto result          = std::make_shared<MoveToPose::Result>();
       result->reached      = false;
-      result->final_x      = current_x;
-      result->final_y      = current_y;
+      result->final_x      = current.x;
+      result->final_y      = current.y;
       result->elapsed_time = 0;
       goal_handle->canceled(result);
       RCLCPP_INFO(this->get_logger(), "Goal canceled");
       return;
     }
 
-    float dx   = goal->target_x - current_x;
-    float dy   = goal->target_y - current_y;
-    float dist = std::sqrt(dx * dx + dy * dy);
+    amr::domain::execution::Interpolator::Feedback fb;
+    bool reached = execution_.step(target, current, &fb);
 
-    if (dist < step_size_) {
-      current_x = goal->target_x;
-      current_y = goal->target_y;
-
+    if (reached) {
       auto result          = std::make_shared<MoveToPose::Result>();
       result->reached      = true;
-      result->final_x      = current_x;
-      result->final_y      = current_y;
+      result->final_x      = current.x;
+      result->final_y      = current.y;
       result->elapsed_time = 0;
       goal_handle->succeed(result);
-      RCLCPP_INFO(this->get_logger(), "Goal reached: (%.2f, %.2f)", current_x, current_y);
+      RCLCPP_INFO(this->get_logger(), "Goal reached: (%.2f, %.2f)", current.x, current.y);
       return;
     }
 
-    float ratio = step_size_ / dist;
-    current_x += dx * ratio;
-    current_y += dy * ratio;
-
     auto feedback                = std::make_shared<MoveToPose::Feedback>();
-    feedback->current_x          = current_x;
-    feedback->current_y          = current_y;
-    feedback->distance_remaining = dist - step_size_;
-    feedback->percent_complete =
-      (1.0F - (dist / std::sqrt(goal->target_x * goal->target_x + goal->target_y * goal->target_y))) * 100.0F;
+    feedback->current_x          = fb.current_x;
+    feedback->current_y          = fb.current_y;
+    feedback->distance_remaining = fb.distance_remaining;
+    feedback->percent_complete   = fb.percent_complete;
 
     goal_handle->publish_feedback(feedback);
     rate.sleep();
@@ -164,7 +155,7 @@ void MotorCtrlNode::handle_set_param(
   RCLCPP_INFO(this->get_logger(),
               "SetParam: %s = %.4f", request->param_name.c_str(), request->value);
   if (request->param_name == "step_size") {
-    step_size_ = static_cast<float>(request->value);
+    execution_.set_step_size(static_cast<float>(request->value));
     response->message = "Parameter updated";
   } else {
     response->message = "Unknown parameter";

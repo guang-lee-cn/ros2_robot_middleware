@@ -2,6 +2,7 @@
 #define ROS2_ROBOT_MIDDLEWARE_MOTOR_CTRL_NODE_HPP_
 
 #include "ros2_robot_middleware/action/move_to_pose.hpp"
+#include "ros2_robot_middleware/application/execution_service.hpp"
 #include "ros2_robot_middleware/srv/set_param.hpp"
 #include "std_msgs/msg/string.hpp"
 
@@ -9,6 +10,7 @@
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
 
+// Thin ROS2 adapter — delegates motion interpolation to ExecutionService.
 class MotorCtrlNode : public rclcpp_lifecycle::LifecycleNode {
 public:
   MotorCtrlNode();
@@ -37,13 +39,14 @@ private:
   void handle_set_param(const std::shared_ptr<ros2_robot_middleware::srv::SetParam::Request> request,
                         std::shared_ptr<ros2_robot_middleware::srv::SetParam::Response> response);
 
+  // Domain layer — pure math
+  amr::application::ExecutionService execution_;
+
+  // ROS2 infrastructure
   rclcpp_action::Server<ros2_robot_middleware::action::MoveToPose>::SharedPtr action_server_;
   rclcpp::Service<ros2_robot_middleware::srv::SetParam>::SharedPtr service_server_;
-
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>::SharedPtr status_pub_;
   rclcpp::TimerBase::SharedPtr status_timer_;
-
-  float step_size_ = 0.05F;
 };
 
 #endif  // ROS2_ROBOT_MIDDLEWARE_MOTOR_CTRL_NODE_HPP_
