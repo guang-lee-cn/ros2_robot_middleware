@@ -8,3 +8,6 @@ doc/coverage/
 # SROS2 keystore (contains private keys)
 config/sros2/private/
 config/sros2/enclaves/
+
+# Interview prep & personal notes
+mdDoc/
