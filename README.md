@@ -16,32 +16,29 @@ A production-grade perception-to-actuation middleware for autonomous mobile robo
     │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐            │
     │  │  Lidar   │  │   IMU    │  │  Camera  │  │ Health   │            │
     │  │  10Hz    │  │  100Hz   │  │  5Hz     │  │ Monitor  │            │
-    │  └────┬─────┘  └────┬─────┘  └────┬─────┘  │ watchdog │            │
+    │  │ PID 1001 │  │ PID 1002 │  │ PID 1003 │  │ watchdog │            │
+    │  └────┬─────┘  └────┬─────┘  └────┬─────┘  │ PID 1005 │            │
     │       │   LaserScan │    Imu      │  Image  └──────────┘            │
+    │       │             │             │                                 │
     │       ▼             ▼             ▼                                 │
-    │  ┌─────────────────────────────────────┐                            │
-    │  │           Fusion Node               │                            │
-    │  │  degradation + Kalman Filter        │                            │
-    │  └──────────────┬──────────────────────┘                            │
-    │                 │ PerceptionObjects                                 │
-    │                 ▼                                                   │
-    │  ┌──────────────────────────┐                                      │
-    │  │      Decision Node       │                                      │
-    │  │   preemption + retry     │                                      │
-    │  └──────────────┬───────────┘                                      │
-    │                 │ MoveToPose Goal                                   │
-    │                 ▼                                                   │
-    │  ┌──────────────────────────┐                                      │
-    │  │   Motor Control Node     │                                      │
-    │  │   Action Server          │                                      │
-    │  └──────────────────────────┘                                      │
+    │  ┌───────────────────────────────────────────┐                      │
+    │  │      compute_container (PID 1004)         │ ◄── single process   │
+    │  │  ┌──────────┐  ┌──────────┐  ┌─────────┐ │                      │
+    │  │  │  Fusion   │  │ Decision │  │MotorCtrl│ │  zero-copy via       │
+    │  │  │  + KF +   │──│preemption│──│ Action  │ │  shared_ptr          │
+    │  │  │degradation│  │ + retry  │  │ Server  │ │                      │
+    │  │  └──────────┘  └──────────┘  └─────────┘ │                      │
+    │  │       MultiThreadedExecutor              │                      │
+    │  └───────────────────────────────────────────┘                      │
     └────────────────────────────────────────────────────────────────────┘
 
-    All nodes:   rclcpp_lifecycle::LifecycleNode
-    Sensors:     sensor_msgs (standard types — interoperable with sick_scan2/realsense-ros)
-    DDS QoS:     per-topic tuning + Fast-DDS XML profile
-    Security:    SROS2 per-node enclave + governance.p7s
-    Simulation:  Gazebo Harmonic + ros_gz_bridge
+    All nodes:     rclcpp_lifecycle::LifecycleNode
+    Process model: 5 processes (3 sensors + compute + health) — production layout
+    Compute layer: fusion + decision + motor_ctrl in single process (zero-copy)
+    Sensors:       sensor_msgs (standard types — interoperable with sick_scan2/realsense-ros)
+    DDS QoS:       per-topic tuning + Fast-DDS XML profile
+    Security:      SROS2 per-node enclave + governance.p7s
+    Simulation:    Gazebo Harmonic + ros_gz_bridge
 ```
 
 ## Quick Start
