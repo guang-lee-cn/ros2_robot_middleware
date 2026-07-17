@@ -1,299 +1,276 @@
 # Architecture Decision Records (ADR)
 
-## 为什么需要 ADR
-
-面试官问"为什么用 LifecycleNode"时，有准备的回答是这样的：
-
-> 我们评估了 3 种方案：纯 rclcpp::Node 自己写状态机、用 ROS2 LifecycleNode、或者用 ROS1 风格的 nodelet。最终选 LifecycleNode 是因为...
-
-**ADR 就是你做技术决策时的"案卷"**——记录了上下文、备选方案、取舍理由。
+Each record captures the context, alternatives, decision, and rationale behind a significant architectural choice. ADRs provide a historical audit trail and help future maintainers understand why the system is shaped the way it is.
 
 ---
 
-## ADR-1: 节点粒度 —— 7 个独立节点
+## ADR-1: Node Granularity — 8 Independent Nodes
 
-**Date:** 2025-06-10
+**Date:** 2025-06-10 (updated 2026-07-17)
 **Status:** Accepted
-**Decision maker:** guang
 
-### 上下文
+### Context
 
-AMR 感知-决策-执行流水线涉及 4 类硬件（LiDAR/IMU/Camera/Motor）和 3 层逻辑（融合/决策/监控）。
+The AMR perception-to-actuation pipeline spans 4 hardware types (LiDAR, IMU, Camera, Motor) and 3 logical layers (fusion, decision, monitoring). A single monolithic node vs. multiple independent nodes was evaluated.
 
-### 备选方案
+### Alternatives
 
-| 方案 | 描述 | 节点数 |
-|------|------|--------|
-| A: Monolithic | 单节点处理所有逻辑 | 1 |
-| B: 按层拆分 | Sensor/Fusion/Decision/Actuation 各一层 | 4 |
-| C: 按设备拆分 | 每个物理设备独立 + 逻辑层独立 | 7 |
+| Option | Description | Node Count |
+|--------|-------------|------------|
+| A: Monolithic | Single node handles all logic | 1 |
+| B: Layer-based | One node per logical layer | 4 |
+| C: Device-based | One node per physical device + logical layers | 8 |
 
-### 决策
+### Decision
 
-**选 C: 7 个独立节点。**
+**Option C: 8 independent nodes** (7 core pipeline + fleet manager).
 
-### 工程理由
+### Rationale
 
-1. **故障隔离（核心考量）**：如果 IMU 驱动 crash，节点 A 整个系统宕机；节点 C 只有 IMU 不可用，Fusion 可以降级到 LiDAR 里程计
-2. **独立部署与更新**：升级 Camera 驱动不需要重启整个系统
-3. **QoS 差异化**：IMU 需要 100Hz reliable，Camera 只需 5Hz best_effort——独立节点可以独立配置 DDS QoS
-4. **可测试性**：每个节点可以独立测试（这正是我们 9 个 GWT 测试的基础）
+1. **Fault isolation (primary driver):** If the IMU driver crashes, Option A takes down the entire system. With Option C, only IMU is unavailable — Fusion degrades to LiDAR odometry instead of stopping completely.
+2. **Independent deployment:** Upgrading the Camera driver does not require restarting the entire system.
+3. **Per-node QoS:** IMU needs 100Hz reliable; Camera needs 5Hz best-effort. Independent nodes allow independent DDS QoS configuration.
+4. **Testability:** Each node can be tested in isolation (the basis for all 13 GWT tests).
 
-### 商业理由
-
-- **面试话术**："节点粒度对应故障域——每个设备一个进程，崩溃半径最小化。这和微服务拆分的原则一样：按 failure domain 切边界。"
+Node granularity maps directly to the failure domain boundary. Each device is a separate process with a minimized crash radius, analogous to microservice decomposition principles.
 
 ---
 
-## ADR-2: 节点基类 —— LifecycleNode
+## ADR-2: Node Base Class — LifecycleNode
 
 **Date:** 2026-06-21
 **Status:** Accepted
-**Decision maker:** guang
 
-### 上下文
+### Context
 
-ROS2 提供两种节点基类：`rclcpp::Node`（无状态管理）和 `rclcpp_lifecycle::LifecycleNode`（带状态机）。
+ROS2 provides two node base classes: `rclcpp::Node` (stateless) and `rclcpp_lifecycle::LifecycleNode` (managed state machine).
 
-### 备选方案
+### Alternatives
 
-| 方案 | 描述 |
-|------|------|
-| A: rclcpp::Node | 纯数据驱动，构造函数中创建所有通信对象 |
-| B: rclcpp_lifecycle::LifecycleNode | ROS2 内置状态机，生命周期回调管理资源 |
-| C: 自己写状态机 | 在 Node 基础上手写状态管理 |
+| Option | Description |
+|--------|-------------|
+| A: `rclcpp::Node` | Data-driven; all communication objects created in constructor |
+| B: `LifecycleNode` | Built-in state machine; resource lifecycle managed via callbacks |
+| C: Custom state machine | State management hand-written on top of `rclcpp::Node` |
 
-### 决策
+### Decision
 
-**选 B: LifecycleNode。**
+**Option B: LifecycleNode.**
 
-### 工程理由
+### Rationale
 
-1. **启动顺序问题**：Fusion 订阅了 LiDAR/IMU/Camera 三个 topic。如果 Fusion 先启动而传感器未启动，Fusion 会在无数据状态下运行，需要额外的"等待所有传感器就绪"逻辑。Lifecycle 通过 inactive→active 解决了这个问题
-2. **资源管理**：`on_deactivate()` 暂停 timer（停止 CPU 开销），`on_cleanup()` 释放内存——这在生产环境中直接对应 CPU/内存的降额管理
-3. **nav2/ros2_control/moveit2 全基于 LifecycleNode**：这是 ROS2 生态的"标准答案"，不是我们自己发明的
-4. **故障恢复基础**：外部可以通过 lifecycle service 调用 `deactivate→cleanup→configure→activate` 重启节点，这正是 M2 要做的看门狗恢复
+1. **Startup dependency chain:** Fusion subscribes to 3 sensor topics. If Fusion starts before sensors, it runs with empty data requiring complex "wait for readiness" logic. The inactive→active transition solves this declaratively.
+2. **Resource management:** `on_deactivate()` pauses timers (CPU), `on_cleanup()` frees memory — directly mapping to production-grade CPU/memory management.
+3. **Ecosystem standard:** navigation2, moveit2, and ros2_control all use LifecycleNode. Following the reference architecture reduces design risk.
+4. **Recovery foundation:** External lifecycle service calls (`deactivate→cleanup→configure→activate`) enable watchdog-based node restart (implemented in M2).
 
-### 商业理由
+### Research methodology
 
-- **面试话术**："LifecycleNode 的状态机（unconfigured→inactive→active→finalized）和 5G 基站的状态机完全同构。我在 ZTE 做运维工具时，基站板卡的状态迁移就是这个模式——先配置、再激活、降级时先停再用。我把这个经验映射到了 AMR 的节点管理上。"
+The knowledge did not come from API documentation — it came from reading reference implementations:
+- `navigation2` — the largest ROS2 ecosystem project — uses LifecycleNode exclusively
+- `moveit2` and `ros2_control` follow the same pattern
 
-### 深入：为什么我们知道有 LifecycleNode 这个能力存在
+These projects share a common scenario: hardware/resource dependency chains. Navigation needs costmaps (depends on sensors); manipulation needs drivers (depends on hardware abstraction). LifecycleNode's inactive→active transition naturally models "wait for dependencies before starting work."
 
-**技术调研路径（任何一个资深的 ROS2 开发人员都知道的路径）：**
+**Rule:** If a node has preconditions ("X must be ready before I can work"), use LifecycleNode.
 
-1. **知识来源不是 API 文档，是参考实现。** ROS2 的"参考架构"（Reference Systems）和 nav2 是两个关键来源：
-   - `navigation2`（GitHub 上 ROS2 生态最大的项目之一）所有节点都是 LifecycleNode
-   - `moveit2`（机械臂运动规划）也是全 LifecycleNode
-   - `ros2_control`（硬件抽象层）也是全 LifecycleNode
-
-2. **为什么这些大项目都选 LifecycleNode？**
-   因为它们都有一个共同场景：**硬件/资源依赖链**。导航需要 costmap（依赖传感器），机械臂需要驱动（依赖硬件抽象层）。LifecycleNode 的 inactive→active 转换天然适合表达"等依赖就绪再开始工作"。
-
-3. **规则：如果节点有执行条件（"必须 X 先就绪我才能工作"），就应该用 LifecycleNode。**
-
-   在我们的项目中：
-   - Fusion 必须 LiDAR/IMU/Camera 都就绪才能融合 → LifecycleNode
-   - Decision 必须 Fusion 先就绪 → LifecycleNode
-   - MotorCtrl 必须 Decision 先就绪 → LifecycleNode
+In our pipeline:
+- Fusion requires LiDAR/IMU/Camera to be ready → LifecycleNode
+- Decision requires Fusion to be ready → LifecycleNode
+- MotorCtrl requires Decision to be ready → LifecycleNode
 
 ---
 
-## ADR-3: 电机控制接口 —— Action 而非 Service
+## ADR-3: Motor Control Interface — Action over Service
 
 **Date:** 2025-06-12
 **Status:** Accepted
-**Decision maker:** guang
 
-### 上下文
+### Context
 
-Decision 需要命令 MotorCtrl 移动到目标坐标。涉及 3 个需求：发送目标、接收进度反馈、支持中途取消。
+Decision needs to command MotorCtrl to move to a target pose. The interface must support: sending a target, receiving progress feedback, and mid-task cancellation.
 
-### 备选方案
+### Alternatives
 
-| 方案 | 描述 | 支持取消 | 支持反馈 |
-|------|------|---------|---------|
-| A: Topic `geometry_msgs/PoseStamped` | 发布目标位置 | 否 | 否 |
-| B: Service `MoveToPose.srv` | 请求-回复 | 否 | 否 |
-| C: Action `MoveToPose.action` | 目标-反馈-结果 | 是 | 是 |
+| Option | Description | Cancellation | Feedback |
+|--------|-------------|-------------|----------|
+| A: Topic | Publish target position | No | No |
+| B: Service | Request-reply | No | No |
+| C: Action | Goal-feedback-result | Yes | Yes |
 
-### 决策
+### Decision
 
-**选 C: Action。**
+**Option C: Action.**
 
-### 工程理由
+### Rationale
 
-- Service 的语义是"一问一答，瞬时完成"（如参数设置、状态查询）
-- Action 的语义是"目标-反馈-结果"，匹配电机运动的物理特性：
-  - **中间反馈**：当前位置、剩余距离、完成百分比
-  - **可取消性**：新感知数据到达时需立即中止旧目标
-  - **结果通知**：成功到达、被取消、超时失败
+- Service semantics are "ask-then-answer, instant completion" (e.g., parameter queries)
+- Action semantics are "goal-feedback-result", matching the physics of motor motion:
+  - **Intermediate feedback:** current position, remaining distance, percent complete
+  - **Preemption:** new perception data must cancel the in-flight goal immediately
+  - **Terminal notification:** success, cancellation, or timeout
 
-### 商业理由
-
-- **面试话术**："电机运动是秒级的长耗时操作，用 Action 的 Goal-Feedback-Result 三阶段协议。物理世界会打断——新物体出现时要立刻取消旧目标发新目标，这个 preemption 模式只有 Action 支持。"
+Motor motion is a multi-second long-running task. The physical world interrupts — a new obstacle requires immediate goal cancellation and reissuance. This preemption pattern is only supported by the Action protocol.
 
 ---
 
-## ADR-4: 健康监控暴露 —— Prometheus HTTP vs ROS2 Topic
+## ADR-4: Health Monitoring Exposure — Prometheus HTTP + ROS2 Topic
 
 **Date:** 2025-06-17
 **Status:** Accepted
-**Decision maker:** guang
 
-### 上下文
+### Context
 
-HealthMonitor 需要对外暴露节点健康数据，供运维系统消费。
+HealthMonitor must expose node health data for both internal ROS2 consumers and external operations tooling (Grafana, alerting).
 
-### 备选方案
+### Alternatives
 
-| 方案 | 描述 |
-|------|------|
-| A: ROS2 Topic `/health/report` | 通过 DDS 发布，ROS2 生态内消费 |
-| B: Prometheus HTTP `:9090/metrics` | 标准 Prometheus 文本格式，HTTP 拉取 |
-| C: A + B 双通道 | 同时提供两种接口 |
+| Option | Description |
+|--------|-------------|
+| A: ROS2 Topic only | Publish via DDS, consumed within ROS2 ecosystem |
+| B: Prometheus HTTP only | Standard Prometheus text format, HTTP pull |
+| C: Dual-channel (A + B) | Both interfaces simultaneously |
 
-### 决策
+### Decision
 
-**选 C: 双通道。** `/health/report` 供 ROS2 内部消费（其他节点、Fleet Manager），`:9090/metrics` 供 Prometheus/Grafana 运维栈消费。
+**Option C: Dual-channel.** `/health/report` for internal ROS2 consumption (other nodes, Fleet Manager); `:9090/metrics` for Prometheus/Grafana operations stack.
 
-### 为什么"不得不"写 bridge 的场景不存在
+### Rationale
 
-你问得好。确实存在**反向问题**：如果你只用 ROS2 Topic 暴露指标，当运维团队说"接一下 Prometheus"时，你就**不得不**写一个 ROS2→Prometheus bridge——这个 bridge 本质上是另一个 ROS2 节点，它：
+The dual-channel approach eliminates an intermediate bridge process. If only ROS2 Topic were used, integrating with Prometheus would require a separate ROS2→Prometheus bridge node that:
+1. Subscribes to `/health/report`
+2. Deserializes HealthReport messages
+3. Converts to Prometheus text format
+4. Exposes an HTTP endpoint
 
-1. 订阅 `/health/report`
-2. 解析 HealthReport 消息
-3. 转成 Prometheus 文本格式
-4. 开 HTTP 端口暴露
-
-**每多一个 bridge：(1) 多一个可能 crash 的进程；(2) 多一跳网络延迟；(3) 多一处数据转换可能出错。**
-
-直接嵌入式 HTTP endpoint 的做法（我们在 `prometheus_accept()` 里用原始 TCP socket 做的），消除了中间层。这是**5G 基站的设计哲学：数据采集路径上每少一个组件，可用性就上一个台阶。**
-
-### 商业理由
-
-- **面试话术**："我选择了双通道暴露——ROS2 topic 给内部消费，Prometheus HTTP endpoint 给外部监控系统。这是在 ROS2 生态和云原生生态之间做了一个最小成本的桥接。我刻意没有引入额外的 bridge 进程，因为每多一跳就多一个故障点。"
+Each additional bridge adds a potential crash point, one network hop of latency, and one data transformation step where errors can occur. The embedded HTTP endpoint (implemented with raw TCP sockets in `prometheus_accept()`) eliminates the middle layer. Fewer components on the data path means higher system availability.
 
 ---
 
-## ADR-5: 心跳协议 —— std_msgs/msg/String
+## ADR-5: Heartbeat Protocol — std_msgs/msg/String
 
 **Date:** 2025-06-14
 **Status:** Accepted
-**Decision maker:** guang
 
-### 上下文
+### Context
 
-6 个业务节点需要周期性地向 HealthMonitor 报告存活状态。
+Six business nodes must periodically report liveness to HealthMonitor.
 
-### 备选方案
+### Alternatives
 
-| 方案 | 描述 |
-|------|------|
-| A: 自定义 `.msg` 文件 | 定义 `Heartbeat.msg`，包含 node_id, timestamp, state 等字段 |
-| B: `std_msgs/msg/String` | 用标准消息类型，payload 为简单字符串 |
-| C: `std_msgs/msg/Empty` | 无 payload，仅靠 topic 名区分来源 |
+| Option | Description |
+|--------|-------------|
+| A: Custom `.msg` file | Define `Heartbeat.msg` with node_id, timestamp, state fields |
+| B: `std_msgs/msg/String` | Standard type, simple string payload |
+| C: `std_msgs/msg/Empty` | No payload; source identified by topic name only |
 
-### 决策
+### Decision
 
-**选 B: String。**
+**Option B: String.**
 
-### 工程理由
+### Rationale
 
-1. **最小化了接口表面积**：自定义 msg 需要定义、生成、维护。String 是 ROS2 内置类型，零维护成本
-2. **payload 扩展性**：String 可以携带状态信息（"alive", "idle", "degraded"），Empty 做不到。未来 M2 降级策略中，节点可以发布 "degraded_lidar_only" 而不是简单的 "alive"
-3. **调试友好**：`ros2 topic echo /sensor/lidar/heartbeat` 直接看到人类可读的字符串，不需要 `--raw` 反序列化
-4. **协议最小化原则**：心跳的"来源"由 DDS topic 名承载（`/sensor/lidar/heartbeat`），"时间"由 DDS 时间戳承载，不需要在 payload 里重复。String 只承载一个"状态标签"——信息不冗余
-
-### 商业理由
-
-- **面试话术**："我用了 ROS2 内置的 `std_msgs/String` 而不是自定义 Heartbeat 消息。心跳的三个维度——来源、时间、状态——分别由 topic 名、DDS 时间戳、字符串 payload 承载。不创建自定义消息意味着接口更少、维护成本更低、调试更简单。这是'够用就好'的工程判断。"
+1. **Minimal interface surface area:** Custom messages require definition, code generation, and ongoing maintenance. String is a ROS2 built-in type with zero maintenance cost.
+2. **Payload extensibility:** String can carry state labels ("alive", "idle", "degraded_no_lidar"). Empty cannot. During M2 degradation, nodes publish state-tagged heartbeats without changing the message contract.
+3. **Debugging ergonomics:** `ros2 topic echo /sensor/lidar/heartbeat` produces human-readable output without deserialization flags.
+4. **Protocol minimization:** Three heartbeat dimensions are carried orthogonally:
+   - **Source (who):** DDS topic name — a single publisher cannot publish to two topics
+   - **Time (when):** DDS message timestamp — written by the middleware, independent of application clock
+   - **Status (what):** String payload — the only dimension that needs application-level data
 
 ---
 
-## ADR-6: 数据融合策略 —— 回调缓存（当前）
+## ADR-6: Data Fusion Strategy — Callback Cache (Current Baseline)
 
 **Date:** 2025-06-16
-**Status:** Draft（计划 M3 重评估）
+**Status:** Draft — re-evaluation planned
 
-### 当前决策
+### Current Implementation
 
-基于回调的简单缓存：每个传感器回调更新对应的最新数据缓存，timer 触发时读取所有缓存做融合。
+Callback-based cache: each sensor callback updates its latest data snapshot. A periodic timer (200ms) reads all caches and performs fusion.
 
-### 已知局限
+### Known Limitations
 
-- **无时间戳对齐**：LiDAR 50ms 前的数据和 Camera 刚到的数据直接融合，无人驾驶场景不可接受
-- **无丢帧补偿**：某个传感器丢了一个采样周期，融合会使用旧数据而不自知
+- **No timestamp alignment:** LiDAR data from 50ms ago is fused with just-arrived Camera data without time correction
+- **No dropout compensation:** If a sensor misses a cycle, fusion uses stale data silently
 
-### M3 拟评估方案
+### Future Evaluation
 
-| 方案 | 描述 | 计算开销 |
-|------|------|---------|
-| ApproximateTime | message_filters 近似时间同步 | 低 |
-| ExactTime | 严格时间戳对齐 | 中 |
-| Kalman Filter | 预测+更新，自然处理异步 | 高 |
+| Approach | Description | Computational Cost |
+|----------|-------------|-------------------|
+| ApproximateTime | message_filters approximate time synchronization | Low |
+| ExactTime | Strict timestamp alignment | Medium |
+| Kalman Filter | Predict + update, naturally handles asynchrony | High |
+
+A 2D Kalman Filter has been implemented (M3.2) for ego-motion tracking. Full per-object KF tracking with timestamp alignment is a future enhancement.
 
 ---
 
-## ADR-7: Executor 模型 —— 默认单线程（当前）
+## ADR-7: Executor Model — Single-Threaded (Current Baseline)
 
 **Date:** 2025-06-16
-**Status:** Draft（计划 M3 重评估）
+**Status:** Draft — re-evaluation planned
 
-### 当前决策
+### Current Implementation
 
-所有节点使用默认 `SingleThreadedExecutor`（`rclcpp::spin()` 内部创建）。
+All nodes use the default `SingleThreadedExecutor` (created internally by `rclcpp::spin()`).
 
-### 已知局限
+### Known Limitations
 
-- IMU 100Hz 回调如果执行时间 > 10ms，后续回调排队积压
-- 不同优先级的回调（心跳 vs 数据）在同一队列中，无法抢占
+- IMU 100Hz callback execution time > 10ms causes queue buildup
+- Callbacks with different priorities (heartbeat vs. data) share the same queue with no preemption
 
-### M3 拟评估方案
+### Future Evaluation
 
-| 方案 | 适用节点 |
-|------|---------|
-| `StaticSingleThreadedExecutor` | 高频 sensor 节点（独立 CPU 核） |
-| `MultiThreadedExecutor` | CPU 密集的 fusion/decision |
-| `SingleThreadedExecutor` | 低优先级 health_monitor |
+| Executor | Target Nodes |
+|----------|-------------|
+| `StaticSingleThreadedExecutor` | High-frequency sensor nodes (dedicated CPU core) |
+| `MultiThreadedExecutor` | CPU-intensive fusion/decision |
+| `SingleThreadedExecutor` | Low-priority health_monitor |
+
+The single-threaded executor was deliberately chosen for Phase 1/2: it eliminates data races between callbacks, simplifies the Kalman Filter integration (no mutex needed on `state_` and `cov_`), and is sufficient for the current sensor simulation load.
 
 ---
 
-## ADR-8: QoS 选择 —— 按 topic 差异化
+## ADR-8: QoS Strategy — Per-Topic Differentiation
 
 **Date:** 2025-06-16
-**Status:** Draft（计划 M3 量化）
+**Status:** Accepted — with quantification notes
 
-### 当前决策
+### Decision
 
-| Topic | QoS | 理由 |
-|-------|-----|------|
-| `/sensor/lidar` | best_effort + keep_last(10) | 允许丢帧，10Hz 丢 1 帧不影响 |
-| `/sensor/camera` | best_effort + keep_last(10) | 5Hz 大 payload(900KB)，reliable 会阻塞 |
-| `/sensor/imu` | reliable + keep_last(10) | 100Hz 惯性数据，丢帧影响位姿推算 |
-| 所有心跳 topic | reliable + keep_last(10) | 心跳丢失必须被感知（触发告警） |
-| `/perception/objects` | reliable + keep_last(10) | 融合结果必须可靠传递 |
-| `/health/report` | reliable + keep_last(10) | 健康报告必须可靠传递 |
+| Topic | QoS | Rationale |
+|-------|-----|-----------|
+| `/sensor/lidar` | best_effort + keep_last(10) | Tolerates frame loss; 10Hz, 1 dropped frame has no impact |
+| `/sensor/camera` | best_effort + keep_last(10) | 5Hz, 900KB payload; reliable would cause head-of-line blocking |
+| `/sensor/imu` | reliable + keep_last(10) | 100Hz inertial data; frame loss breaks the integration chain (accumulated error) |
+| All heartbeat topics | reliable + keep_last(10) | Heartbeat loss must be detected (triggers alerting) |
+| `/perception/objects` | reliable + keep_last(10) | Fusion results must be delivered reliably |
+| `/health/report` | reliable + keep_last(10) | Health reports must be delivered reliably |
 
-### M3 待量化验证
+### Fundamental distinction
 
-- best_effort 在 900KB camera payload 下的实际丢帧率
-- reliable 在 IMU 100Hz 下的端到端延迟（预期 < 2ms）
-- `depth=10` 是否足够（IMU 100Hz × 0.01s = 1 帧/回调，10 帧 buffer 绰绰有余；Camera 5Hz 下 buffer 90KB×10=900KB）
+The QoS choice maps to the sensor's measurement type:
+- **Absolute measurements** (Camera, LiDAR): each frame is a self-contained snapshot of the world. Losing one frame means losing one snapshot — the next frame is still complete. → best_effort
+- **Incremental measurements** (IMU): each frame is a delta. Position is computed as `θ = ∫ω·dt`. Losing one frame means losing one integration segment, and the error accumulates permanently across all subsequent frames. → reliable
+
+### Quantification notes (future work)
+
+- best_effort actual frame loss rate with 900KB Camera payload
+- reliable end-to-end latency at IMU 100Hz (expected < 2ms)
+- `depth=10` adequacy: IMU at 100Hz × 0.01s = 1 frame/callback, 10-frame buffer is sufficient; Camera at 5Hz buffers 90KB × 10 = 900KB
 
 ---
 
-## ADR 总结
+## ADR Summary
 
-| ADR | 决策 | 成熟度 |
-|-----|------|--------|
-| ADR-1 | 7 节点按设备拆分 | Accepted |
-| ADR-2 | LifecycleNode 基类 | Accepted |
-| ADR-3 | Action 做电机控制 | Accepted |
-| ADR-4 | Prometheus HTTP + ROS2 Topic 双通道 | Accepted |
-| ADR-5 | std_msgs/String 做心跳 | Accepted |
-| ADR-6 | 回调缓存融合（待升级） | Draft |
-| ADR-7 | 默认 Executor（待升级） | Draft |
-| ADR-8 | 按 topic 差异化 QoS（待量化） | Draft |
-
-**Accepted = 已决策，可以讲清楚为什么。Draft = 当前实现够用，但 M3 会重新评估。**
+| ADR | Decision | Maturity |
+|-----|----------|----------|
+| ADR-1 | 8 nodes, per-device decomposition | Accepted |
+| ADR-2 | LifecycleNode base class | Accepted |
+| ADR-3 | Action for motor control | Accepted |
+| ADR-4 | Prometheus HTTP + ROS2 Topic dual-channel | Accepted |
+| ADR-5 | std_msgs/String for heartbeats | Accepted |
+| ADR-6 | Callback-cache fusion | Draft — KF integration in progress |
+| ADR-7 | Single-threaded executor | Draft — re-evaluate with real sensor load |
+| ADR-8 | Per-topic QoS differentiation | Accepted — quantification pending |
