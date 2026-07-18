@@ -1,4 +1,8 @@
 #include "ros2_robot_middleware/camera_node.hpp"
+#include "ros2_robot_middleware/observability/metrics_registry.hpp"
+#include "ros2_robot_middleware/observability/tracer.hpp"
+
+#include <chrono>
 
 CameraNode::CameraNode()
   : rclcpp_lifecycle::LifecycleNode("camera")
@@ -69,6 +73,9 @@ CameraNode::on_shutdown(const rclcpp_lifecycle::State &)
 
 void CameraNode::timer_callback()
 {
+  TRACE_SCOPE("camera::timer_callback");
+  auto t_start = std::chrono::steady_clock::now();
+
   auto msg = sensor_msgs::msg::Image{};
 
   msg.header.stamp    = this->now();
@@ -85,6 +92,16 @@ void CameraNode::timer_callback()
   }
 
   publisher_->publish(msg);
+
+  // Observability: rate tracking
+  static auto last_ts = t_start;
+  auto dt_us = std::chrono::duration_cast<std::chrono::microseconds>(
+                   t_start - last_ts).count();
+  if (dt_us > 0) {
+    amr::observability::MetricsRegistry::instance().camera_rate_ds.store(
+        static_cast<int32_t>(10'000'000 / dt_us), std::memory_order_relaxed);
+  }
+  last_ts = t_start;
 
   RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 10000,
                        "Image published: %dx%d %s %.1fKB",

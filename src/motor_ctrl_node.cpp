@@ -1,7 +1,10 @@
 #include <rclcpp_components/register_node_macro.hpp>
 #include "ros2_robot_middleware/motor_ctrl_node.hpp"
 #include "ros2_robot_middleware/aliases.hpp"
+#include "ros2_robot_middleware/observability/metrics_registry.hpp"
+#include "ros2_robot_middleware/observability/tracer.hpp"
 
+#include <chrono>
 #include <cmath>
 
 MotorCtrlNode::MotorCtrlNode()
@@ -105,13 +108,17 @@ rclcpp_action::CancelResponse MotorCtrlNode::handle_cancel(
 
 void MotorCtrlNode::execute(const std::shared_ptr<ServerGoalHandle> goal_handle)
 {
-  const auto goal = goal_handle->get_goal();
+  TRACE_SCOPE("motor::execute");
+
+  const auto goal= goal_handle->get_goal();
   amr::domain::execution::Interpolator::State current{0.0F, 0.0F};
   amr::domain::execution::Interpolator::State target{goal->target_x, goal->target_y};
 
   rclcpp::Rate rate(10);
 
   while (rclcpp::ok()) {
+    auto step_start = std::chrono::steady_clock::now();
+
     if (goal_handle->is_canceling()) {
       auto result          = std::make_shared<MoveToPose::Result>();
       result->reached      = false;
@@ -144,6 +151,23 @@ void MotorCtrlNode::execute(const std::shared_ptr<ServerGoalHandle> goal_handle)
     feedback->percent_complete   = fb.percent_complete;
 
     goal_handle->publish_feedback(feedback);
+
+    // Observability: per-step motor latency + e2e (sensor→cmd)
+    auto now_ns = std::chrono::steady_clock::now();
+    auto lat_us = std::chrono::duration_cast<std::chrono::microseconds>(
+                      now_ns - step_start).count();
+    auto &m = amr::observability::MetricsRegistry::instance();
+    m.motor_latency.record(lat_us);
+
+    auto sensor_ts = m.last_sensor_timestamp_ns.load(std::memory_order_relaxed);
+    if (sensor_ts > 0) {
+        auto e2e_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                          now_ns.time_since_epoch()).count() - sensor_ts;
+        if (e2e_ns > 0 && e2e_ns < 5'000'000'000LL) { // sanity: < 5 seconds
+            m.e2e_latency.record(e2e_ns / 1000);       // ns → μs
+        }
+    }
+
     rate.sleep();
   }
 }

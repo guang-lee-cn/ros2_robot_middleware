@@ -73,6 +73,9 @@ public:
     std::atomic<int32_t> object_count{0};           // current tracked objects
     std::atomic<int64_t> fusion_cycle_count{0};
 
+    // === End-to-end timestamp (ns since epoch) — sensor writes, motor reads ===
+    std::atomic<int64_t> last_sensor_timestamp_ns{0};
+
 private:
     MetricsRegistry() = default;
 };

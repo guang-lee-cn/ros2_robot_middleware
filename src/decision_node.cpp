@@ -1,6 +1,9 @@
 #include "ros2_robot_middleware/aliases.hpp"
 #include "ros2_robot_middleware/decision_node.hpp"
+#include "ros2_robot_middleware/observability/metrics_registry.hpp"
+#include "ros2_robot_middleware/observability/tracer.hpp"
 
+#include <chrono>
 #include <rclcpp_components/register_node_macro.hpp>
 
 // ── Constructors ────────────────────────────────────────────────────────────
@@ -75,14 +78,19 @@ DecisionNode::on_shutdown(const rclcpp_lifecycle::State &)
 
 void DecisionNode::on_perception(const PerceptionObjects::SharedPtr& objs)
 {
+  TRACE_SCOPE("decision::on_perception");
+  auto t_start = std::chrono::steady_clock::now();
+
   if (objs->objects.empty()) return;
 
-  // Preemption via domain policy
+  auto &m = amr::observability::MetricsRegistry::instance();
+  m.object_count.store(static_cast<int32_t>(objs->objects.size()),
+                       std::memory_order_relaxed);
+
   if (planning_.should_preempt(active_goal_ != nullptr)) {
     cancel_active_goal();
   }
 
-  // Target selection via domain service
   amr::domain::planning::PerceivedObject obj{objs->objects[0].x,
                                               objs->objects[0].y,
                                                objs->objects[0].id.c_str()};
@@ -90,6 +98,10 @@ void DecisionNode::on_perception(const PerceptionObjects::SharedPtr& objs)
   if (planning_.select_goal(&obj, 1, goal)) {
     send_goal(goal.x, goal.y);
   }
+
+  auto lat_us = std::chrono::duration_cast<std::chrono::microseconds>(
+                    std::chrono::steady_clock::now() - t_start).count();
+  m.decision_latency.record(lat_us);
 }
 
 // ── Action client wiring (ROS2-specific, stays in Node) ─────────────────────

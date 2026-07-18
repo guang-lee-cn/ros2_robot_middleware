@@ -1,5 +1,8 @@
 #include "ros2_robot_middleware/lidar_node.hpp"
+#include "ros2_robot_middleware/observability/metrics_registry.hpp"
+#include "ros2_robot_middleware/observability/tracer.hpp"
 
+#include <chrono>
 #include <cmath>
 
 LidarNode::LidarNode()
@@ -71,6 +74,9 @@ LidarNode::on_shutdown(const rclcpp_lifecycle::State &)
 
 void LidarNode::timer_callback()
 {
+  TRACE_SCOPE("lidar::timer_callback");
+  auto t_start = std::chrono::steady_clock::now();
+
   auto msg = sensor_msgs::msg::LaserScan{};
 
   msg.header.stamp    = this->now();
@@ -100,6 +106,22 @@ void LidarNode::timer_callback()
   }
 
   publisher_->publish(msg);
+
+  // Observability: latency + rate tracking
+  auto t_end = std::chrono::steady_clock::now();
+  auto lat_us = std::chrono::duration_cast<std::chrono::microseconds>(
+                    t_end - t_start).count();
+  auto &m = amr::observability::MetricsRegistry::instance();
+  // Compute rate as 1/dt — simplified, using last interval
+  static auto last_ts = t_start;
+  auto dt_us = std::chrono::duration_cast<std::chrono::microseconds>(
+                   t_start - last_ts).count();
+  if (dt_us > 0) {
+    m.lidar_rate_ds.store(static_cast<int32_t>(10'000'000 / dt_us),
+                          std::memory_order_relaxed);
+  }
+  last_ts = t_start;
+  (void)lat_us; // reserved for future per-sensor histogram
 
   RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
                        "LaserScan published: ranges[0..359] avg=%.2fm",
