@@ -1,0 +1,2 @@
+Invoking command in '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/ctest -C Release -D ExperimentalTest --no-compress-output -V --force-new-ctest-process
+Invoked command in '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/ctest -C Release -D ExperimentalTest --no-compress-output -V --force-new-ctest-process

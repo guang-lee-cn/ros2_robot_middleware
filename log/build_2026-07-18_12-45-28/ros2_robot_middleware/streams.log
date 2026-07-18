@@ -1,0 +1,212 @@
+[0.008s] Invoking command in '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/guang/code/ros2_ws/src/ros2_amr_framework -DCMAKE_INSTALL_PREFIX=/home/guang/code/ros2_ws/src/ros2_amr_framework/install/ros2_robot_middleware
+[0.208s] -- The C compiler identification is GNU 13.3.0
+[0.619s] -- The CXX compiler identification is GNU 13.3.0
+[1.014s] -- Detecting C compiler ABI info
+[1.235s] -- Detecting C compiler ABI info - done
+[1.240s] -- Check for working C compiler: /usr/bin/cc - skipped
+[1.241s] -- Detecting C compile features
+[1.242s] -- Detecting C compile features - done
+[1.301s] -- Detecting CXX compiler ABI info
+[1.497s] -- Detecting CXX compiler ABI info - done
+[1.503s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.503s] -- Detecting CXX compile features
+[1.504s] -- Detecting CXX compile features - done
+[1.518s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[1.633s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[1.752s] -- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)
+[1.924s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[1.936s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[1.956s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.974s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.066s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[2.071s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[2.196s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[2.313s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[2.382s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[2.588s] -- Found rclcpp_action: 28.1.18 (/opt/ros/jazzy/share/rclcpp_action/cmake)
+[2.648s] -- Found rclcpp_lifecycle: 28.1.18 (/opt/ros/jazzy/share/rclcpp_lifecycle/cmake)
+[2.684s] -- Found rclcpp_components: 28.1.18 (/opt/ros/jazzy/share/rclcpp_components/cmake)
+[2.731s] -- Found sensor_msgs: 5.3.7 (/opt/ros/jazzy/share/sensor_msgs/cmake)
+[2.791s] -- Found rosidl_default_generators: 1.6.0 (/opt/ros/jazzy/share/rosidl_default_generators/cmake)
+[2.815s] -- Found rosidl_adapter: 4.6.7 (/opt/ros/jazzy/share/rosidl_adapter/cmake)
+[3.309s] -- Found ament_cmake_ros: 0.12.0 (/opt/ros/jazzy/share/ament_cmake_ros/cmake)
+[3.923s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[4.170s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[4.176s] -- Found python_cmake_module: 0.11.1 (/opt/ros/jazzy/share/python_cmake_module/cmake)
+[4.290s] -- Found PythonExtra: /usr/bin/python3  
+[4.732s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter Development NumPy Development.Module Development.Embed 
+[4.816s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[4.825s] -- Found gtest sources under '/opt/ros/jazzy/src/gtest_vendor': C++ tests using 'Google Test' will be built
+[4.831s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[4.964s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[4.965s] -- Found Threads: TRUE  
+[4.982s] -- Configuring done (5.0s)
+[5.081s] -- Generating done (0.1s)
+[5.099s] -- Build files have been written to: /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware
+[5.115s] Invoked command in '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/guang/code/ros2_ws/src/ros2_amr_framework -DCMAKE_INSTALL_PREFIX=/home/guang/code/ros2_ws/src/ros2_amr_framework/install/ros2_robot_middleware
+[5.117s] Invoking command in '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware -- -j16 -l16
+[5.168s] [  3%] Generating Rust code for ROS interfaces
+[5.168s] [  3%] Building CXX object gtest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
+[5.168s] [  3%] Building CXX object gtest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+[5.168s] [  3%] Generating type hashes for ROS interfaces
+[5.176s] [  3%] Built target ament_cmake_python_copy_ros2_robot_middleware
+[5.309s] running egg_info
+[5.309s] creating ros2_robot_middleware.egg-info
+[5.318s] writing ros2_robot_middleware.egg-info/PKG-INFO
+[5.318s] writing dependency_links to ros2_robot_middleware.egg-info/dependency_links.txt
+[5.318s] writing top-level names to ros2_robot_middleware.egg-info/top_level.txt
+[5.318s] writing manifest file 'ros2_robot_middleware.egg-info/SOURCES.txt'
+[5.346s] reading manifest file 'ros2_robot_middleware.egg-info/SOURCES.txt'
+[5.346s] writing manifest file 'ros2_robot_middleware.egg-info/SOURCES.txt'
+[5.366s] [  3%] Built target ament_cmake_python_build_ros2_robot_middleware_egg
+[5.400s] [  3%] Built target ros2_robot_middleware__rosidl_generator_type_description
+[5.408s] [  4%] Generating C code for ROS interfaces
+[5.418s] [  4%] Generating C++ code for ROS interfaces
+[5.439s] [  4%] Built target ros2_robot_middleware__rs
+[5.770s] [  5%] Linking CXX static library libgtest_main.a
+[5.799s] [  5%] Built target gtest_main
+[5.827s] [  5%] Built target ros2_robot_middleware__cpp
+[5.882s] [  8%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/perception_objects__type_support.c.o
+[5.882s] [  8%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/object__functions.c.o
+[5.882s] [  8%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/perception_objects__description.c.o
+[5.883s] [ 11%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_status__functions.c.o
+[5.883s] [ 11%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/object__description.c.o
+[5.883s] [ 11%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/object__type_support.c.o
+[5.883s] [ 12%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_report__functions.c.o
+[5.883s] [ 11%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/perception_objects__functions.c.o
+[5.884s] [ 13%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_status__description.c.o
+[5.885s] [ 14%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/srv/detail/set_param__description.c.o
+[5.885s] [ 15%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_report__type_support.c.o
+[5.885s] [ 15%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_report__description.c.o
+[5.885s] [ 16%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/srv/detail/set_param__functions.c.o
+[5.887s] [ 17%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_status__type_support.c.o
+[5.888s] [ 18%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/srv/detail/set_param__type_support.c.o
+[5.909s] [ 19%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/action/detail/move_to_pose__description.c.o
+[5.909s] [ 20%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/action/detail/move_to_pose__functions.c.o
+[5.916s] [ 21%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/action/detail/move_to_pose__type_support.c.o
+[6.004s] [ 21%] Linking C shared library libros2_robot_middleware__rosidl_generator_c.so
+[6.092s] [ 21%] Built target ros2_robot_middleware__rosidl_generator_c
+[6.100s] [ 24%] Generating C type support for eProsima Fast-RTPS
+[6.100s] [ 24%] Generating C++ introspection for ROS interfaces
+[6.100s] [ 25%] Generating C++ type support for eProsima Fast-RTPS
+[6.100s] [ 25%] Generating C introspection for ROS interfaces
+[6.101s] [ 26%] Generating C++ type support dispatch for ROS interfaces
+[6.102s] [ 27%] Generating C type support dispatch for ROS interfaces
+[6.366s] [ 27%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/action/move_to_pose__type_support.cpp.o
+[6.367s] [ 28%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/msg/object__type_support.cpp.o
+[6.367s] [ 30%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/msg/perception_objects__type_support.cpp.o
+[6.367s] [ 30%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/msg/health_status__type_support.cpp.o
+[6.367s] [ 31%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/msg/health_report__type_support.cpp.o
+[6.368s] [ 32%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/srv/set_param__type_support.cpp.o
+[6.375s] [ 33%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/msg/perception_objects__type_support.cpp.o
+[6.379s] [ 34%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/msg/object__type_support.cpp.o
+[6.379s] [ 35%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/msg/health_status__type_support.cpp.o
+[6.380s] [ 36%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/msg/health_report__type_support.cpp.o
+[6.389s] [ 36%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/srv/set_param__type_support.cpp.o
+[6.408s] [ 37%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/action/move_to_pose__type_support.cpp.o
+[6.418s] [ 38%] Linking CXX shared library libros2_robot_middleware__rosidl_typesupport_c.so
+[6.449s] [ 39%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/msg/detail/object__type_support.cpp.o
+[6.449s] [ 39%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/msg/detail/perception_objects__type_support.cpp.o
+[6.465s] [ 40%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/msg/detail/health_status__type_support.cpp.o
+[6.465s] [ 41%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/msg/detail/health_report__type_support.cpp.o
+[6.470s] [ 42%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/srv/detail/set_param__type_support.cpp.o
+[6.481s] [ 43%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/msg/detail/object__type_support.c.o
+[6.587s] [ 44%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/msg/detail/perception_objects__type_support.c.o
+[6.636s] [ 44%] Built target ros2_robot_middleware__rosidl_typesupport_c
+[6.653s] [ 45%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/action/detail/move_to_pose__type_support.cpp.o
+[6.660s] [ 45%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/msg/detail/health_status__type_support.c.o
+[6.669s] [ 46%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/msg/detail/health_report__type_support.c.o
+[6.673s] [ 47%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/srv/detail/set_param__type_support.c.o
+[6.677s] [ 48%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/action/detail/move_to_pose__type_support.c.o
+[6.700s] [ 49%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/msg/detail/dds_fastrtps/object__type_support.cpp.o
+[6.710s] [ 50%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/msg/detail/dds_fastrtps/perception_objects__type_support.cpp.o
+[6.711s] [ 51%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/msg/detail/dds_fastrtps/health_status__type_support.cpp.o
+[6.729s] [ 52%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/srv/detail/dds_fastrtps/set_param__type_support.cpp.o
+[6.729s] [ 52%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/msg/detail/dds_fastrtps/health_report__type_support.cpp.o
+[6.746s] [ 53%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/action/detail/dds_fastrtps/move_to_pose__type_support.cpp.o
+[6.746s] [ 54%] Linking C shared library libros2_robot_middleware__rosidl_typesupport_introspection_c.so
+[6.754s] [ 55%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/object__type_support_c.cpp.o
+[6.815s] [ 56%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/perception_objects__type_support_c.cpp.o
+[6.815s] [ 57%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_status__type_support_c.cpp.o
+[6.847s] [ 57%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_report__type_support_c.cpp.o
+[6.847s] [ 57%] Built target ros2_robot_middleware__rosidl_typesupport_introspection_c
+[6.856s] [ 58%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/srv/detail/set_param__type_support_c.cpp.o
+[6.880s] [ 59%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/action/detail/move_to_pose__type_support_c.cpp.o
+[7.038s] [ 60%] Linking CXX shared library libros2_robot_middleware__rosidl_typesupport_cpp.so
+[7.179s] [ 60%] Built target ros2_robot_middleware__rosidl_typesupport_cpp
+[7.200s] [ 61%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/lidar_node.cpp.o
+[7.202s] [ 62%] Building CXX object CMakeFiles/compute_component.dir/src/fusion_node.cpp.o
+[7.204s] [ 62%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/imu_node.cpp.o
+[7.206s] [ 63%] Building CXX object CMakeFiles/compute_component.dir/src/decision_node.cpp.o
+[7.208s] [ 64%] Building CXX object CMakeFiles/compute_component.dir/src/motor_ctrl_node.cpp.o
+[7.216s] [ 65%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/camera_node.cpp.o
+[7.233s] [ 66%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/fusion_node.cpp.o
+[7.265s] [ 67%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/decision_node.cpp.o
+[7.274s] [ 68%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/motor_ctrl_node.cpp.o
+[7.280s] [ 69%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/health_monitor_node.cpp.o
+[7.282s] [ 70%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/fleet_manager_node.cpp.o
+[7.283s] [ 71%] Linking CXX shared library libros2_robot_middleware__rosidl_typesupport_introspection_cpp.so
+[7.411s] [ 72%] Linking CXX shared library libros2_robot_middleware__rosidl_typesupport_fastrtps_c.so
+[7.458s] [ 72%] Built target ros2_robot_middleware__rosidl_typesupport_introspection_cpp
+[7.523s] [ 72%] Built target ros2_robot_middleware__rosidl_typesupport_fastrtps_c
+[7.668s] [ 73%] Linking CXX shared library libros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.so
+[7.840s] [ 73%] Built target ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp
+[7.868s] [ 73%] Built target ros2_robot_middleware
+[7.896s] [ 74%] Generating Python code for ROS interfaces
+[8.675s] [ 75%] Linking CXX static library libgtest.a
+[8.760s] [ 75%] Built target gtest
+[8.957s] [ 75%] Built target ros2_robot_middleware__py
+[8.994s] [ 77%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/msg/_object_s.c.o
+[8.994s] [ 78%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/msg/_perception_objects_s.c.o
+[8.998s] [ 76%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/msg/_health_report_s.c.o
+[8.998s] [ 79%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/msg/_health_status_s.c.o
+[9.004s] [ 80%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/srv/_set_param_s.c.o
+[9.198s] [ 81%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/action/_move_to_pose_s.c.o
+[9.392s] [ 82%] Linking C shared library libros2_robot_middleware__rosidl_generator_py.so
+[9.483s] [ 82%] Built target ros2_robot_middleware__rosidl_generator_py
+[9.506s] [ 83%] Building C object CMakeFiles/ros2_robot_middleware_s__rosidl_typesupport_introspection_c.dir/rosidl_generator_py/ros2_robot_middleware/_ros2_robot_middleware_s.ep.rosidl_typesupport_introspection_c.c.o
+[9.508s] [ 84%] Building C object CMakeFiles/ros2_robot_middleware_s__rosidl_typesupport_fastrtps_c.dir/rosidl_generator_py/ros2_robot_middleware/_ros2_robot_middleware_s.ep.rosidl_typesupport_fastrtps_c.c.o
+[9.513s] [ 84%] Building C object CMakeFiles/ros2_robot_middleware_s__rosidl_typesupport_c.dir/rosidl_generator_py/ros2_robot_middleware/_ros2_robot_middleware_s.ep.rosidl_typesupport_c.c.o
+[9.664s] [ 85%] Linking C shared module rosidl_generator_py/ros2_robot_middleware/ros2_robot_middleware_s__rosidl_typesupport_introspection_c.so
+[9.681s] [ 86%] Linking C shared module rosidl_generator_py/ros2_robot_middleware/ros2_robot_middleware_s__rosidl_typesupport_fastrtps_c.so
+[9.682s] [ 87%] Linking C shared module rosidl_generator_py/ros2_robot_middleware/ros2_robot_middleware_s__rosidl_typesupport_c.so
+[9.761s] [ 87%] Built target ros2_robot_middleware_s__rosidl_typesupport_c
+[9.761s] [ 87%] Built target ros2_robot_middleware_s__rosidl_typesupport_introspection_c
+[9.778s] [ 87%] Built target ros2_robot_middleware_s__rosidl_typesupport_fastrtps_c
+[10.295s] In file included from /usr/include/c++/13/memory:78,
+[10.295s]                  from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/detail/perception_objects__struct.hpp:14,
+[10.295s]                  from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/perception_objects.hpp:7,
+[10.295s]                  from /home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/fusion_node.hpp:8,
+[10.295s]                  from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:1:
+[10.295s] /usr/include/c++/13/bits/unique_ptr.h: In instantiation of ‘std::__detail::__unique_ptr_t<_Tp> std::make_unique(_Args&& ...) [with _Tp = amr::observability::Logging; _Args = {}; __detail::__unique_ptr_t<_Tp> = __detail::__unique_ptr_t<amr::observability::Logging>]’:
+[10.295s] /home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:26:46:   required from here
+[10.295s] /usr/include/c++/13/bits/unique_ptr.h:1070:30: error: ‘amr::observability::Logging::Logging()’ is private within this context
+[10.295s]  1070 |     { return unique_ptr<_Tp>(new _Tp(std::forward<_Args>(__args)...)); }
+[10.295s]       |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[10.295s] In file included from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:2:
+[10.295s] /home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:46:5: note: declared private here
+[10.295s]    46 |     Logging() : worker_(buffer_) {}
+[10.295s]       |     ^~~~~~~
+[10.359s] In file included from /usr/include/c++/13/memory:78,
+[10.359s]                  from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/detail/perception_objects__struct.hpp:14,
+[10.359s]                  from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/perception_objects.hpp:7,
+[10.359s]                  from /home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/fusion_node.hpp:8,
+[10.359s]                  from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:1:
+[10.359s] /usr/include/c++/13/bits/unique_ptr.h: In instantiation of ‘std::__detail::__unique_ptr_t<_Tp> std::make_unique(_Args&& ...) [with _Tp = amr::observability::Logging; _Args = {}; __detail::__unique_ptr_t<_Tp> = __detail::__unique_ptr_t<amr::observability::Logging>]’:
+[10.359s] /home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:26:46:   required from here
+[10.359s] /usr/include/c++/13/bits/unique_ptr.h:1070:30: error: ‘amr::observability::Logging::Logging()’ is private within this context
+[10.359s]  1070 |     { return unique_ptr<_Tp>(new _Tp(std::forward<_Args>(__args)...)); }
+[10.359s]       |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[10.359s] In file included from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:2:
+[10.359s] /home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:46:5: note: declared private here
+[10.359s]    46 |     Logging() : worker_(buffer_) {}
+[10.359s]       |     ^~~~~~~
+[14.619s] gmake[2]: *** [CMakeFiles/robot_middleware_lib.dir/build.make:118: CMakeFiles/robot_middleware_lib.dir/src/fusion_node.cpp.o] Error 1
+[14.620s] gmake[2]: *** Waiting for unfinished jobs....
+[14.654s] gmake[2]: *** [CMakeFiles/compute_component.dir/build.make:76: CMakeFiles/compute_component.dir/src/fusion_node.cpp.o] Error 1
+[14.654s] gmake[2]: *** Waiting for unfinished jobs....
+[16.728s] gmake[1]: *** [CMakeFiles/Makefile2:707: CMakeFiles/compute_component.dir/all] Error 2
+[16.728s] gmake[1]: *** Waiting for unfinished jobs....
+[16.822s] gmake[1]: *** [CMakeFiles/Makefile2:679: CMakeFiles/robot_middleware_lib.dir/all] Error 2
+[16.822s] gmake: *** [Makefile:146: all] Error 2
+[16.827s] Invoked command in '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware' returned '2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware -- -j16 -l16

@@ -1,0 +1,33 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/action/detail/move_to_pose__type_support_c.cpp.o"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/action/detail/move_to_pose__type_support_c.cpp.o.d"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_report__type_support_c.cpp.o"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_report__type_support_c.cpp.o.d"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_status__type_support_c.cpp.o"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_status__type_support_c.cpp.o.d"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/object__type_support_c.cpp.o"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/object__type_support_c.cpp.o.d"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/perception_objects__type_support_c.cpp.o"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/perception_objects__type_support_c.cpp.o.d"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/srv/detail/set_param__type_support_c.cpp.o"
+  "CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/srv/detail/set_param__type_support_c.cpp.o.d"
+  "libros2_robot_middleware__rosidl_typesupport_fastrtps_c.pdb"
+  "libros2_robot_middleware__rosidl_typesupport_fastrtps_c.so"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/action/detail/move_to_pose__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/action/detail/move_to_pose__type_support_c.cpp"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_report__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_report__type_support_c.cpp"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_status__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_status__type_support_c.cpp"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/object__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/object__type_support_c.cpp"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/perception_objects__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/perception_objects__type_support_c.cpp"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/srv/detail/set_param__rosidl_typesupport_fastrtps_c.h"
+  "rosidl_typesupport_fastrtps_c/ros2_robot_middleware/srv/detail/set_param__type_support_c.cpp"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()

@@ -1,0 +1,34 @@
+In file included from /usr/include/c++/13/memory:78,
+                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/detail/perception_objects__struct.hpp:14,
+                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/perception_objects.hpp:7,
+                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/fusion_node.hpp:8,
+                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:1:
+/usr/include/c++/13/bits/unique_ptr.h: In instantiation of ‘std::__detail::__unique_ptr_t<_Tp> std::make_unique(_Args&& ...) [with _Tp = amr::observability::Logging; _Args = {}; __detail::__unique_ptr_t<_Tp> = __detail::__unique_ptr_t<amr::observability::Logging>]’:
+/home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:26:46:   required from here
+/usr/include/c++/13/bits/unique_ptr.h:1070:30: error: ‘amr::observability::Logging::Logging()’ is private within this context
+ 1070 |     { return unique_ptr<_Tp>(new _Tp(std::forward<_Args>(__args)...)); }
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:2:
+/home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:46:5: note: declared private here
+   46 |     Logging() : worker_(buffer_) {}
+      |     ^~~~~~~
+In file included from /usr/include/c++/13/memory:78,
+                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/detail/perception_objects__struct.hpp:14,
+                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/perception_objects.hpp:7,
+                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/fusion_node.hpp:8,
+                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:1:
+/usr/include/c++/13/bits/unique_ptr.h: In instantiation of ‘std::__detail::__unique_ptr_t<_Tp> std::make_unique(_Args&& ...) [with _Tp = amr::observability::Logging; _Args = {}; __detail::__unique_ptr_t<_Tp> = __detail::__unique_ptr_t<amr::observability::Logging>]’:
+/home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:26:46:   required from here
+/usr/include/c++/13/bits/unique_ptr.h:1070:30: error: ‘amr::observability::Logging::Logging()’ is private within this context
+ 1070 |     { return unique_ptr<_Tp>(new _Tp(std::forward<_Args>(__args)...)); }
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:2:
+/home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:46:5: note: declared private here
+   46 |     Logging() : worker_(buffer_) {}
+      |     ^~~~~~~
+gmake[2]: *** [CMakeFiles/compute_component.dir/build.make:76: CMakeFiles/compute_component.dir/src/fusion_node.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:707: CMakeFiles/compute_component.dir/all] Error 2
+gmake[1]: *** Waiting for unfinished jobs....
+gmake[2]: *** [CMakeFiles/robot_middleware_lib.dir/build.make:118: CMakeFiles/robot_middleware_lib.dir/src/fusion_node.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:679: CMakeFiles/robot_middleware_lib.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

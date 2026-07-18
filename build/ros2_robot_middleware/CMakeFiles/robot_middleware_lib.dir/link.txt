@@ -1,0 +1,2 @@
+/usr/bin/ar qc librobot_middleware_lib.a CMakeFiles/robot_middleware_lib.dir/src/lidar_node.cpp.o CMakeFiles/robot_middleware_lib.dir/src/imu_node.cpp.o CMakeFiles/robot_middleware_lib.dir/src/camera_node.cpp.o CMakeFiles/robot_middleware_lib.dir/src/fusion_node.cpp.o CMakeFiles/robot_middleware_lib.dir/src/decision_node.cpp.o CMakeFiles/robot_middleware_lib.dir/src/motor_ctrl_node.cpp.o CMakeFiles/robot_middleware_lib.dir/src/health_monitor_node.cpp.o CMakeFiles/robot_middleware_lib.dir/src/fleet_manager_node.cpp.o
+/usr/bin/ranlib librobot_middleware_lib.a

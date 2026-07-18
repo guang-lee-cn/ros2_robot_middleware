@@ -1,0 +1,11 @@
+{
+  "package_name": "ros2_robot_middleware",
+  "non_idl_tuples": [
+    "/home/guang/code/ros2_ws/src/ros2_amr_framework:msg/Object.msg",
+    "/home/guang/code/ros2_ws/src/ros2_amr_framework:msg/PerceptionObjects.msg",
+    "/home/guang/code/ros2_ws/src/ros2_amr_framework:msg/HealthStatus.msg",
+    "/home/guang/code/ros2_ws/src/ros2_amr_framework:msg/HealthReport.msg",
+    "/home/guang/code/ros2_ws/src/ros2_amr_framework:srv/SetParam.srv",
+    "/home/guang/code/ros2_ws/src/ros2_amr_framework:action/MoveToPose.action"
+  ]
+}

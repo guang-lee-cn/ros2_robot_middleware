@@ -1,0 +1,83 @@
+UpdateCTestConfiguration  from :/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/CTestConfiguration.ini
+Parse Config file:/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/CTestConfiguration.ini
+   Site: guang
+   Build name: (empty)
+ Add coverage exclude regular expressions.
+Create new tag: 20260718-0446 - Experimental
+UpdateCTestConfiguration  from :/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/CTestConfiguration.ini
+Parse Config file:/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/CTestConfiguration.ini
+Test project /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: test_robot_middleware
+
+1: Test command: /usr/bin/python3 "-u" "/opt/ros/jazzy/share/ament_cmake_test/cmake/run_test.py" "/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_results/ros2_robot_middleware/test_robot_middleware.gtest.xml" "--package-name" "ros2_robot_middleware" "--output-file" "/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/ament_cmake_gtest/test_robot_middleware.txt" "--command" "/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_robot_middleware" "--gtest_output=xml:/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_results/ros2_robot_middleware/test_robot_middleware.gtest.xml"
+1: Working Directory: /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware
+1: Test timeout computed to be: 60
+1: -- run_test.py: invoking following command in '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware':
+1:  - /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_robot_middleware --gtest_output=xml:/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_results/ros2_robot_middleware/test_robot_middleware.gtest.xml
+1: Running main() from /opt/ros/jazzy/src/gtest_vendor/src/gtest_main.cc
+1: [==========] Running 13 tests from 1 test suite.
+1: [----------] Global test environment set-up.
+1: [----------] 13 tests from RobotMiddlewareTest
+1: [ RUN      ] RobotMiddlewareTest.LidarNode_TimerFires_RangesInPhysicalBounds
+1: [INFO] [1784350017.077112282] [lidar]: LaserScan published: ranges[0..359] avg=2.00m
+1: [       OK ] RobotMiddlewareTest.LidarNode_TimerFires_RangesInPhysicalBounds (126 ms)
+1: [ RUN      ] RobotMiddlewareTest.ImuNode_TimerFires_DataWithinSensorSpec
+1: [INFO] [1784350017.100633357] [imu]: IMU published: ω=(0.014,-0.004,-0.020) rad/s  a=(-0.098,-0.100,-0.007) m/s²
+1: [       OK ] RobotMiddlewareTest.ImuNode_TimerFires_DataWithinSensorSpec (20 ms)
+1: [ RUN      ] RobotMiddlewareTest.CameraNode_TimerFires_640x480Rgb8Image
+1: [INFO] [1784350017.328319396] [camera]: Image published: 640x480 rgb8 900.0KB
+1: [       OK ] RobotMiddlewareTest.CameraNode_TimerFires_640x480Rgb8Image (227 ms)
+1: [ RUN      ] RobotMiddlewareTest.MotorCtrl_CloseTarget_ReachesImmediately
+1: [INFO] [1784350017.339711999] [motor_ctrl]: Received goal: target=(0.00, 0.03, 0.00) speed=0.50
+1: [INFO] [1784350017.339844631] [motor_ctrl]: Goal reached: (0.00, 0.03)
+1: [       OK ] RobotMiddlewareTest.MotorCtrl_CloseTarget_ReachesImmediately (10 ms)
+1: [ RUN      ] RobotMiddlewareTest.MotorCtrl_FarTarget_StepsUntilReached
+1: [INFO] [1784350017.347461772] [motor_ctrl]: Received goal: target=(0.00, 0.15, 0.00) speed=0.50
+1: [INFO] [1784350017.647995893] [motor_ctrl]: Goal reached: (0.00, 0.15)
+1: [       OK ] RobotMiddlewareTest.MotorCtrl_FarTarget_StepsUntilReached (313 ms)
+1: [ RUN      ] RobotMiddlewareTest.MotorCtrl_SetParamKnown_UpdatesAndAcks
+1: [INFO] [1784350017.664646223] [motor_ctrl]: SetParam: step_size = 0.1000
+1: [       OK ] RobotMiddlewareTest.MotorCtrl_SetParamKnown_UpdatesAndAcks (11 ms)
+1: [ RUN      ] RobotMiddlewareTest.MotorCtrl_SetParamUnknown_ReturnsMessage
+1: [INFO] [1784350017.673959214] [motor_ctrl]: SetParam: unknown_param = 1.0000
+1: [       OK ] RobotMiddlewareTest.MotorCtrl_SetParamUnknown_ReturnsMessage (9 ms)
+1: [ RUN      ] RobotMiddlewareTest.DecisionNode_PerceptionArrives_SendsGoalToTargetPose
+1: [       OK ] RobotMiddlewareTest.DecisionNode_PerceptionArrives_SendsGoalToTargetPose (8 ms)
+1: [ RUN      ] RobotMiddlewareTest.FusionNode_AllSensorsReady_DetectsNearbyCluster
+1: [INFO] [1784350017.889913329] [fusion]: PerceptionObjects published: 1 object(s) [level=0]
+1: [       OK ] RobotMiddlewareTest.FusionNode_AllSensorsReady_DetectsNearbyCluster (212 ms)
+1: [ RUN      ] RobotMiddlewareTest.FusionNode_AllSensorsPresent_DegradationFull
+1: [       OK ] RobotMiddlewareTest.FusionNode_AllSensorsPresent_DegradationFull (517 ms)
+1: [ RUN      ] RobotMiddlewareTest.FusionNode_ImuMissing_DegradedToNoImu
+1: [WARN] [1784350018.623888785] [fusion]: Degradation: 0 -> 3
+1: [       OK ] RobotMiddlewareTest.FusionNode_ImuMissing_DegradedToNoImu (214 ms)
+1: [ RUN      ] RobotMiddlewareTest.FusionNode_LidarMissing_DegradedToNoLidar
+1: [WARN] [1784350018.842032126] [fusion]: Degradation: 0 -> 4
+1: [WARN] [1784350019.041856909] [fusion]: Degradation: 4 -> 1
+1: [       OK ] RobotMiddlewareTest.FusionNode_LidarMissing_DegradedToNoLidar (416 ms)
+1: [ RUN      ] RobotMiddlewareTest.FusionNode_ImuAndCameraMissing_DegradedToCritical
+1: [WARN] [1784350019.253532605] [fusion]: Degradation: 0 -> 4
+1: [       OK ] RobotMiddlewareTest.FusionNode_ImuAndCameraMissing_DegradedToCritical (212 ms)
+1: [----------] 13 tests from RobotMiddlewareTest (2302 ms total)
+1: 
+1: [----------] Global test environment tear-down
+1: [==========] 13 tests from 1 test suite ran. (2309 ms total)
+1: [  PASSED  ] 13 tests.
+1: -- run_test.py: return code 0
+1: -- run_test.py: inject classname prefix into gtest result file '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_results/ros2_robot_middleware/test_robot_middleware.gtest.xml'
+1: -- run_test.py: verify result file '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_results/ros2_robot_middleware/test_robot_middleware.gtest.xml'
+1/1 Test #1: test_robot_middleware ............   Passed    2.48 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Label Time Summary:
+gtest    =   2.48 sec*proc (1 test)
+
+Total Test time (real) =   2.49 sec

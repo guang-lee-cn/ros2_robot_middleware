@@ -1,0 +1,386 @@
+[0.000000] (-) TimerEvent: {}
+[0.000064] (ros2_robot_middleware) JobQueued: {'identifier': 'ros2_robot_middleware', 'dependencies': OrderedDict()}
+[0.000892] (ros2_robot_middleware) JobStarted: {'identifier': 'ros2_robot_middleware'}
+[0.006632] (ros2_robot_middleware) JobProgress: {'identifier': 'ros2_robot_middleware', 'progress': 'cmake'}
+[0.007588] (ros2_robot_middleware) Command: {'cmd': ['/usr/bin/cmake', '/home/guang/code/ros2_ws/src/ros2_amr_framework', '-DCMAKE_INSTALL_PREFIX=/home/guang/code/ros2_ws/src/ros2_amr_framework/install/ros2_robot_middleware'], 'cwd': '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'VSCODE_CWD': '/mnt/c/Users/husci/AppData/Local/Programs/Microsoft VS Code', 'ANTHROPIC_MODEL': 'deepseek-v4-pro', 'VSCODE_ESM_ENTRYPOINT': 'vs/workbench/api/node/extensionHostProcess', 'AI_AGENT': 'claude-code_2-1-212_agent', 'USER': 'guang', 'CLAUDE_CODE_ENTRYPOINT': 'claude-vscode', 'VSCODE_NLS_CONFIG': '{"userLocale":"en","osLocale":"en","resolvedLanguage":"en","defaultMessagesFile":"/home/guang/.vscode-server/bin/125df4672b8a6a34975303c6b0baa124e560a4f7/out/nls.messages.json","locale":"en","availableLanguages":{}}', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'GIT_EDITOR': 'true', 'VSCODE_WSL_EXT_LOCATION': '/mnt/c/Users/husci/.vscode/extensions/ms-vscode-remote.remote-wsl-0.104.3', 'VSCODE_HANDLES_UNCAUGHT_ERRORS': 'true', 'CLAUDE_AGENT_SDK_VERSION': '0.3.212', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/guang', 'VSCODE_RECONNECTION_GRACE_TIME': '10800000', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-10f9d88f-ef79-452e-9b7b-ea3cac667715.sock', 'ROS_PYTHON_VERSION': '3', 'CLAUDE_CODE_CHILD_SESSION': '1', 'DEEPSEEK_API_KEY': 'sk-08253b6898c94474b9911e945d7026da', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'WSL_DISTRO_NAME': 'Ubuntu', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'WAYLAND_DISPLAY': 'wayland-0', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'guang', 'NAME': 'guang', 'WSL_INTEROP': '/run/WSL/736_interop', 'VSCODE_HANDLES_SIGPIPE': 'true', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'OLLAMA_DOWNLOAD': 'https://modelscope.cn/api/v1/models', 'ANTHROPIC_BASE_URL': 'https://api.deepseek.com/anthropic', 'TERM': 'xterm-256color', 'MCP_CONNECTION_NONBLOCKING': 'true', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/home/guang/.local/bin:/home/guang/.npm-global/bin:/home/guang/.vscode-server/bin/125df4672b8a6a34975303c6b0baa124e560a4f7/bin/remote-cli:/home/guang/.local/bin:/home/guang/.npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Windows/system32:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/Users/husci/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/husci/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/husci/AppData/Local/Programs/cursor/resources/app/bin:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/Users/husci/AppData/Roaming/npm:/snap/bin:/home/guang/.local/bin:/home/guang/.local/bin:/home/guang/.local/bin:/home/guang/.local/bin', 'COREPACK_ENABLE_AUTO_PIN': '0', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'CLAUDE_EFFORT': 'high', 'DISPLAY': ':0', 'NoDefaultCurrentDirectoryInExePath': '1', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'AMENT_PREFIX_PATH': '/opt/ros/jazzy', 'SHELL': '/bin/bash', 'ANTHROPIC_AUTH_TOKEN': 'sk-08253b6898c94474b9911e945d7026da', 'AIDER_MODEL': 'deepseek/deepseek-v4-pro', 'ELECTRON_RUN_AS_NODE': '1', 'CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING': 'true', 'CLAUDE_CODE_SESSION_ID': 'f8239553-8fac-434b-9f3c-ec998ad875ae', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'CLAUDECODE': '1', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'CLAUDE_CODE_EXECPATH': '/home/guang/.vscode-server/extensions/anthropic.claude-code-2.1.212/resources/native-binary/claude', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'CLAUDE_CODE_ENABLE_TASKS': '0', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[0.099763] (-) TimerEvent: {}
+[0.200148] (-) TimerEvent: {}
+[0.209052] (ros2_robot_middleware) StdoutLine: {'line': b'-- The C compiler identification is GNU 13.3.0\n'}
+[0.300395] (-) TimerEvent: {}
+[0.400803] (-) TimerEvent: {}
+[0.501212] (-) TimerEvent: {}
+[0.601536] (-) TimerEvent: {}
+[0.619960] (ros2_robot_middleware) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 13.3.0\n'}
+[0.701772] (-) TimerEvent: {}
+[0.802124] (-) TimerEvent: {}
+[0.902520] (-) TimerEvent: {}
+[1.002904] (-) TimerEvent: {}
+[1.014622] (ros2_robot_middleware) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[1.103068] (-) TimerEvent: {}
+[1.203387] (-) TimerEvent: {}
+[1.235931] (ros2_robot_middleware) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[1.240618] (ros2_robot_middleware) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[1.242326] (ros2_robot_middleware) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[1.242896] (ros2_robot_middleware) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[1.301416] (ros2_robot_middleware) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[1.303537] (-) TimerEvent: {}
+[1.403856] (-) TimerEvent: {}
+[1.497579] (ros2_robot_middleware) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[1.503772] (ros2_robot_middleware) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[1.504045] (-) TimerEvent: {}
+[1.504244] (ros2_robot_middleware) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[1.504375] (ros2_robot_middleware) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.518223] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)\n'}
+[1.604246] (-) TimerEvent: {}
+[1.633521] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter \n'}
+[1.704466] (-) TimerEvent: {}
+[1.752318] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)\n'}
+[1.804735] (-) TimerEvent: {}
+[1.905029] (-) TimerEvent: {}
+[1.924371] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)\n'}
+[1.937004] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)\n'}
+[1.956683] (ros2_robot_middleware) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.974357] (ros2_robot_middleware) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[2.005296] (-) TimerEvent: {}
+[2.066902] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)\n'}
+[2.071635] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)\n'}
+[2.105532] (-) TimerEvent: {}
+[2.196897] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  \n'}
+[2.205640] (-) TimerEvent: {}
+[2.305920] (-) TimerEvent: {}
+[2.313676] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") \n'}
+[2.383001] (ros2_robot_middleware) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[2.406093] (-) TimerEvent: {}
+[2.506432] (-) TimerEvent: {}
+[2.588535] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found rclcpp_action: 28.1.18 (/opt/ros/jazzy/share/rclcpp_action/cmake)\n'}
+[2.606680] (-) TimerEvent: {}
+[2.649223] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found rclcpp_lifecycle: 28.1.18 (/opt/ros/jazzy/share/rclcpp_lifecycle/cmake)\n'}
+[2.685053] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found rclcpp_components: 28.1.18 (/opt/ros/jazzy/share/rclcpp_components/cmake)\n'}
+[2.706900] (-) TimerEvent: {}
+[2.731426] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found sensor_msgs: 5.3.7 (/opt/ros/jazzy/share/sensor_msgs/cmake)\n'}
+[2.792226] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.6.0 (/opt/ros/jazzy/share/rosidl_default_generators/cmake)\n'}
+[2.807145] (-) TimerEvent: {}
+[2.815970] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found rosidl_adapter: 4.6.7 (/opt/ros/jazzy/share/rosidl_adapter/cmake)\n'}
+[2.907290] (-) TimerEvent: {}
+[3.007645] (-) TimerEvent: {}
+[3.108001] (-) TimerEvent: {}
+[3.208319] (-) TimerEvent: {}
+[3.308643] (-) TimerEvent: {}
+[3.309853] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found ament_cmake_ros: 0.12.0 (/opt/ros/jazzy/share/ament_cmake_ros/cmake)\n'}
+[3.408890] (-) TimerEvent: {}
+[3.509192] (-) TimerEvent: {}
+[3.609512] (-) TimerEvent: {}
+[3.709805] (-) TimerEvent: {}
+[3.810130] (-) TimerEvent: {}
+[3.910447] (-) TimerEvent: {}
+[3.923697] (ros2_robot_middleware) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[4.010675] (-) TimerEvent: {}
+[4.111008] (-) TimerEvent: {}
+[4.170932] (ros2_robot_middleware) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[4.176503] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found python_cmake_module: 0.11.1 (/opt/ros/jazzy/share/python_cmake_module/cmake)\n'}
+[4.211200] (-) TimerEvent: {}
+[4.290880] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found PythonExtra: /usr/bin/python3  \n'}
+[4.311404] (-) TimerEvent: {}
+[4.411745] (-) TimerEvent: {}
+[4.512045] (-) TimerEvent: {}
+[4.612394] (-) TimerEvent: {}
+[4.712762] (-) TimerEvent: {}
+[4.732566] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter Development NumPy Development.Module Development.Embed \n'}
+[4.812930] (-) TimerEvent: {}
+[4.816567] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter \n'}
+[4.825570] (ros2_robot_middleware) StdoutLine: {'line': b"-- Found gtest sources under '/opt/ros/jazzy/src/gtest_vendor': C++ tests using 'Google Test' will be built\n"}
+[4.831842] (ros2_robot_middleware) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD\n'}
+[4.913135] (-) TimerEvent: {}
+[4.964281] (ros2_robot_middleware) StdoutLine: {'line': b'-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success\n'}
+[4.965420] (ros2_robot_middleware) StdoutLine: {'line': b'-- Found Threads: TRUE  \n'}
+[4.982758] (ros2_robot_middleware) StdoutLine: {'line': b'-- Configuring done (5.0s)\n'}
+[5.013295] (-) TimerEvent: {}
+[5.081262] (ros2_robot_middleware) StdoutLine: {'line': b'-- Generating done (0.1s)\n'}
+[5.099850] (ros2_robot_middleware) StdoutLine: {'line': b'-- Build files have been written to: /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware\n'}
+[5.113528] (-) TimerEvent: {}
+[5.115192] (ros2_robot_middleware) CommandEnded: {'returncode': 0}
+[5.116252] (ros2_robot_middleware) JobProgress: {'identifier': 'ros2_robot_middleware', 'progress': 'build'}
+[5.117481] (ros2_robot_middleware) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware', '--', '-j16', '-l16'], 'cwd': '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'VSCODE_CWD': '/mnt/c/Users/husci/AppData/Local/Programs/Microsoft VS Code', 'ANTHROPIC_MODEL': 'deepseek-v4-pro', 'VSCODE_ESM_ENTRYPOINT': 'vs/workbench/api/node/extensionHostProcess', 'AI_AGENT': 'claude-code_2-1-212_agent', 'USER': 'guang', 'CLAUDE_CODE_ENTRYPOINT': 'claude-vscode', 'VSCODE_NLS_CONFIG': '{"userLocale":"en","osLocale":"en","resolvedLanguage":"en","defaultMessagesFile":"/home/guang/.vscode-server/bin/125df4672b8a6a34975303c6b0baa124e560a4f7/out/nls.messages.json","locale":"en","availableLanguages":{}}', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'GIT_EDITOR': 'true', 'VSCODE_WSL_EXT_LOCATION': '/mnt/c/Users/husci/.vscode/extensions/ms-vscode-remote.remote-wsl-0.104.3', 'VSCODE_HANDLES_UNCAUGHT_ERRORS': 'true', 'CLAUDE_AGENT_SDK_VERSION': '0.3.212', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/guang', 'VSCODE_RECONNECTION_GRACE_TIME': '10800000', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-10f9d88f-ef79-452e-9b7b-ea3cac667715.sock', 'ROS_PYTHON_VERSION': '3', 'CLAUDE_CODE_CHILD_SESSION': '1', 'DEEPSEEK_API_KEY': 'sk-08253b6898c94474b9911e945d7026da', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'WSL_DISTRO_NAME': 'Ubuntu', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'WAYLAND_DISPLAY': 'wayland-0', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'guang', 'NAME': 'guang', 'WSL_INTEROP': '/run/WSL/736_interop', 'VSCODE_HANDLES_SIGPIPE': 'true', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'OLLAMA_DOWNLOAD': 'https://modelscope.cn/api/v1/models', 'ANTHROPIC_BASE_URL': 'https://api.deepseek.com/anthropic', 'TERM': 'xterm-256color', 'MCP_CONNECTION_NONBLOCKING': 'true', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/home/guang/.local/bin:/home/guang/.npm-global/bin:/home/guang/.vscode-server/bin/125df4672b8a6a34975303c6b0baa124e560a4f7/bin/remote-cli:/home/guang/.local/bin:/home/guang/.npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Windows/system32:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/Users/husci/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/husci/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/husci/AppData/Local/Programs/cursor/resources/app/bin:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/Users/husci/AppData/Roaming/npm:/snap/bin:/home/guang/.local/bin:/home/guang/.local/bin:/home/guang/.local/bin:/home/guang/.local/bin', 'COREPACK_ENABLE_AUTO_PIN': '0', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'CLAUDE_EFFORT': 'high', 'DISPLAY': ':0', 'NoDefaultCurrentDirectoryInExePath': '1', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'AMENT_PREFIX_PATH': '/opt/ros/jazzy', 'SHELL': '/bin/bash', 'ANTHROPIC_AUTH_TOKEN': 'sk-08253b6898c94474b9911e945d7026da', 'AIDER_MODEL': 'deepseek/deepseek-v4-pro', 'ELECTRON_RUN_AS_NODE': '1', 'CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING': 'true', 'CLAUDE_CODE_SESSION_ID': 'f8239553-8fac-434b-9f3c-ec998ad875ae', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'CLAUDECODE': '1', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'CLAUDE_CODE_EXECPATH': '/home/guang/.vscode-server/extensions/anthropic.claude-code-2.1.212/resources/native-binary/claude', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'CLAUDE_CODE_ENABLE_TASKS': '0', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[5.169108] (ros2_robot_middleware) StdoutLine: {'line': b'[  3%] Generating Rust code for ROS interfaces\n'}
+[5.169287] (ros2_robot_middleware) StdoutLine: {'line': b'[  3%] Building CXX object gtest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o\n'}
+[5.169328] (ros2_robot_middleware) StdoutLine: {'line': b'[  3%] Building CXX object gtest/CMakeFiles/gtest.dir/src/gtest-all.cc.o\n'}
+[5.169361] (ros2_robot_middleware) StdoutLine: {'line': b'[  3%] Generating type hashes for ROS interfaces\n'}
+[5.176533] (ros2_robot_middleware) StdoutLine: {'line': b'[  3%] Built target ament_cmake_python_copy_ros2_robot_middleware\n'}
+[5.213653] (-) TimerEvent: {}
+[5.309416] (ros2_robot_middleware) StdoutLine: {'line': b'running egg_info\n'}
+[5.309813] (ros2_robot_middleware) StdoutLine: {'line': b'creating ros2_robot_middleware.egg-info\n'}
+[5.313802] (-) TimerEvent: {}
+[5.318663] (ros2_robot_middleware) StdoutLine: {'line': b'writing ros2_robot_middleware.egg-info/PKG-INFO\n'}
+[5.319014] (ros2_robot_middleware) StdoutLine: {'line': b'writing dependency_links to ros2_robot_middleware.egg-info/dependency_links.txt\n'}
+[5.319069] (ros2_robot_middleware) StdoutLine: {'line': b'writing top-level names to ros2_robot_middleware.egg-info/top_level.txt\n'}
+[5.319109] (ros2_robot_middleware) StdoutLine: {'line': b"writing manifest file 'ros2_robot_middleware.egg-info/SOURCES.txt'\n"}
+[5.346470] (ros2_robot_middleware) StdoutLine: {'line': b"reading manifest file 'ros2_robot_middleware.egg-info/SOURCES.txt'\n"}
+[5.346806] (ros2_robot_middleware) StdoutLine: {'line': b"writing manifest file 'ros2_robot_middleware.egg-info/SOURCES.txt'\n"}
+[5.367161] (ros2_robot_middleware) StdoutLine: {'line': b'[  3%] Built target ament_cmake_python_build_ros2_robot_middleware_egg\n'}
+[5.400647] (ros2_robot_middleware) StdoutLine: {'line': b'[  3%] Built target ros2_robot_middleware__rosidl_generator_type_description\n'}
+[5.409206] (ros2_robot_middleware) StdoutLine: {'line': b'[  4%] Generating C code for ROS interfaces\n'}
+[5.413944] (-) TimerEvent: {}
+[5.418640] (ros2_robot_middleware) StdoutLine: {'line': b'[  4%] Generating C++ code for ROS interfaces\n'}
+[5.439437] (ros2_robot_middleware) StdoutLine: {'line': b'[  4%] Built target ros2_robot_middleware__rs\n'}
+[5.514316] (-) TimerEvent: {}
+[5.614563] (-) TimerEvent: {}
+[5.714857] (-) TimerEvent: {}
+[5.771110] (ros2_robot_middleware) StdoutLine: {'line': b'[  5%] Linking CXX static library libgtest_main.a\n'}
+[5.799480] (ros2_robot_middleware) StdoutLine: {'line': b'[  5%] Built target gtest_main\n'}
+[5.815090] (-) TimerEvent: {}
+[5.827354] (ros2_robot_middleware) StdoutLine: {'line': b'[  5%] Built target ros2_robot_middleware__cpp\n'}
+[5.882904] (ros2_robot_middleware) StdoutLine: {'line': b'[  8%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/perception_objects__type_support.c.o\n'}
+[5.883121] (ros2_robot_middleware) StdoutLine: {'line': b'[  8%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/object__functions.c.o\n'}
+[5.883170] (ros2_robot_middleware) StdoutLine: {'line': b'[  8%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/perception_objects__description.c.o\n'}
+[5.883440] (ros2_robot_middleware) StdoutLine: {'line': b'[ 11%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_status__functions.c.o\n'}
+[5.883625] (ros2_robot_middleware) StdoutLine: {'line': b'[ 11%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/object__description.c.o\n'}
+[5.883793] (ros2_robot_middleware) StdoutLine: {'line': b'[ 11%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/object__type_support.c.o\n'}
+[5.883937] (ros2_robot_middleware) StdoutLine: {'line': b'[ 12%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_report__functions.c.o\n'}
+[5.884026] (ros2_robot_middleware) StdoutLine: {'line': b'[ 11%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/perception_objects__functions.c.o\n'}
+[5.884459] (ros2_robot_middleware) StdoutLine: {'line': b'[ 13%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_status__description.c.o\n'}
+[5.885734] (ros2_robot_middleware) StdoutLine: {'line': b'[ 14%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/srv/detail/set_param__description.c.o\n'}
+[5.885974] (ros2_robot_middleware) StdoutLine: {'line': b'[ 15%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_report__type_support.c.o\n'}
+[5.886058] (ros2_robot_middleware) StdoutLine: {'line': b'[ 15%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_report__description.c.o\n'}
+[5.886095] (ros2_robot_middleware) StdoutLine: {'line': b'[ 16%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/srv/detail/set_param__functions.c.o\n'}
+[5.887795] (ros2_robot_middleware) StdoutLine: {'line': b'[ 17%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/msg/detail/health_status__type_support.c.o\n'}
+[5.889265] (ros2_robot_middleware) StdoutLine: {'line': b'[ 18%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/srv/detail/set_param__type_support.c.o\n'}
+[5.909750] (ros2_robot_middleware) StdoutLine: {'line': b'[ 19%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/action/detail/move_to_pose__description.c.o\n'}
+[5.910204] (ros2_robot_middleware) StdoutLine: {'line': b'[ 20%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/action/detail/move_to_pose__functions.c.o\n'}
+[5.915250] (-) TimerEvent: {}
+[5.916582] (ros2_robot_middleware) StdoutLine: {'line': b'[ 21%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_c.dir/rosidl_generator_c/ros2_robot_middleware/action/detail/move_to_pose__type_support.c.o\n'}
+[6.004404] (ros2_robot_middleware) StdoutLine: {'line': b'[ 21%] Linking C shared library libros2_robot_middleware__rosidl_generator_c.so\n'}
+[6.015387] (-) TimerEvent: {}
+[6.092627] (ros2_robot_middleware) StdoutLine: {'line': b'[ 21%] Built target ros2_robot_middleware__rosidl_generator_c\n'}
+[6.100906] (ros2_robot_middleware) StdoutLine: {'line': b'[ 24%] Generating C type support for eProsima Fast-RTPS\n'}
+[6.101102] (ros2_robot_middleware) StdoutLine: {'line': b'[ 24%] Generating C++ introspection for ROS interfaces\n'}
+[6.101144] (ros2_robot_middleware) StdoutLine: {'line': b'[ 25%] Generating C++ type support for eProsima Fast-RTPS\n'}
+[6.101175] (ros2_robot_middleware) StdoutLine: {'line': b'[ 25%] Generating C introspection for ROS interfaces\n'}
+[6.102293] (ros2_robot_middleware) StdoutLine: {'line': b'[ 26%] Generating C++ type support dispatch for ROS interfaces\n'}
+[6.102575] (ros2_robot_middleware) StdoutLine: {'line': b'[ 27%] Generating C type support dispatch for ROS interfaces\n'}
+[6.115582] (-) TimerEvent: {}
+[6.215841] (-) TimerEvent: {}
+[6.316255] (-) TimerEvent: {}
+[6.367132] (ros2_robot_middleware) StdoutLine: {'line': b'[ 27%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/action/move_to_pose__type_support.cpp.o\n'}
+[6.367539] (ros2_robot_middleware) StdoutLine: {'line': b'[ 28%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/msg/object__type_support.cpp.o\n'}
+[6.367793] (ros2_robot_middleware) StdoutLine: {'line': b'[ 30%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/msg/perception_objects__type_support.cpp.o\n'}
+[6.367863] (ros2_robot_middleware) StdoutLine: {'line': b'[ 30%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/msg/health_status__type_support.cpp.o\n'}
+[6.368193] (ros2_robot_middleware) StdoutLine: {'line': b'[ 31%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/msg/health_report__type_support.cpp.o\n'}
+[6.368415] (ros2_robot_middleware) StdoutLine: {'line': b'[ 32%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_c.dir/rosidl_typesupport_c/ros2_robot_middleware/srv/set_param__type_support.cpp.o\n'}
+[6.376075] (ros2_robot_middleware) StdoutLine: {'line': b'[ 33%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/msg/perception_objects__type_support.cpp.o\n'}
+[6.379798] (ros2_robot_middleware) StdoutLine: {'line': b'[ 34%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/msg/object__type_support.cpp.o\n'}
+[6.379927] (ros2_robot_middleware) StdoutLine: {'line': b'[ 35%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/msg/health_status__type_support.cpp.o\n'}
+[6.380936] (ros2_robot_middleware) StdoutLine: {'line': b'[ 36%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/msg/health_report__type_support.cpp.o\n'}
+[6.389857] (ros2_robot_middleware) StdoutLine: {'line': b'[ 36%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/srv/set_param__type_support.cpp.o\n'}
+[6.409148] (ros2_robot_middleware) StdoutLine: {'line': b'[ 37%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/ros2_robot_middleware/action/move_to_pose__type_support.cpp.o\n'}
+[6.416421] (-) TimerEvent: {}
+[6.418948] (ros2_robot_middleware) StdoutLine: {'line': b'[ 38%] Linking CXX shared library libros2_robot_middleware__rosidl_typesupport_c.so\n'}
+[6.449531] (ros2_robot_middleware) StdoutLine: {'line': b'[ 39%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/msg/detail/object__type_support.cpp.o\n'}
+[6.449714] (ros2_robot_middleware) StdoutLine: {'line': b'[ 39%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/msg/detail/perception_objects__type_support.cpp.o\n'}
+[6.465966] (ros2_robot_middleware) StdoutLine: {'line': b'[ 40%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/msg/detail/health_status__type_support.cpp.o\n'}
+[6.466339] (ros2_robot_middleware) StdoutLine: {'line': b'[ 41%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/msg/detail/health_report__type_support.cpp.o\n'}
+[6.470466] (ros2_robot_middleware) StdoutLine: {'line': b'[ 42%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/srv/detail/set_param__type_support.cpp.o\n'}
+[6.481504] (ros2_robot_middleware) StdoutLine: {'line': b'[ 43%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/msg/detail/object__type_support.c.o\n'}
+[6.516554] (-) TimerEvent: {}
+[6.587907] (ros2_robot_middleware) StdoutLine: {'line': b'[ 44%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/msg/detail/perception_objects__type_support.c.o\n'}
+[6.617930] (-) TimerEvent: {}
+[6.637161] (ros2_robot_middleware) StdoutLine: {'line': b'[ 44%] Built target ros2_robot_middleware__rosidl_typesupport_c\n'}
+[6.653806] (ros2_robot_middleware) StdoutLine: {'line': b'[ 45%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/ros2_robot_middleware/action/detail/move_to_pose__type_support.cpp.o\n'}
+[6.661245] (ros2_robot_middleware) StdoutLine: {'line': b'[ 45%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/msg/detail/health_status__type_support.c.o\n'}
+[6.670087] (ros2_robot_middleware) StdoutLine: {'line': b'[ 46%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/msg/detail/health_report__type_support.c.o\n'}
+[6.674134] (ros2_robot_middleware) StdoutLine: {'line': b'[ 47%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/srv/detail/set_param__type_support.c.o\n'}
+[6.677378] (ros2_robot_middleware) StdoutLine: {'line': b'[ 48%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/ros2_robot_middleware/action/detail/move_to_pose__type_support.c.o\n'}
+[6.700755] (ros2_robot_middleware) StdoutLine: {'line': b'[ 49%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/msg/detail/dds_fastrtps/object__type_support.cpp.o\n'}
+[6.710481] (ros2_robot_middleware) StdoutLine: {'line': b'[ 50%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/msg/detail/dds_fastrtps/perception_objects__type_support.cpp.o\n'}
+[6.712167] (ros2_robot_middleware) StdoutLine: {'line': b'[ 51%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/msg/detail/dds_fastrtps/health_status__type_support.cpp.o\n'}
+[6.718184] (-) TimerEvent: {}
+[6.729679] (ros2_robot_middleware) StdoutLine: {'line': b'[ 52%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/srv/detail/dds_fastrtps/set_param__type_support.cpp.o\n'}
+[6.729846] (ros2_robot_middleware) StdoutLine: {'line': b'[ 52%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/msg/detail/dds_fastrtps/health_report__type_support.cpp.o\n'}
+[6.746298] (ros2_robot_middleware) StdoutLine: {'line': b'[ 53%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/ros2_robot_middleware/action/detail/dds_fastrtps/move_to_pose__type_support.cpp.o\n'}
+[6.746468] (ros2_robot_middleware) StdoutLine: {'line': b'[ 54%] Linking C shared library libros2_robot_middleware__rosidl_typesupport_introspection_c.so\n'}
+[6.754518] (ros2_robot_middleware) StdoutLine: {'line': b'[ 55%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/object__type_support_c.cpp.o\n'}
+[6.815674] (ros2_robot_middleware) StdoutLine: {'line': b'[ 56%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/perception_objects__type_support_c.cpp.o\n'}
+[6.815894] (ros2_robot_middleware) StdoutLine: {'line': b'[ 57%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_status__type_support_c.cpp.o\n'}
+[6.818414] (-) TimerEvent: {}
+[6.847296] (ros2_robot_middleware) StdoutLine: {'line': b'[ 57%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/msg/detail/health_report__type_support_c.cpp.o\n'}
+[6.847786] (ros2_robot_middleware) StdoutLine: {'line': b'[ 57%] Built target ros2_robot_middleware__rosidl_typesupport_introspection_c\n'}
+[6.856451] (ros2_robot_middleware) StdoutLine: {'line': b'[ 58%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/srv/detail/set_param__type_support_c.cpp.o\n'}
+[6.880472] (ros2_robot_middleware) StdoutLine: {'line': b'[ 59%] Building CXX object CMakeFiles/ros2_robot_middleware__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/ros2_robot_middleware/action/detail/move_to_pose__type_support_c.cpp.o\n'}
+[6.918724] (-) TimerEvent: {}
+[7.018959] (-) TimerEvent: {}
+[7.039193] (ros2_robot_middleware) StdoutLine: {'line': b'[ 60%] Linking CXX shared library libros2_robot_middleware__rosidl_typesupport_cpp.so\n'}
+[7.119133] (-) TimerEvent: {}
+[7.179504] (ros2_robot_middleware) StdoutLine: {'line': b'[ 60%] Built target ros2_robot_middleware__rosidl_typesupport_cpp\n'}
+[7.200591] (ros2_robot_middleware) StdoutLine: {'line': b'[ 61%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/lidar_node.cpp.o\n'}
+[7.202769] (ros2_robot_middleware) StdoutLine: {'line': b'[ 62%] Building CXX object CMakeFiles/compute_component.dir/src/fusion_node.cpp.o\n'}
+[7.205230] (ros2_robot_middleware) StdoutLine: {'line': b'[ 62%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/imu_node.cpp.o\n'}
+[7.207153] (ros2_robot_middleware) StdoutLine: {'line': b'[ 63%] Building CXX object CMakeFiles/compute_component.dir/src/decision_node.cpp.o\n'}
+[7.209119] (ros2_robot_middleware) StdoutLine: {'line': b'[ 64%] Building CXX object CMakeFiles/compute_component.dir/src/motor_ctrl_node.cpp.o\n'}
+[7.216520] (ros2_robot_middleware) StdoutLine: {'line': b'[ 65%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/camera_node.cpp.o\n'}
+[7.222055] (-) TimerEvent: {}
+[7.234186] (ros2_robot_middleware) StdoutLine: {'line': b'[ 66%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/fusion_node.cpp.o\n'}
+[7.265564] (ros2_robot_middleware) StdoutLine: {'line': b'[ 67%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/decision_node.cpp.o\n'}
+[7.274545] (ros2_robot_middleware) StdoutLine: {'line': b'[ 68%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/motor_ctrl_node.cpp.o\n'}
+[7.280386] (ros2_robot_middleware) StdoutLine: {'line': b'[ 69%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/health_monitor_node.cpp.o\n'}
+[7.283286] (ros2_robot_middleware) StdoutLine: {'line': b'[ 70%] Building CXX object CMakeFiles/robot_middleware_lib.dir/src/fleet_manager_node.cpp.o\n'}
+[7.283515] (ros2_robot_middleware) StdoutLine: {'line': b'[ 71%] Linking CXX shared library libros2_robot_middleware__rosidl_typesupport_introspection_cpp.so\n'}
+[7.322216] (-) TimerEvent: {}
+[7.411906] (ros2_robot_middleware) StdoutLine: {'line': b'[ 72%] Linking CXX shared library libros2_robot_middleware__rosidl_typesupport_fastrtps_c.so\n'}
+[7.423335] (-) TimerEvent: {}
+[7.459208] (ros2_robot_middleware) StdoutLine: {'line': b'[ 72%] Built target ros2_robot_middleware__rosidl_typesupport_introspection_cpp\n'}
+[7.523508] (-) TimerEvent: {}
+[7.523837] (ros2_robot_middleware) StdoutLine: {'line': b'[ 72%] Built target ros2_robot_middleware__rosidl_typesupport_fastrtps_c\n'}
+[7.623689] (-) TimerEvent: {}
+[7.669025] (ros2_robot_middleware) StdoutLine: {'line': b'[ 73%] Linking CXX shared library libros2_robot_middleware__rosidl_typesupport_fastrtps_cpp.so\n'}
+[7.723887] (-) TimerEvent: {}
+[7.824156] (-) TimerEvent: {}
+[7.840398] (ros2_robot_middleware) StdoutLine: {'line': b'[ 73%] Built target ros2_robot_middleware__rosidl_typesupport_fastrtps_cpp\n'}
+[7.868288] (ros2_robot_middleware) StdoutLine: {'line': b'[ 73%] Built target ros2_robot_middleware\n'}
+[7.896409] (ros2_robot_middleware) StdoutLine: {'line': b'[ 74%] Generating Python code for ROS interfaces\n'}
+[7.924338] (-) TimerEvent: {}
+[8.024635] (-) TimerEvent: {}
+[8.124893] (-) TimerEvent: {}
+[8.225163] (-) TimerEvent: {}
+[8.325486] (-) TimerEvent: {}
+[8.425781] (-) TimerEvent: {}
+[8.526095] (-) TimerEvent: {}
+[8.626410] (-) TimerEvent: {}
+[8.675916] (ros2_robot_middleware) StdoutLine: {'line': b'[ 75%] Linking CXX static library libgtest.a\n'}
+[8.726602] (-) TimerEvent: {}
+[8.760830] (ros2_robot_middleware) StdoutLine: {'line': b'[ 75%] Built target gtest\n'}
+[8.826812] (-) TimerEvent: {}
+[8.929707] (-) TimerEvent: {}
+[8.957521] (ros2_robot_middleware) StdoutLine: {'line': b'[ 75%] Built target ros2_robot_middleware__py\n'}
+[8.994341] (ros2_robot_middleware) StdoutLine: {'line': b'[ 77%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/msg/_object_s.c.o\n'}
+[8.994580] (ros2_robot_middleware) StdoutLine: {'line': b'[ 78%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/msg/_perception_objects_s.c.o\n'}
+[8.998746] (ros2_robot_middleware) StdoutLine: {'line': b'[ 76%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/msg/_health_report_s.c.o\n'}
+[8.998956] (ros2_robot_middleware) StdoutLine: {'line': b'[ 79%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/msg/_health_status_s.c.o\n'}
+[9.005011] (ros2_robot_middleware) StdoutLine: {'line': b'[ 80%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/srv/_set_param_s.c.o\n'}
+[9.030097] (-) TimerEvent: {}
+[9.131999] (-) TimerEvent: {}
+[9.198535] (ros2_robot_middleware) StdoutLine: {'line': b'[ 81%] Building C object CMakeFiles/ros2_robot_middleware__rosidl_generator_py.dir/rosidl_generator_py/ros2_robot_middleware/action/_move_to_pose_s.c.o\n'}
+[9.232280] (-) TimerEvent: {}
+[9.332625] (-) TimerEvent: {}
+[9.392772] (ros2_robot_middleware) StdoutLine: {'line': b'[ 82%] Linking C shared library libros2_robot_middleware__rosidl_generator_py.so\n'}
+[9.432826] (-) TimerEvent: {}
+[9.484113] (ros2_robot_middleware) StdoutLine: {'line': b'[ 82%] Built target ros2_robot_middleware__rosidl_generator_py\n'}
+[9.507122] (ros2_robot_middleware) StdoutLine: {'line': b'[ 83%] Building C object CMakeFiles/ros2_robot_middleware_s__rosidl_typesupport_introspection_c.dir/rosidl_generator_py/ros2_robot_middleware/_ros2_robot_middleware_s.ep.rosidl_typesupport_introspection_c.c.o\n'}
+[9.508659] (ros2_robot_middleware) StdoutLine: {'line': b'[ 84%] Building C object CMakeFiles/ros2_robot_middleware_s__rosidl_typesupport_fastrtps_c.dir/rosidl_generator_py/ros2_robot_middleware/_ros2_robot_middleware_s.ep.rosidl_typesupport_fastrtps_c.c.o\n'}
+[9.514029] (ros2_robot_middleware) StdoutLine: {'line': b'[ 84%] Building C object CMakeFiles/ros2_robot_middleware_s__rosidl_typesupport_c.dir/rosidl_generator_py/ros2_robot_middleware/_ros2_robot_middleware_s.ep.rosidl_typesupport_c.c.o\n'}
+[9.535156] (-) TimerEvent: {}
+[9.635394] (-) TimerEvent: {}
+[9.664897] (ros2_robot_middleware) StdoutLine: {'line': b'[ 85%] Linking C shared module rosidl_generator_py/ros2_robot_middleware/ros2_robot_middleware_s__rosidl_typesupport_introspection_c.so\n'}
+[9.682256] (ros2_robot_middleware) StdoutLine: {'line': b'[ 86%] Linking C shared module rosidl_generator_py/ros2_robot_middleware/ros2_robot_middleware_s__rosidl_typesupport_fastrtps_c.so\n'}
+[9.683047] (ros2_robot_middleware) StdoutLine: {'line': b'[ 87%] Linking C shared module rosidl_generator_py/ros2_robot_middleware/ros2_robot_middleware_s__rosidl_typesupport_c.so\n'}
+[9.735578] (-) TimerEvent: {}
+[9.761728] (ros2_robot_middleware) StdoutLine: {'line': b'[ 87%] Built target ros2_robot_middleware_s__rosidl_typesupport_c\n'}
+[9.762009] (ros2_robot_middleware) StdoutLine: {'line': b'[ 87%] Built target ros2_robot_middleware_s__rosidl_typesupport_introspection_c\n'}
+[9.779020] (ros2_robot_middleware) StdoutLine: {'line': b'[ 87%] Built target ros2_robot_middleware_s__rosidl_typesupport_fastrtps_c\n'}
+[9.835758] (-) TimerEvent: {}
+[9.936104] (-) TimerEvent: {}
+[10.036389] (-) TimerEvent: {}
+[10.136714] (-) TimerEvent: {}
+[10.237836] (-) TimerEvent: {}
+[10.295825] (ros2_robot_middleware) StderrLine: {'line': b'In file included from /usr/include/c++/13/memory:78,\n'}
+[10.296047] (ros2_robot_middleware) StderrLine: {'line': b'                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/detail/perception_objects__struct.hpp:14,\n'}
+[10.296106] (ros2_robot_middleware) StderrLine: {'line': b'                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/perception_objects.hpp:7,\n'}
+[10.296139] (ros2_robot_middleware) StderrLine: {'line': b'                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/fusion_node.hpp:8,\n'}
+[10.296167] (ros2_robot_middleware) StderrLine: {'line': b'                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:1:\n'}
+[10.296193] (ros2_robot_middleware) StderrLine: {'line': b'/usr/include/c++/13/bits/unique_ptr.h: In instantiation of \xe2\x80\x98std::__detail::__unique_ptr_t<_Tp> std::make_unique(_Args&& ...) [with _Tp = amr::observability::Logging; _Args = {}; __detail::__unique_ptr_t<_Tp> = __detail::__unique_ptr_t<amr::observability::Logging>]\xe2\x80\x99:\n'}
+[10.296223] (ros2_robot_middleware) StderrLine: {'line': b'/home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:26:46:   required from here\n'}
+[10.296249] (ros2_robot_middleware) StderrLine: {'line': b'/usr/include/c++/13/bits/unique_ptr.h:1070:30: error: \xe2\x80\x98amr::observability::Logging::Logging()\xe2\x80\x99 is private within this context\n'}
+[10.296273] (ros2_robot_middleware) StderrLine: {'line': b' 1070 |     { return unique_ptr<_Tp>(new _Tp(std::forward<_Args>(__args)...)); }\n'}
+[10.296297] (ros2_robot_middleware) StderrLine: {'line': b'      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[10.296320] (ros2_robot_middleware) StderrLine: {'line': b'In file included from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:2:\n'}
+[10.296343] (ros2_robot_middleware) StderrLine: {'line': b'/home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:46:5: note: declared private here\n'}
+[10.296365] (ros2_robot_middleware) StderrLine: {'line': b'   46 |     Logging() : worker_(buffer_) {}\n'}
+[10.296390] (ros2_robot_middleware) StderrLine: {'line': b'      |     ^~~~~~~\n'}
+[10.338032] (-) TimerEvent: {}
+[10.359877] (ros2_robot_middleware) StderrLine: {'line': b'In file included from /usr/include/c++/13/memory:78,\n'}
+[10.360064] (ros2_robot_middleware) StderrLine: {'line': b'                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/detail/perception_objects__struct.hpp:14,\n'}
+[10.360105] (ros2_robot_middleware) StderrLine: {'line': b'                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_generator_cpp/ros2_robot_middleware/msg/perception_objects.hpp:7,\n'}
+[10.360133] (ros2_robot_middleware) StderrLine: {'line': b'                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/fusion_node.hpp:8,\n'}
+[10.360160] (ros2_robot_middleware) StderrLine: {'line': b'                 from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:1:\n'}
+[10.360191] (ros2_robot_middleware) StderrLine: {'line': b'/usr/include/c++/13/bits/unique_ptr.h: In instantiation of \xe2\x80\x98std::__detail::__unique_ptr_t<_Tp> std::make_unique(_Args&& ...) [with _Tp = amr::observability::Logging; _Args = {}; __detail::__unique_ptr_t<_Tp> = __detail::__unique_ptr_t<amr::observability::Logging>]\xe2\x80\x99:\n'}
+[10.360220] (ros2_robot_middleware) StderrLine: {'line': b'/home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:26:46:   required from here\n'}
+[10.360245] (ros2_robot_middleware) StderrLine: {'line': b'/usr/include/c++/13/bits/unique_ptr.h:1070:30: error: \xe2\x80\x98amr::observability::Logging::Logging()\xe2\x80\x99 is private within this context\n'}
+[10.360278] (ros2_robot_middleware) StderrLine: {'line': b' 1070 |     { return unique_ptr<_Tp>(new _Tp(std::forward<_Args>(__args)...)); }\n'}
+[10.360304] (ros2_robot_middleware) StderrLine: {'line': b'      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'}
+[10.360326] (ros2_robot_middleware) StderrLine: {'line': b'In file included from /home/guang/code/ros2_ws/src/ros2_amr_framework/src/fusion_node.cpp:2:\n'}
+[10.360349] (ros2_robot_middleware) StderrLine: {'line': b'/home/guang/code/ros2_ws/src/ros2_amr_framework/include/ros2_robot_middleware/observability/logging.hpp:46:5: note: declared private here\n'}
+[10.360371] (ros2_robot_middleware) StderrLine: {'line': b'   46 |     Logging() : worker_(buffer_) {}\n'}
+[10.360394] (ros2_robot_middleware) StderrLine: {'line': b'      |     ^~~~~~~\n'}
+[10.438221] (-) TimerEvent: {}
+[10.538549] (-) TimerEvent: {}
+[10.638996] (-) TimerEvent: {}
+[10.739407] (-) TimerEvent: {}
+[10.839730] (-) TimerEvent: {}
+[10.942146] (-) TimerEvent: {}
+[11.042431] (-) TimerEvent: {}
+[11.142717] (-) TimerEvent: {}
+[11.242977] (-) TimerEvent: {}
+[11.343299] (-) TimerEvent: {}
+[11.443564] (-) TimerEvent: {}
+[11.543865] (-) TimerEvent: {}
+[11.644151] (-) TimerEvent: {}
+[11.744445] (-) TimerEvent: {}
+[11.844753] (-) TimerEvent: {}
+[11.945033] (-) TimerEvent: {}
+[12.045338] (-) TimerEvent: {}
+[12.145668] (-) TimerEvent: {}
+[12.246050] (-) TimerEvent: {}
+[12.346326] (-) TimerEvent: {}
+[12.446607] (-) TimerEvent: {}
+[12.546866] (-) TimerEvent: {}
+[12.647101] (-) TimerEvent: {}
+[12.747366] (-) TimerEvent: {}
+[12.847625] (-) TimerEvent: {}
+[12.947884] (-) TimerEvent: {}
+[13.048188] (-) TimerEvent: {}
+[13.148475] (-) TimerEvent: {}
+[13.248758] (-) TimerEvent: {}
+[13.349059] (-) TimerEvent: {}
+[13.449424] (-) TimerEvent: {}
+[13.549751] (-) TimerEvent: {}
+[13.650209] (-) TimerEvent: {}
+[13.750509] (-) TimerEvent: {}
+[13.850768] (-) TimerEvent: {}
+[13.951067] (-) TimerEvent: {}
+[14.051410] (-) TimerEvent: {}
+[14.151686] (-) TimerEvent: {}
+[14.252002] (-) TimerEvent: {}
+[14.352280] (-) TimerEvent: {}
+[14.452548] (-) TimerEvent: {}
+[14.552811] (-) TimerEvent: {}
+[14.619982] (ros2_robot_middleware) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/robot_middleware_lib.dir/build.make:118: CMakeFiles/robot_middleware_lib.dir/src/fusion_node.cpp.o] Error 1\n'}
+[14.620383] (ros2_robot_middleware) StderrLine: {'line': b'gmake[2]: *** Waiting for unfinished jobs....\n'}
+[14.653006] (-) TimerEvent: {}
+[14.655129] (ros2_robot_middleware) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/compute_component.dir/build.make:76: CMakeFiles/compute_component.dir/src/fusion_node.cpp.o] Error 1\n'}
+[14.655296] (ros2_robot_middleware) StderrLine: {'line': b'gmake[2]: *** Waiting for unfinished jobs....\n'}
+[14.753245] (-) TimerEvent: {}
+[14.853559] (-) TimerEvent: {}
+[14.953897] (-) TimerEvent: {}
+[15.054192] (-) TimerEvent: {}
+[15.154500] (-) TimerEvent: {}
+[15.254838] (-) TimerEvent: {}
+[15.355119] (-) TimerEvent: {}
+[15.455379] (-) TimerEvent: {}
+[15.555701] (-) TimerEvent: {}
+[15.656128] (-) TimerEvent: {}
+[15.756517] (-) TimerEvent: {}
+[15.856804] (-) TimerEvent: {}
+[15.957106] (-) TimerEvent: {}
+[16.057436] (-) TimerEvent: {}
+[16.157794] (-) TimerEvent: {}
+[16.258159] (-) TimerEvent: {}
+[16.358465] (-) TimerEvent: {}
+[16.458774] (-) TimerEvent: {}
+[16.559039] (-) TimerEvent: {}
+[16.659397] (-) TimerEvent: {}
+[16.728964] (ros2_robot_middleware) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:707: CMakeFiles/compute_component.dir/all] Error 2\n'}
+[16.729189] (ros2_robot_middleware) StderrLine: {'line': b'gmake[1]: *** Waiting for unfinished jobs....\n'}
+[16.759723] (-) TimerEvent: {}
+[16.822562] (ros2_robot_middleware) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:679: CMakeFiles/robot_middleware_lib.dir/all] Error 2\n'}
+[16.823081] (ros2_robot_middleware) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[16.827403] (ros2_robot_middleware) CommandEnded: {'returncode': 2}
+[16.838261] (ros2_robot_middleware) JobEnded: {'identifier': 'ros2_robot_middleware', 'rc': 2}
+[16.848899] (-) EventReactorShutdown: {}

@@ -1,0 +1,115 @@
+[0.000000] (-) TimerEvent: {}
+[0.000188] (ros2_robot_middleware) JobQueued: {'identifier': 'ros2_robot_middleware', 'dependencies': OrderedDict({'ros2_robot_middleware': '/home/guang/code/ros2_ws/src/ros2_amr_framework/install/ros2_robot_middleware'})}
+[0.000272] (ros2_robot_middleware) JobStarted: {'identifier': 'ros2_robot_middleware'}
+[0.088456] (ros2_robot_middleware) Command: {'cmd': ['/usr/bin/ctest', '-C', 'Release', '-D', 'ExperimentalTest', '--no-compress-output', '-V', '--force-new-ctest-process'], 'cwd': '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'VSCODE_CWD': '/mnt/c/Users/husci/AppData/Local/Programs/Microsoft VS Code', 'ANTHROPIC_MODEL': 'deepseek-v4-pro', 'VSCODE_ESM_ENTRYPOINT': 'vs/workbench/api/node/extensionHostProcess', 'AI_AGENT': 'claude-code_2-1-212_agent', 'USER': 'guang', 'CLAUDE_CODE_ENTRYPOINT': 'claude-vscode', 'VSCODE_NLS_CONFIG': '{"userLocale":"en","osLocale":"en","resolvedLanguage":"en","defaultMessagesFile":"/home/guang/.vscode-server/bin/125df4672b8a6a34975303c6b0baa124e560a4f7/out/nls.messages.json","locale":"en","availableLanguages":{}}', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/gz_sim_vendor/share/gz:/opt/ros/jazzy/opt/sdformat_vendor/share/gz:/opt/ros/jazzy/opt/gz_gui_vendor/share/gz:/opt/ros/jazzy/opt/gz_transport_vendor/share/gz:/opt/ros/jazzy/opt/gz_rendering_vendor/share/gz:/opt/ros/jazzy/opt/gz_plugin_vendor/share/gz:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/share/gz:/opt/ros/jazzy/opt/gz_msgs_vendor/share/gz:/opt/ros/jazzy/opt/gz_common_vendor/share/gz', 'GIT_EDITOR': 'true', 'VSCODE_WSL_EXT_LOCATION': '/mnt/c/Users/husci/.vscode/extensions/ms-vscode-remote.remote-wsl-0.104.3', 'VSCODE_HANDLES_UNCAUGHT_ERRORS': 'true', 'CLAUDE_AGENT_SDK_VERSION': '0.3.212', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/guang/code/ros2_ws/src/ros2_amr_framework/install/ros2_robot_middleware/lib:/opt/ros/jazzy/opt/gz_sim_vendor/lib:/opt/ros/jazzy/opt/gz_sensors_vendor/lib:/opt/ros/jazzy/opt/gz_physics_vendor/lib:/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_gui_vendor/lib:/opt/ros/jazzy/opt/gz_transport_vendor/lib:/opt/ros/jazzy/opt/gz_rendering_vendor/lib:/opt/ros/jazzy/opt/gz_plugin_vendor/lib:/opt/ros/jazzy/opt/gz_fuel_tools_vendor/lib:/opt/ros/jazzy/opt/gz_msgs_vendor/lib:/opt/ros/jazzy/opt/gz_common_vendor/lib:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_ogre_next_vendor/lib:/opt/ros/jazzy/opt/gz_dartsim_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/guang', 'VSCODE_RECONNECTION_GRACE_TIME': '10800000', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-10f9d88f-ef79-452e-9b7b-ea3cac667715.sock', 'ROS_PYTHON_VERSION': '3', 'CLAUDE_CODE_CHILD_SESSION': '1', 'DEEPSEEK_API_KEY': 'sk-08253b6898c94474b9911e945d7026da', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'WSL_DISTRO_NAME': 'Ubuntu', 'DEBUGINFOD_URLS': 'https://debuginfod.ubuntu.com', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/guang/code/ros2_ws/src/ros2_amr_framework/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'guang', 'NAME': 'guang', 'WSL_INTEROP': '/run/WSL/736_interop', 'VSCODE_HANDLES_SIGPIPE': 'true', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'OLLAMA_DOWNLOAD': 'https://modelscope.cn/api/v1/models', 'ANTHROPIC_BASE_URL': 'https://api.deepseek.com/anthropic', 'TERM': 'xterm-256color', 'MCP_CONNECTION_NONBLOCKING': 'true', 'PATH': '/opt/ros/jazzy/opt/gz_msgs_vendor/bin:/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/opt/gz_ogre_next_vendor/bin:/opt/ros/jazzy/bin:/home/guang/.local/bin:/home/guang/.npm-global/bin:/home/guang/.vscode-server/bin/125df4672b8a6a34975303c6b0baa124e560a4f7/bin/remote-cli:/home/guang/.local/bin:/home/guang/.npm-global/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Windows/system32:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/Users/husci/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/husci/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/husci/AppData/Local/Programs/cursor/resources/app/bin:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/Users/husci/AppData/Roaming/npm:/snap/bin:/home/guang/.local/bin:/home/guang/.local/bin:/home/guang/.local/bin:/home/guang/.local/bin', 'COREPACK_ENABLE_AUTO_PIN': '0', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'CLAUDE_EFFORT': 'high', 'DISPLAY': ':0', 'NoDefaultCurrentDirectoryInExePath': '1', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'AMENT_PREFIX_PATH': '/home/guang/code/ros2_ws/src/ros2_amr_framework/install/ros2_robot_middleware:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'ANTHROPIC_AUTH_TOKEN': 'sk-08253b6898c94474b9911e945d7026da', 'AIDER_MODEL': 'deepseek/deepseek-v4-pro', 'ELECTRON_RUN_AS_NODE': '1', 'CLAUDE_CODE_ENABLE_SDK_FILE_CHECKPOINTING': 'true', 'CLAUDE_CODE_SESSION_ID': 'f8239553-8fac-434b-9f3c-ec998ad875ae', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'CLAUDECODE': '1', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'CLAUDE_CODE_EXECPATH': '/home/guang/.vscode-server/extensions/anthropic.claude-code-2.1.212/resources/native-binary/claude', 'PYTHONPATH': '/home/guang/code/ros2_ws/src/ros2_amr_framework/install/ros2_robot_middleware/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'CLAUDE_CODE_ENABLE_TASKS': '0', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/guang/code/ros2_ws/src/ros2_amr_framework/install/ros2_robot_middleware:/opt/ros/jazzy/opt/gz_sim_vendor:/opt/ros/jazzy/opt/gz_sensors_vendor:/opt/ros/jazzy/opt/gz_physics_vendor:/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_gui_vendor:/opt/ros/jazzy/opt/gz_transport_vendor:/opt/ros/jazzy/opt/gz_rendering_vendor:/opt/ros/jazzy/opt/gz_plugin_vendor:/opt/ros/jazzy/opt/gz_fuel_tools_vendor:/opt/ros/jazzy/opt/gz_msgs_vendor:/opt/ros/jazzy/opt/gz_common_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_ogre_next_vendor:/opt/ros/jazzy/opt/gz_dartsim_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[0.096381] (ros2_robot_middleware) StdoutLine: {'line': b'UpdateCTestConfiguration  from :/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/CTestConfiguration.ini\n'}
+[0.096711] (ros2_robot_middleware) StdoutLine: {'line': b'Parse Config file:/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/CTestConfiguration.ini\n'}
+[0.096764] (ros2_robot_middleware) StdoutLine: {'line': b'   Site: guang\n'}
+[0.096835] (ros2_robot_middleware) StdoutLine: {'line': b'   Build name: (empty)\n'}
+[0.096873] (ros2_robot_middleware) StdoutLine: {'line': b' Add coverage exclude regular expressions.\n'}
+[0.096905] (ros2_robot_middleware) StdoutLine: {'line': b'Create new tag: 20260718-0446 - Experimental\n'}
+[0.096936] (ros2_robot_middleware) StdoutLine: {'line': b'UpdateCTestConfiguration  from :/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/CTestConfiguration.ini\n'}
+[0.096966] (ros2_robot_middleware) StdoutLine: {'line': b'Parse Config file:/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/CTestConfiguration.ini\n'}
+[0.096995] (ros2_robot_middleware) StdoutLine: {'line': b'Test project /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware\n'}
+[0.097023] (ros2_robot_middleware) StdoutLine: {'line': b'Constructing a list of tests\n'}
+[0.097115] (ros2_robot_middleware) StdoutLine: {'line': b'Done constructing a list of tests\n'}
+[0.097155] (ros2_robot_middleware) StdoutLine: {'line': b'Updating test list for fixtures\n'}
+[0.097184] (ros2_robot_middleware) StdoutLine: {'line': b'Added 0 tests to meet fixture requirements\n'}
+[0.097210] (ros2_robot_middleware) StdoutLine: {'line': b'Checking test dependency graph...\n'}
+[0.097235] (ros2_robot_middleware) StdoutLine: {'line': b'Checking test dependency graph end\n'}
+[0.097262] (ros2_robot_middleware) StdoutLine: {'line': b'test 1\n'}
+[0.097286] (ros2_robot_middleware) StdoutLine: {'line': b'    Start 1: test_robot_middleware\n'}
+[0.097312] (ros2_robot_middleware) StdoutLine: {'line': b'\n'}
+[0.097336] (ros2_robot_middleware) StdoutLine: {'line': b'1: Test command: /usr/bin/python3 "-u" "/opt/ros/jazzy/share/ament_cmake_test/cmake/run_test.py" "/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_results/ros2_robot_middleware/test_robot_middleware.gtest.xml" "--package-name" "ros2_robot_middleware" "--output-file" "/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/ament_cmake_gtest/test_robot_middleware.txt" "--command" "/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_robot_middleware" "--gtest_output=xml:/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_results/ros2_robot_middleware/test_robot_middleware.gtest.xml"\n'}
+[0.097364] (ros2_robot_middleware) StdoutLine: {'line': b'1: Working Directory: /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware\n'}
+[0.097388] (ros2_robot_middleware) StdoutLine: {'line': b'1: Test timeout computed to be: 60\n'}
+[0.098246] (-) TimerEvent: {}
+[0.136539] (ros2_robot_middleware) StdoutLine: {'line': b"1: -- run_test.py: invoking following command in '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware':\n"}
+[0.136762] (ros2_robot_middleware) StdoutLine: {'line': b'1:  - /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_robot_middleware --gtest_output=xml:/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_results/ros2_robot_middleware/test_robot_middleware.gtest.xml\n'}
+[0.149358] (ros2_robot_middleware) StdoutLine: {'line': b'1: Running main() from /opt/ros/jazzy/src/gtest_vendor/src/gtest_main.cc\n'}
+[0.149533] (ros2_robot_middleware) StdoutLine: {'line': b'1: [==========] Running 13 tests from 1 test suite.\n'}
+[0.149569] (ros2_robot_middleware) StdoutLine: {'line': b'1: [----------] Global test environment set-up.\n'}
+[0.149599] (ros2_robot_middleware) StdoutLine: {'line': b'1: [----------] 13 tests from RobotMiddlewareTest\n'}
+[0.156502] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.LidarNode_TimerFires_RangesInPhysicalBounds\n'}
+[0.198480] (-) TimerEvent: {}
+[0.276302] (ros2_robot_middleware) StdoutLine: {'line': b'1: [INFO] [1784350017.077112282] [lidar]: LaserScan published: ranges[0..359] avg=2.00m\n'}
+[0.283033] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.LidarNode_TimerFires_RangesInPhysicalBounds (126 ms)\n'}
+[0.283452] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.ImuNode_TimerFires_DataWithinSensorSpec\n'}
+[0.298659] (-) TimerEvent: {}
+[0.299632] (ros2_robot_middleware) StdoutLine: {'line': b'1: [INFO] [1784350017.100633357] [imu]: IMU published: \xcf\x89=(0.014,-0.004,-0.020) rad/s  a=(-0.098,-0.100,-0.007) m/s\xc2\xb2\n'}
+[0.303343] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.ImuNode_TimerFires_DataWithinSensorSpec (20 ms)\n'}
+[0.303468] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.CameraNode_TimerFires_640x480Rgb8Image\n'}
+[0.398970] (-) TimerEvent: {}
+[0.499507] (-) TimerEvent: {}
+[0.527510] (ros2_robot_middleware) StdoutLine: {'line': b'1: [INFO] [1784350017.328319396] [camera]: Image published: 640x480 rgb8 900.0KB\n'}
+[0.530985] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.CameraNode_TimerFires_640x480Rgb8Image (227 ms)\n'}
+[0.531360] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.MotorCtrl_CloseTarget_ReachesImmediately\n'}
+[0.538489] (ros2_robot_middleware) StdoutLine: {'line': b'1: [INFO] [1784350017.339711999] [motor_ctrl]: Received goal: target=(0.00, 0.03, 0.00) speed=0.50\n'}
+[0.538690] (ros2_robot_middleware) StdoutLine: {'line': b'1: [INFO] [1784350017.339844631] [motor_ctrl]: Goal reached: (0.00, 0.03)\n'}
+[0.541321] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.MotorCtrl_CloseTarget_ReachesImmediately (10 ms)\n'}
+[0.541443] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.MotorCtrl_FarTarget_StepsUntilReached\n'}
+[0.546213] (ros2_robot_middleware) StdoutLine: {'line': b'1: [INFO] [1784350017.347461772] [motor_ctrl]: Received goal: target=(0.00, 0.15, 0.00) speed=0.50\n'}
+[0.599755] (-) TimerEvent: {}
+[0.700336] (-) TimerEvent: {}
+[0.800847] (-) TimerEvent: {}
+[0.847408] (ros2_robot_middleware) StdoutLine: {'line': b'1: [INFO] [1784350017.647995893] [motor_ctrl]: Goal reached: (0.00, 0.15)\n'}
+[0.855335] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.MotorCtrl_FarTarget_StepsUntilReached (313 ms)\n'}
+[0.855638] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.MotorCtrl_SetParamKnown_UpdatesAndAcks\n'}
+[0.863711] (ros2_robot_middleware) StdoutLine: {'line': b'1: [INFO] [1784350017.664646223] [motor_ctrl]: SetParam: step_size = 0.1000\n'}
+[0.866919] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.MotorCtrl_SetParamKnown_UpdatesAndAcks (11 ms)\n'}
+[0.867091] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.MotorCtrl_SetParamUnknown_ReturnsMessage\n'}
+[0.872737] (ros2_robot_middleware) StdoutLine: {'line': b'1: [INFO] [1784350017.673959214] [motor_ctrl]: SetParam: unknown_param = 1.0000\n'}
+[0.876033] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.MotorCtrl_SetParamUnknown_ReturnsMessage (9 ms)\n'}
+[0.876141] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.DecisionNode_PerceptionArrives_SendsGoalToTargetPose\n'}
+[0.884924] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.DecisionNode_PerceptionArrives_SendsGoalToTargetPose (8 ms)\n'}
+[0.885134] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.FusionNode_AllSensorsReady_DetectsNearbyCluster\n'}
+[0.901089] (-) TimerEvent: {}
+[1.001493] (-) TimerEvent: {}
+[1.089233] (ros2_robot_middleware) StdoutLine: {'line': b'1: [INFO] [1784350017.889913329] [fusion]: PerceptionObjects published: 1 object(s) [level=0]\n'}
+[1.097221] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.FusionNode_AllSensorsReady_DetectsNearbyCluster (212 ms)\n'}
+[1.097635] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.FusionNode_AllSensorsPresent_DegradationFull\n'}
+[1.101587] (-) TimerEvent: {}
+[1.201931] (-) TimerEvent: {}
+[1.302408] (-) TimerEvent: {}
+[1.402839] (-) TimerEvent: {}
+[1.503278] (-) TimerEvent: {}
+[1.603752] (-) TimerEvent: {}
+[1.615678] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.FusionNode_AllSensorsPresent_DegradationFull (517 ms)\n'}
+[1.616118] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.FusionNode_ImuMissing_DegradedToNoImu\n'}
+[1.704078] (-) TimerEvent: {}
+[1.804687] (-) TimerEvent: {}
+[1.823319] (ros2_robot_middleware) StdoutLine: {'line': b'1: [WARN] [1784350018.623888785] [fusion]: Degradation: 0 -> 3\n'}
+[1.830261] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.FusionNode_ImuMissing_DegradedToNoImu (214 ms)\n'}
+[1.830623] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.FusionNode_LidarMissing_DegradedToNoLidar\n'}
+[1.904969] (-) TimerEvent: {}
+[2.005444] (-) TimerEvent: {}
+[2.041558] (ros2_robot_middleware) StdoutLine: {'line': b'1: [WARN] [1784350018.842032126] [fusion]: Degradation: 0 -> 4\n'}
+[2.105939] (-) TimerEvent: {}
+[2.206400] (-) TimerEvent: {}
+[2.241060] (ros2_robot_middleware) StdoutLine: {'line': b'1: [WARN] [1784350019.041856909] [fusion]: Degradation: 4 -> 1\n'}
+[2.246888] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.FusionNode_LidarMissing_DegradedToNoLidar (416 ms)\n'}
+[2.247495] (ros2_robot_middleware) StdoutLine: {'line': b'1: [ RUN      ] RobotMiddlewareTest.FusionNode_ImuAndCameraMissing_DegradedToCritical\n'}
+[2.306711] (-) TimerEvent: {}
+[2.407222] (-) TimerEvent: {}
+[2.452826] (ros2_robot_middleware) StdoutLine: {'line': b'1: [WARN] [1784350019.253532605] [fusion]: Degradation: 0 -> 4\n'}
+[2.458816] (ros2_robot_middleware) StdoutLine: {'line': b'1: [       OK ] RobotMiddlewareTest.FusionNode_ImuAndCameraMissing_DegradedToCritical (212 ms)\n'}
+[2.459574] (ros2_robot_middleware) StdoutLine: {'line': b'1: [----------] 13 tests from RobotMiddlewareTest (2302 ms total)\n'}
+[2.459817] (ros2_robot_middleware) StdoutLine: {'line': b'1: \n'}
+[2.460058] (ros2_robot_middleware) StdoutLine: {'line': b'1: [----------] Global test environment tear-down\n'}
+[2.460526] (ros2_robot_middleware) StdoutLine: {'line': b'1: [==========] 13 tests from 1 test suite ran. (2309 ms total)\n'}
+[2.460735] (ros2_robot_middleware) StdoutLine: {'line': b'1: [  PASSED  ] 13 tests.\n'}
+[2.507534] (-) TimerEvent: {}
+[2.568839] (ros2_robot_middleware) StdoutLine: {'line': b'1: -- run_test.py: return code 0\n'}
+[2.569396] (ros2_robot_middleware) StdoutLine: {'line': b"1: -- run_test.py: inject classname prefix into gtest result file '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_results/ros2_robot_middleware/test_robot_middleware.gtest.xml'\n"}
+[2.569538] (ros2_robot_middleware) StdoutLine: {'line': b"1: -- run_test.py: verify result file '/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_results/ros2_robot_middleware/test_robot_middleware.gtest.xml'\n"}
+[2.581584] (ros2_robot_middleware) StdoutLine: {'line': b'1/1 Test #1: test_robot_middleware ............   Passed    2.48 sec\n'}
+[2.582213] (ros2_robot_middleware) StdoutLine: {'line': b'\n'}
+[2.582631] (ros2_robot_middleware) StdoutLine: {'line': b'100% tests passed, 0 tests failed out of 1\n'}
+[2.582787] (ros2_robot_middleware) StdoutLine: {'line': b'\n'}
+[2.582954] (ros2_robot_middleware) StdoutLine: {'line': b'Label Time Summary:\n'}
+[2.583266] (ros2_robot_middleware) StdoutLine: {'line': b'gtest    =   2.48 sec*proc (1 test)\n'}
+[2.583526] (ros2_robot_middleware) StdoutLine: {'line': b'\n'}
+[2.583647] (ros2_robot_middleware) StdoutLine: {'line': b'Total Test time (real) =   2.49 sec\n'}
+[2.588927] (ros2_robot_middleware) CommandEnded: {'returncode': 0}
+[2.589533] (ros2_robot_middleware) JobEnded: {'identifier': 'ros2_robot_middleware', 'rc': 0}
+[2.590034] (-) EventReactorShutdown: {}

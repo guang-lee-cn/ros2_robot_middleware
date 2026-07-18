@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20260718-0445-Experimental"
+	Name="guang"
+	Generator="ctest-3.28.3"
+	CompilerName="/usr/bin/c++"
+	CompilerVersion="13.3.0"
+	OSName="Linux"
+	Hostname="guang"
+	OSRelease="6.6.87.2-microsoft-standard-WSL2"
+	OSVersion="#1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="GenuineIntel"
+	VendorID="Intel Corporation"
+	FamilyID="6"
+	ModelID="197"
+	ProcessorCacheSize="24576"
+	NumberOfLogicalCPU="16"
+	NumberOfPhysicalCPU="16"
+	TotalVirtualMemory="4096"
+	TotalPhysicalMemory="15782"
+	LogicalProcessorsPerPhysical="1"
+	ProcessorClockFrequency="3686.4"
+	>
+	<Testing>
+		<StartDateTime>Jul 18 12:45 CST</StartDateTime>
+		<StartTestTime>1784349945</StartTestTime>
+		<TestList>
+			<Test>./test_robot_middleware</Test>
+		</TestList>
+		<Test Status="notrun">
+			<Name>test_robot_middleware</Name>
+			<Path>.</Path>
+			<FullName>./test_robot_middleware</FullName>
+			<FullCommandLine></FullCommandLine>
+			<Results>
+				<NamedMeasurement type="numeric/double" name="Processors">
+					<Value>1</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Completion Status">
+					<Value>Required Files Missing</Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Command Line">
+					<Value></Value>
+				</NamedMeasurement>
+				<NamedMeasurement type="text/string" name="Environment">
+					<Value></Value>
+				</NamedMeasurement>
+				<Measurement>
+					<Value>Unable to find required file: /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_robot_middleware</Value>
+				</Measurement>
+			</Results>
+			<Labels>
+				<Label>gtest</Label>
+			</Labels>
+		</Test>
+		<EndDateTime>Jul 18 12:45 CST</EndDateTime>
+		<EndTestTime>1784349945</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>
