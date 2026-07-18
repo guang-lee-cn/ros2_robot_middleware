@@ -1,4 +1,6 @@
 #include "ros2_robot_middleware/fusion_node.hpp"
+#include "ros2_robot_middleware/observability/metrics_registry.hpp"
+#include "ros2_robot_middleware/observability/tracer.hpp"
 
 #include <rclcpp_components/register_node_macro.hpp>
 
@@ -107,6 +109,10 @@ void FusionNode::camera_callback(sensor_msgs::msg::Image::SharedPtr msg) {
 // ── Timer callback — delegates to domain layer ───────────────────────────────
 
 void FusionNode::timer_callback() {
+  TRACE_SCOPE("fusion::timer_callback");
+
+  auto t_start = std::chrono::steady_clock::now();
+
   // Adaptive dt for domain tick
   auto now = this->now();
   if (last_tick_.nanoseconds() > 0) {
@@ -137,6 +143,26 @@ void FusionNode::timer_callback() {
 
   fusion_pub_->publish(msg);
 
+  // ── Observability: metrics ────────────────────────────────────────────
+  auto &m = amr::observability::MetricsRegistry::instance();
+  m.fusion_cycle_count.fetch_add(1, std::memory_order_relaxed);
+  m.object_count.store(static_cast<int32_t>(msg.objects.size()),
+                       std::memory_order_relaxed);
+  m.degradation_level.store(static_cast<int32_t>(current_level_),
+                            std::memory_order_relaxed);
+
+  if (current_level_ != old_level) {
+    m.degradation_events.fetch_add(1, std::memory_order_relaxed);
+    TRACE_EVENT("degradation_changed", "old", static_cast<int64_t>(old_level),
+                "new", static_cast<int64_t>(current_level_));
+  }
+
+  auto t_end = std::chrono::steady_clock::now();
+  auto lat_us = std::chrono::duration_cast<std::chrono::microseconds>(
+                    t_end - t_start).count();
+  m.fusion_latency.record(lat_us);
+
+  // ── Existing ROS2 logging (unchanged) ────────────────────────────────
   if (current_level_ != old_level) {
     RCLCPP_WARN(this->get_logger(), "Degradation: %d -> %d",
                  static_cast<int>(old_level), static_cast<int>(current_level_));
