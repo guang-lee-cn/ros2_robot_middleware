@@ -1,4 +1,5 @@
 #include "ros2_robot_middleware/health_monitor_node.hpp"
+#include "ros2_robot_middleware/observability/metrics_registry.hpp"
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -358,10 +359,12 @@ void HealthMonitorNode::prometheus_accept()
 
 std::string HealthMonitorNode::prometheus_metrics() const
 {
+  auto &m = amr::observability::MetricsRegistry::instance();
   std::ostringstream out;
+
+  // ── Health (existing) ──────────────────────────────────────────────
   out << "# HELP ros2_node_health_seconds Seconds since last data from node\n";
   out << "# TYPE ros2_node_health_seconds gauge\n";
-
   for (const auto &cfg : kNdes) {
     double val = -1.0;
     for (const auto &[name, hb] : monitor_.heartbeats()) {
@@ -369,13 +372,80 @@ std::string HealthMonitorNode::prometheus_metrics() const
     }
     out << "ros2_node_health_seconds{node=\"" << cfg.node << "\"} " << val << "\n";
   }
-
   out << "# HELP ros2_node_timeout_seconds Configured timeout\n";
   out << "# TYPE ros2_node_timeout_seconds gauge\n";
   for (const auto &cfg : kNdes) {
     out << "ros2_node_timeout_seconds{node=\"" << cfg.node << "\"} "
         << timeouts_.at(cfg.node) << "\n";
   }
+
+  // ── Sensor Rates (M7) ──────────────────────────────────────────────
+  out << "# HELP amr_sensor_rate_hz Sensor publication rate (Hz)\n";
+  out << "# TYPE amr_sensor_rate_hz gauge\n";
+  out << "amr_sensor_rate_hz{sensor=\"lidar\"} "
+      << (m.lidar_rate_ds.load(std::memory_order_relaxed) / 10.0) << "\n";
+  out << "amr_sensor_rate_hz{sensor=\"imu\"} "
+      << (m.imu_rate_ds.load(std::memory_order_relaxed) / 10.0) << "\n";
+  out << "amr_sensor_rate_hz{sensor=\"camera\"} "
+      << (m.camera_rate_ds.load(std::memory_order_relaxed) / 10.0) << "\n";
+
+  // ── Latency Histograms (M7) ────────────────────────────────────────
+  auto write_histogram = [&](const char *name, const char *help,
+                              const amr::observability::Histogram &h) {
+    out << "# HELP " << name << " " << help << "\n";
+    out << "# TYPE " << name << " histogram\n";
+    auto total = h.total_count.load(std::memory_order_relaxed);
+    auto sum   = h.total_sum_us.load(std::memory_order_relaxed);
+    out << name << "_count " << total << "\n";
+    out << name << "_sum " << (sum / 1'000'000.0) << "\n"; // μs → seconds
+    // Bucket boundaries (log scale: 2^0, 2^1, ... 2^63 μs)
+    int64_t cumulative = 0;
+    int64_t bound_us = amr::observability::Histogram::kBaseUs;
+    for (int i = 0; i < amr::observability::Histogram::kBucketCount; ++i) {
+      cumulative += h.buckets[i].load(std::memory_order_relaxed);
+      out << name << "_bucket{le=\"" << (bound_us / 1'000'000.0) << "\"} "
+          << cumulative << "\n";
+      bound_us *= amr::observability::Histogram::kBaseUs;
+    }
+    // +Inf bucket
+    out << name << "_bucket{le=\"+Inf\"} " << total << "\n";
+  };
+
+  write_histogram("amr_fusion_latency_seconds",
+                  "Fusion compute latency", m.fusion_latency);
+  write_histogram("amr_decision_latency_seconds",
+                  "Decision compute latency", m.decision_latency);
+  write_histogram("amr_motor_latency_seconds",
+                  "Motor control per-step latency", m.motor_latency);
+  write_histogram("amr_e2e_latency_seconds",
+                  "End-to-end latency sensor→cmd", m.e2e_latency);
+
+  // ── State Gauges (M7) ──────────────────────────────────────────────
+  out << "# HELP amr_degradation_level Current degradation level (0-4)\n";
+  out << "# TYPE amr_degradation_level gauge\n";
+  out << "amr_degradation_level "
+      << m.degradation_level.load(std::memory_order_relaxed) << "\n";
+
+  out << "# HELP amr_object_count Current tracked object count\n";
+  out << "# TYPE amr_object_count gauge\n";
+  out << "amr_object_count "
+      << m.object_count.load(std::memory_order_relaxed) << "\n";
+
+  // ── Event Counters (M7) ────────────────────────────────────────────
+  out << "# HELP amr_degradation_events_total Degradation events (monotonic)\n";
+  out << "# TYPE amr_degradation_events_total counter\n";
+  out << "amr_degradation_events_total "
+      << m.degradation_events.load(std::memory_order_relaxed) << "\n";
+
+  out << "# HELP amr_recovery_events_total Recovery events (monotonic)\n";
+  out << "# TYPE amr_recovery_events_total counter\n";
+  out << "amr_recovery_events_total "
+      << m.recovery_events.load(std::memory_order_relaxed) << "\n";
+
+  out << "# HELP amr_fusion_cycles_total Fusion cycles (monotonic)\n";
+  out << "# TYPE amr_fusion_cycles_total counter\n";
+  out << "amr_fusion_cycles_total "
+      << m.fusion_cycle_count.load(std::memory_order_relaxed) << "\n";
 
   return out.str();
 }
