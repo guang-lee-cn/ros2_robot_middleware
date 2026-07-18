@@ -1,4 +1,0 @@
-Unable to find required file: /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/test_robot_middleware
-Errors while running CTest
-Output from these tests are in: /home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/Testing/Temporary/LastTest.log
-Use "--rerun-failed --output-on-failure" to re-run the failed cases verbosely.

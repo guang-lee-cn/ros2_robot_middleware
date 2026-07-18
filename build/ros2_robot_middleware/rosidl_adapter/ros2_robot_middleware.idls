@@ -1,6 +1,0 @@
-/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_adapter/ros2_robot_middleware:msg/Object.idl
-/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_adapter/ros2_robot_middleware:msg/PerceptionObjects.idl
-/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_adapter/ros2_robot_middleware:msg/HealthStatus.idl
-/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_adapter/ros2_robot_middleware:msg/HealthReport.idl
-/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_adapter/ros2_robot_middleware:srv/SetParam.idl
-/home/guang/code/ros2_ws/src/ros2_amr_framework/build/ros2_robot_middleware/rosidl_adapter/ros2_robot_middleware:action/MoveToPose.idl
